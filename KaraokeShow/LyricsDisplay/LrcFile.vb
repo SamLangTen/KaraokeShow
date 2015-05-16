@@ -99,7 +99,7 @@ End Class
 ''' <summary>
 ''' Represent a timeline of lrc file
 ''' </summary>
-Public Class LrcTimeline
+Public Structure LrcTimeline
     Public Property StartPoint As DateTime
     Public Property Lyric As String
-End Class
+End Structure

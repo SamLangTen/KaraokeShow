@@ -6,6 +6,8 @@ Public Class Plugin
     Private mbApiInterface As New MusicBeeApiInterface
     Private about As New PluginInfo
 
+    Private LF As LyricForm
+
     Public Function Initialise(ByVal apiInterfacePtr As IntPtr) As PluginInfo
         CopyMemory(mbApiInterface, apiInterfacePtr, 4)
         If mbApiInterface.MusicBeeVersion = MusicBeeVersion.v2_0 Then
@@ -35,6 +37,7 @@ Public Class Plugin
         'about.MinApiRevision = MinApiRevision
         about.ReceiveNotifications = ReceiveNotificationFlags.PlayerEvents
         about.ConfigurationPanelHeight = 200  ' height in pixels that musicbee should reserve in a panel for config settings. When set, a handle to an empty panel will be passed to the Configure function
+
         Return about
     End Function
 
@@ -86,13 +89,11 @@ Public Class Plugin
         Select Case type
             Case NotificationType.PluginStartup
                 ' perform startup initialisation
-                Select Case mbApiInterface.Player_GetPlayState()
-                    Case PlayState.Playing, PlayState.Paused
-                        ' ...
-                End Select
-            Case NotificationType.TrackChanged
-                Dim artist As String = mbApiInterface.NowPlaying_GetFileTag(MetaDataType.Artist)
-                ' ...
+                LF = New LyricForm(mbApiInterface)
+                mbApiInterface.MB_AddMenuItem("mnuTools/Karaoke Show", "", Sub()
+                                                                               LF.Show()
+                                                                           End Sub)
+            Case NotificationType.PlayStateChanged
         End Select
     End Sub
 End Class
