@@ -75,7 +75,8 @@
     <Import Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="LyricsDisplay\LrcFile.vb" />
+    <Compile Include="LyricsDisplay\LRCFile.vb" />
+    <Compile Include="LyricsDisplay\LyricSynchronizationController.vb" />
     <Compile Include="MusicBeeInterface.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">

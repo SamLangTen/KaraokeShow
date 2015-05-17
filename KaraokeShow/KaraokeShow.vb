@@ -76,6 +76,7 @@ Public Class Plugin
 
     ' MusicBee is closing the plugin (plugin is being disabled by user or MusicBee is shutting down)
     Public Sub Close(ByVal reason As PluginCloseReason)
+        LF.StopAllBackgroundThread()
     End Sub
 
     ' uninstall this plugin - clean up any persisted files
@@ -94,6 +95,9 @@ Public Class Plugin
                                                                                LF.Show()
                                                                            End Sub)
             Case NotificationType.PlayStateChanged
+                If Not (mbApiInterface.Player_GetPlayState() = PlayState.Playing Or mbApiInterface.Player_GetPlayState() = PlayState.Paused) Then
+                    LF.StopAllBackgroundThread()
+                End If
         End Select
     End Sub
 End Class

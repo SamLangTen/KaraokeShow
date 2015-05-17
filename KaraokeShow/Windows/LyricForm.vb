@@ -1,10 +1,13 @@
 ﻿Imports System.Windows.Forms
+Imports System.Threading.Tasks
 Imports System.Threading
 Imports MusicBeePlugin.Plugin
+Imports System.IO
 
 Public Class LyricForm
     Private mbi As MusicBeeApiInterface
-    Private LRCFI As LrcFile
+    Private LRCFI As LRCFile
+    Private LRCSyncCtrl As LyricSynchronizationController
     Sub New(mbi As MusicBeeApiInterface)
 
         ' This call is required by the designer.
@@ -12,46 +15,34 @@ Public Class LyricForm
 
         ' Add any initialization after the InitializeComponent() call.
         Me.mbi = mbi
-        Control.CheckForIllegalCrossThreadCalls = False
     End Sub
+    Sub StopAllBackgroundThread()
+        Me.IsBackgroundThreadStopped = True
+    End Sub
+
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
         Dim open As New OpenFileDialog()
         If open.ShowDialog = DialogResult.OK Then
-            Me.LRCFI = New LrcFile()
-            LRCFI.LoadFileInNormalMode(open.FileName)
-            Dim thread As New Thread(AddressOf LyricsControl)
-            thread.Start()
+            Me.IsBackgroundThreadStopped = True
+            Me.LRCFI = New LRCFile(File.ReadAllText(open.FileName, System.Text.Encoding.Default))
+            Me.LRCSyncCtrl = New LyricSynchronizationController(Me.LRCFI)
+            Dim t As New Thread(Sub()
+                                    Dim previousLyric As String = ""
+                                    While True
+                                        If Me.IsBackgroundThreadStopped = True Then Exit Sub 'Exit if this flag is set true
+                                        Dim nowLyric As String = Me.LRCSyncCtrl.GetLyric(mbi.Player_GetPosition())
+                                        If Not previousLyric = nowLyric Then 'prevent "flash"
+                                            Me.Label1.BeginInvoke(Sub()
+                                                                      Me.Label1.Text = nowLyric 'Update lyric
+                                            End Sub)
+                                        End If
+                                        Thread.Sleep(100)
+                                    End While
+                                End Sub)
+            Me.IsBackgroundThreadStopped = False 'set to this value to make background threading start
+            t.Start()
         End If
     End Sub
-    Private LastTL As New LrcTimeline
-    Private Sub LyricsControl()
-        While True
-            If mbi.Player_GetPlayState() = PlayState.Playing Then
-                For i As Integer = 0 To LRCFI.TimeLines.Count - 1
-                    Dim item As LrcTimeline = LRCFI.TimeLines(i)
-                    If Not item.StartPoint = LastTL.StartPoint Then
-                        If Not i + 2 > LRCFI.TimeLines.Count Then
 
-                            Dim biggers, smallers As Integer
-                            smallers = item.StartPoint.Millisecond + item.StartPoint.Second * 1000 + item.StartPoint.Minute * 60000 + item.StartPoint.Hour * 3600000
-                            Dim biggitem As LrcTimeline = LRCFI.TimeLines(i + 1)
-                            biggers = biggitem.StartPoint.Millisecond + biggitem.StartPoint.Second * 1000 + biggitem.StartPoint.Minute * 60000 + biggitem.StartPoint.Hour * 3600000
-                            If mbi.Player_GetPosition() >= smallers And mbi.Player_GetPosition() < biggers Then
-                                Me.Label1.Text = item.Lyric
-                                LastTL = item
-                            End If
-                        Else
-                            Dim smallers As Integer
-                            smallers = item.StartPoint.Millisecond + item.StartPoint.Second * 1000 + item.StartPoint.Minute * 60000 + item.StartPoint.Hour * 3600000
-                            If mbi.Player_GetPosition() >= smallers Then
-                                Me.Label1.Text = item.Lyric
-                            End If
-                        End If
-                    End If
-                Next
-            End If
-            Thread.Sleep(100)
-        End While
-
-    End Sub
+    Private IsBackgroundThreadStopped As Boolean = True
 End Class

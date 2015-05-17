@@ -22,9 +22,7 @@ Partial Class LyricForm
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
-        Me.components = New System.ComponentModel.Container()
         Me.Label1 = New System.Windows.Forms.Label()
-        Me.Timer1 = New System.Windows.Forms.Timer(Me.components)
         Me.Button1 = New System.Windows.Forms.Button()
         Me.SuspendLayout()
         '
@@ -36,11 +34,6 @@ Partial Class LyricForm
         Me.Label1.Size = New System.Drawing.Size(46, 17)
         Me.Label1.TabIndex = 0
         Me.Label1.Text = "Label1"
-        '
-        'Timer1
-        '
-        Me.Timer1.Enabled = True
-        Me.Timer1.Interval = 1000
         '
         'Button1
         '
@@ -69,6 +62,5 @@ Partial Class LyricForm
     End Sub
 
     Friend WithEvents Label1 As Windows.Forms.Label
-    Friend WithEvents Timer1 As Windows.Forms.Timer
     Friend WithEvents Button1 As Windows.Forms.Button
 End Class

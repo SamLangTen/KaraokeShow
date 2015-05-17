@@ -3,25 +3,29 @@ Imports System.Text.RegularExpressions
 ''' <summary>
 ''' Represent a lrc file object
 '''</summary>
-Public Class LrcFile
-    Public Enum lrcFilemode
+Public Class LRCFile
+    Public Enum LRCFilemode
         Accurate
         Normal
     End Enum
+    Sub New(LRCString As String)
+        Me.LoadFileInNormalMode(LRCString)
+    End Sub
+
     Public Property Artist As String
     Public Property Album As String
     Public Property FileMaker As String
     Public Property Title As String
     Public Property Offset As TimeSpan
-    Private _fm As lrcFilemode
-    Public ReadOnly Property FileMode As lrcFilemode
+    Private _fm As LRCFilemode
+    Public ReadOnly Property FileMode As LRCFilemode
         Get
             Return _fm
         End Get
     End Property
     Public Property TimeLines As New ArrayList
 
-    Sub LoadFileInNormalMode(ByVal loadfile As String)
+    Private Sub LoadFileInNormalMode(ByVal lrcfilestr As String)
         'Regex expressions to analyze timeline And other info：\[[\d\.:\]\[]*\][^(\[)]*
         'Timeline：\[[\d\.:]*\]
         'Title：\[ti:.[^(\[)]*]
@@ -31,7 +35,7 @@ Public Class LrcFile
         'Offset：\[offset:.[^(\[)]*]
 
         'Load Lrc file
-        Dim lrcfilestr As String = File.ReadAllText(loadfile, System.Text.Encoding.Default)
+        'Dim lrcfilestr As String = File.ReadAllText(loadfile, System.Text.Encoding.Default)
         'Analyze info
         Dim FileRegex As New Regex("\[ti:.[^(\[)]*]")
         Me.Title = FileRegex.Match(lrcfilestr).Value.Replace("[ti:", "").Replace("]", "")
@@ -60,7 +64,7 @@ Public Class LrcFile
             Dim lrcword As String = timelineregex.Replace(item.Value, "")
             'Read timeline
             For Each item2 As Match In timelineregex.Matches(item.Value)
-                Dim lrctl As New LrcTimeline
+                Dim lrctl As New LRCTimeline
                 Dim startp As String = item2.Value
                 startp = startp.Replace("[", "").Replace("]", "")
                 Dim min As Int32 = CInt(startp.Split(":")(0))
@@ -74,12 +78,12 @@ Public Class LrcFile
         'Adjust timeline order
         Dim newtl As New ArrayList
         Dim savetemptl As New ArrayList
-        For Each item As LrcTimeline In TimeLines
+        For Each item As LRCTimeline In TimeLines
             savetemptl.Add(item)
         Next
         For i As Integer = 1 To TimeLines.Count
-            Dim max As New LrcTimeline
-            For Each item As LrcTimeline In savetemptl
+            Dim max As New LRCTimeline
+            For Each item As LRCTimeline In savetemptl
                 Dim intvalue As Integer = item.StartPoint.Millisecond + item.StartPoint.Minute * 60000 + item.StartPoint.Second * 1000
                 Dim maxintvalue As Integer = max.StartPoint.Millisecond + max.StartPoint.Minute * 60000 + max.StartPoint.Second * 1000
                 If intvalue > maxintvalue Then
@@ -91,7 +95,7 @@ Public Class LrcFile
             newtl.Insert(0, max)
         Next
         TimeLines.Clear()
-        For Each item As LrcTimeline In newtl
+        For Each item As LRCTimeline In newtl
             TimeLines.Add(item)
         Next
     End Sub
@@ -99,7 +103,7 @@ End Class
 ''' <summary>
 ''' Represent a timeline of lrc file
 ''' </summary>
-Public Structure LrcTimeline
+Public Structure LRCTimeline
     Public Property StartPoint As DateTime
     Public Property Lyric As String
 End Structure
