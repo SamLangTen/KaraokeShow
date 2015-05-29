@@ -23,7 +23,7 @@ Public Class LRCFile
             Return _fm
         End Get
     End Property
-    Public Property TimeLines As New ArrayList
+    Public Property TimeLines As New List(Of LRCTimeline)
 
     Private Sub LoadFileInNormalMode(ByVal lrcfilestr As String)
         'Regex expressions to analyze timeline And other info：\[[\d\.:\]\[]*\][^(\[)]*
