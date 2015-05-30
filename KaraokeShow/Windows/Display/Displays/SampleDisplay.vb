@@ -22,12 +22,12 @@ Public Class SampleDisplay
     End Sub
 
     Public Sub OnLyricsSentenceChanged(SentenceIndex As Integer) Implements IDisplay.OnLyricsSentenceChanged
-        If _SDF Is Nothing Or _SDF.IsDisposed Then Exit Sub
+        If _SDF Is Nothing OrElse _SDF.IsDisposed Then Exit Sub
         SDF.Lyric = Me.LyricsText(SentenceIndex)
     End Sub
 
     Public Sub OnLyricsWordProgressChanged(WordIndex As Integer, WordProgressPercentage As Double) Implements IDisplay.OnLyricsWordProgressChanged
-        If _SDF Is Nothing Or _SDF.IsDisposed Then Exit Sub
+        If _SDF Is Nothing OrElse _SDF.IsDisposed Then Exit Sub
         SDF.WordIndex = WordIndex
         SDF.Percentage = WordProgressPercentage
     End Sub

@@ -28,10 +28,10 @@ Public Class KaraokeShow
                 previousLyricIndex = nowLyricIndex
             End If
             'To refresh word displaing progress
-            If (previousLyricIndex < 0) Or (previousLyricIndex > (LRCCtrl.LRC.TimeLines.Count - 1）) Then Continue While
+            If (previousLyricIndex < 0) OrElse (previousLyricIndex > (LRCCtrl.LRC.TimeLines.Count - 1）) Then Continue While
             Dim wordPercentage = LRCCtrl.GetWordPercentage(previousLyricIndex, Me.GetNowPosition().Invoke())
             DisplayManager.SendLyricsWordProgressChanged(wordPercentage.WordIndex, wordPercentage.Percentage)
-            Thread.Sleep(100)
+            Thread.Sleep(10)
         End While
     End Sub
     ''' <summary>
@@ -42,6 +42,9 @@ Public Class KaraokeShow
         If lrcf Is Nothing Then lrcf = LyricsManager.SearchFromScraper(Me.TrackTitle, Me.Artist)
         If lrcf IsNot Nothing Then
             RaiseEvent LyricsDownloadFinished(Me, New LyricsFetchFinishedEventArgs() With {.Lyrics = lrcf})
+        Else
+            'If no lyrics can be found,KaraokeShow will be reset
+            Me.ResetPlayback()
         End If
     End Sub
 
