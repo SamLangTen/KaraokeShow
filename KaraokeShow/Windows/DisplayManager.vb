@@ -5,48 +5,48 @@ Public Class DisplayManager
     ''' <summary>
     ''' Contains all displays loading from PluginManager
     ''' </summary>
-    Private Shared DisplayList As New List(Of IDisplay)
+    Private DisplayList As New List(Of IDisplay)
     ''' <summary>
     ''' a cache to prevent overflow
     ''' </summary>
-    Private Shared LyricsText As New List(Of String)
+    Private LyricsText As New List(Of String)
     ''' <summary>
     ''' a cache to prevent overflow
     ''' </summary>
-    Private Shared NowLyric As String = ""
+    Private NowLyric As String = ""
 
     ''' <summary>
     ''' Reset all display state
     ''' </summary>
-    Public Shared Sub ResetAllLyricTicking()
-        DisplayManager.LyricsText = Nothing
-        DisplayManager.NowLyric = Nothing
+    Public Sub ResetAllLyricTicking()
+        Me.LyricsText = Nothing
+        Me.NowLyric = Nothing
     End Sub
     ''' <summary>
     ''' Notify all display that a new lyric file is coming
     ''' </summary>
-    Public Shared Sub SendLyricsFileChanged(LyricsText As List(Of String))
-        DisplayManager.LyricsText = LyricsText
-        For Each item In DisplayManager.DisplayList
+    Public Sub SendLyricsFileChanged(LyricsText As List(Of String))
+        Me.LyricsText = LyricsText
+        For Each item In Me.DisplayList
             item.OnLyricsFileChanged(LyricsText)
         Next
     End Sub
     ''' <summary>
     ''' Notify all displays that sentence has changed
     ''' </summary>
-    Public Shared Sub SendLyricsSentenceChanged(SentenceIndex As Integer)
+    Public Sub SendLyricsSentenceChanged(SentenceIndex As Integer)
         If (LyricsText Is Nothing) OrElse (LyricsText.Count < SentenceIndex + 1) Then Exit Sub
         NowLyric = LyricsText(SentenceIndex)
-        For Each item In DisplayManager.DisplayList
+        For Each item In Me.DisplayList
             item.OnLyricsSentenceChanged(SentenceIndex)
         Next
     End Sub
     ''' <summary>
     ''' Notify all displays that word percentage has changed
     ''' </summary>
-    Public Shared Sub SendLyricsWordProgressChanged(WordIndex As Integer, WordProgressPercentage As Double)
+    Public Sub SendLyricsWordProgressChanged(WordIndex As Integer, WordProgressPercentage As Double)
         If (NowLyric Is Nothing) OrElse (NowLyric.Length < WordIndex + 1) Then Exit Sub
-        For Each item In DisplayManager.DisplayList
+        For Each item In Me.DisplayList
             item.OnLyricsWordProgressChanged(WordIndex, WordProgressPercentage)
         Next
     End Sub
@@ -54,21 +54,21 @@ Public Class DisplayManager
     ''' <summary>
     ''' Load all displays from PluginManager
     ''' </summary>
-    Public Shared Sub LoadDisplayPlugin()
-        DisplayManager.DisplayList.Add(New SampleDisplay)
+    Public Sub LoadDisplayPlugin()
+        Me.DisplayList.Add(New SampleDisplay)
     End Sub
     ''' <summary>
     ''' Get name of all displays
     ''' </summary>
-    Public Shared Function GetDisplayNames() As String()
-        Return (From i In DisplayManager.DisplayList Select i.GetType().Name)
+    Public Function GetDisplayNames() As String()
+        Return (From i In Me.DisplayList Select i.GetType().Name)
     End Function
 
     ''' <summary>
     ''' Set a display's visibility
     ''' </summary>
-    Public Shared Sub SetDisplayVisibility(DisplayName As String, IsVisible As Boolean)
-        Dim display = (From i In DisplayManager.DisplayList Where i.GetType().Name = DisplayName).FirstOrDefault()
+    Public Sub SetDisplayVisibility(DisplayName As String, IsVisible As Boolean)
+        Dim display = (From i In Me.DisplayList Where i.GetType().Name = DisplayName).FirstOrDefault()
         If display IsNot Nothing Then
             If IsVisible = True Then display.ShowDisplay() Else display.CloseDisplay()
         End If

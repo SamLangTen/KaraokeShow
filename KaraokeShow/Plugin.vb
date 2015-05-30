@@ -5,13 +5,8 @@ Imports System.Windows.Forms
 Public Class Plugin
     Private mbApiInterface As New MusicBeeApiInterface
     Private about As New PluginInfo
-    Private KaraokeShowInterface As New KaraokeShow()
-
-    Sub New()
-        KaraokeShowInterface.GetNowPosition = Function()
-                                                  Return mbApiInterface.Player_GetPosition()
-                                              End Function
-    End Sub
+    Private KaraokeShowInterface As KaraokeShow
+    Private displayManager As DisplayManager
 
     Public Function Initialise(ByVal apiInterfacePtr As IntPtr) As PluginInfo
         CopyMemory(mbApiInterface, apiInterfacePtr, 4)
@@ -94,11 +89,16 @@ Public Class Plugin
         ' perform some action depending on the notification type
         Select Case type
             Case NotificationType.PluginStartup
+                displayManager = New DisplayManager()
+                KaraokeShowInterface = New KaraokeShow(displayManager)
+                KaraokeShowInterface.GetNowPosition = Function()
+                                                          Return mbApiInterface.Player_GetPosition()
+                                                      End Function
                 'Load basic manager
-                DisplayManager.LoadDisplayPlugin()
+                displayManager.LoadDisplayPlugin()
                 'Just for test
                 mbApiInterface.MB_AddMenuItem("mnuTools/Karaoke Show/SampleForm", "", Sub()
-                                                                                          DisplayManager.SetDisplayVisibility("SampleDisplay", True)
+                                                                                          displayManager.SetDisplayVisibility("SampleDisplay", True)
                                                                                       End Sub)
             ' perform startup initialisation
             Case NotificationType.PlayStateChanged
