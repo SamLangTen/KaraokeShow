@@ -1,4 +1,4 @@
-﻿Public Class LyricsDownloadFinishedEventArgs
+﻿Public Class LyricsFetchFinishedEventArgs
     Inherits EventArgs
 
     Public Property Lyrics As LRCFile

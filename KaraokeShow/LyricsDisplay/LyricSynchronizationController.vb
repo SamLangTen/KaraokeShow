@@ -11,7 +11,7 @@ Public Class LyricSynchronizationController
         Me.LRC = LyricFile
     End Sub
 
-    Private LRC As LRCFile
+    Public Property LRC As LRCFile
 
     ''' <summary>
     ''' Get lyric of position
@@ -27,7 +27,7 @@ Public Class LyricSynchronizationController
     ''' <param name="MilesecondPosition">position</param>
     ''' <returns></returns>
     Public Function GetLyricIndex(MilesecondPosition As Integer) As Integer
-        If LRC Is Nothing Then Return ""
+        If LRC Is Nothing Then Return 0
         For i As Integer = 0 To Me.LRC.TimeLines.Count - 1
             Dim item As LRCTimeline = Me.LRC.TimeLines(i)
             If Not i + 2 > LRC.TimeLines.Count Then 'check if the position is between two timeline
@@ -42,7 +42,7 @@ Public Class LyricSynchronizationController
                 If MilesecondPosition >= previousTimePoint Then Return i
             End If
         Next
-        Return -1
+        Return 0
     End Function
     ''' <summary>
     ''' Get percentage of word
@@ -52,12 +52,13 @@ Public Class LyricSynchronizationController
     Public Function GetWordPercentage(SentenceIndex As Integer, MilesecondPosition As Integer) As WordPercentageResult
         Dim nowTimeLine = Me.LRC.TimeLines(SentenceIndex)
         Dim sentenceTimeSpan As TimeSpan = If(SentenceIndex = Me.LRC.TimeLines.Count - 1, New TimeSpan(0, 0, 10), Me.LRC.TimeLines(SentenceIndex + 1).StartPoint - Me.LRC.TimeLines(SentenceIndex).StartPoint)
-        Dim wordCount As Integer = nowTimeLine.Lyric.Length
-        Dim timespanPerWord As Integer = sentenceTimeSpan.TotalMilliseconds / wordCount
-        Dim thisSentenceProgress As Integer = MilesecondPosition - (nowTimeLine.StartPoint.Millisecond + nowTimeLine.StartPoint.Second * 1000 + nowTimeLine.StartPoint.Minute * 60000 + nowTimeLine.StartPoint.Hour * 3600000)
-        Dim wordIndex As Integer = 0
-        Dim outTime As Integer = 0
-        wordIndex = Math.DivRem(thisSentenceProgress, timespanPerWord, outTime)
+        Dim wordCount As Double = If(nowTimeLine.Lyric Is Nothing, "", nowTimeLine.Lyric).Length
+        Dim timespanPerWord As Double = sentenceTimeSpan.TotalMilliseconds / wordCount
+        Dim thisSentenceProgress As Double = MilesecondPosition - (nowTimeLine.StartPoint.Millisecond + nowTimeLine.StartPoint.Second * 1000 + nowTimeLine.StartPoint.Minute * 60000 + nowTimeLine.StartPoint.Hour * 3600000)
+        Dim wordIndex As Double = 0
+        Dim outTime As Double = 0
+        wordIndex = Math.Floor(thisSentenceProgress / timespanPerWord)
+        outTime = thisSentenceProgress - wordIndex * timespanPerWord
         If outTime > 0 Then wordIndex += 1
         Return New WordPercentageResult() With {.Percentage = (outTime / timespanPerWord), .WordIndex = wordIndex}
     End Function

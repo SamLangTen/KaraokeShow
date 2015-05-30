@@ -61,7 +61,7 @@ Public Class LRCFile
         Dim timelineregex As New Regex("\[[\d\.:]*\]")
         For Each item As Match In FileRegex.Matches(lrcfilestr)
             'Read lyrics
-            Dim lrcword As String = timelineregex.Replace(item.Value, "")
+            Dim lrcword As String = If(timelineregex.Replace(item.Value, "") Is Nothing, "", timelineregex.Replace(item.Value, ""))
             'Read timeline
             For Each item2 As Match In timelineregex.Matches(item.Value)
                 Dim lrctl As New LRCTimeline

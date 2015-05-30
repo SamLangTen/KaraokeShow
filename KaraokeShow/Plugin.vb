@@ -81,7 +81,7 @@ Public Class Plugin
 
     ' MusicBee is closing the plugin (plugin is being disabled by user or MusicBee is shutting down)
     Public Sub Close(ByVal reason As PluginCloseReason)
-
+        Me.KaraokeShowInterface.ResetPlayback()
     End Sub
 
     ' uninstall this plugin - clean up any persisted files
@@ -94,10 +94,22 @@ Public Class Plugin
         ' perform some action depending on the notification type
         Select Case type
             Case NotificationType.PluginStartup
+                'Load basic manager
+                DisplayManager.LoadDisplayPlugin()
+                'Just for test
+                mbApiInterface.MB_AddMenuItem("mnuTools/Karaoke Show/SampleForm", "", Sub()
+                                                                                          DisplayManager.SetDisplayVisibility("SampleDisplay", True)
+                                                                                      End Sub)
             ' perform startup initialisation
             Case NotificationType.PlayStateChanged
                 If Not (mbApiInterface.Player_GetPlayState() = PlayState.Playing Or mbApiInterface.Player_GetPlayState() = PlayState.Paused) Then
-
+                    Me.KaraokeShowInterface.ResetPlayback()
+                End If
+                If mbApiInterface.Player_GetPlayState() = PlayState.Playing Then
+                    If Me.KaraokeShowInterface.IsPlaybackRunning = False Then
+                        Me.KaraokeShowInterface.ResetPlayback()
+                        Me.KaraokeShowInterface.StartNewPlayback(mbApiInterface.NowPlaying_GetFileProperty(FilePropertyType.Url), mbApiInterface.NowPlaying_GetFileTag(MetaDataType.TrackTitle), mbApiInterface.NowPlaying_GetFileTag(MetaDataType.Artist))
+                    End If
                 End If
         End Select
     End Sub

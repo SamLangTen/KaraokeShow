@@ -1,0 +1,10 @@
+﻿''' <summary>
+''' The abtract of a display in KaraokeShow
+''' </summary>
+Public Interface IDisplay
+    Sub ShowDisplay()
+    Sub CloseDisplay()
+    Sub OnLyricsFileChanged(LyricsText As List(Of String))
+    Sub OnLyricsSentenceChanged(SentenceIndex As Integer)
+    Sub OnLyricsWordProgressChanged(WordIndex As Integer, WordProgressPercentage As Double)
+End Interface
