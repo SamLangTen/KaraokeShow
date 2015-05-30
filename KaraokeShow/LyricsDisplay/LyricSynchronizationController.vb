@@ -60,7 +60,7 @@ Public Class LyricSynchronizationController
         wordIndex = Math.Floor(thisSentenceProgress / timespanPerWord)
         outTime = thisSentenceProgress - wordIndex * timespanPerWord
         If outTime > 0 Then wordIndex += 1
-        Return New WordPercentageResult() With {.Percentage = (outTime / timespanPerWord), .WordIndex = wordIndex}
+        Return New WordPercentageResult() With {.Percentage = (outTime / timespanPerWord), .WordIndex = wordIndex - 1}
     End Function
 
 End Class
