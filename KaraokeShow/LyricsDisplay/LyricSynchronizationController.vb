@@ -49,22 +49,11 @@ Public Class LyricSynchronizationController
     ''' </summary>
     ''' <param name="SentenceIndex">Lyric sentence index</param>
     ''' <returns></returns>
-    Public Function GetWordPercentage(SentenceIndex As Integer, MilesecondPosition As Integer) As WordPercentageResult
+    Public Function GetWordPercentage(SentenceIndex As Integer, MilesecondPosition As Integer) As Double
         Dim nowTimeLine = Me.LRC.TimeLines(SentenceIndex)
         Dim sentenceTimeSpan As TimeSpan = If(SentenceIndex = Me.LRC.TimeLines.Count - 1, New TimeSpan(0, 0, 10), Me.LRC.TimeLines(SentenceIndex + 1).StartPoint - Me.LRC.TimeLines(SentenceIndex).StartPoint)
-        Dim wordCount As Double = If(nowTimeLine.Lyric Is Nothing, "", nowTimeLine.Lyric).Length
-        Dim timespanPerWord As Double = sentenceTimeSpan.TotalMilliseconds / wordCount
         Dim thisSentenceProgress As Double = MilesecondPosition - (nowTimeLine.StartPoint.Millisecond + nowTimeLine.StartPoint.Second * 1000 + nowTimeLine.StartPoint.Minute * 60000 + nowTimeLine.StartPoint.Hour * 3600000)
-        Dim wordIndex As Double = 0
-        Dim outTime As Double = 0
-        wordIndex = Math.Floor(thisSentenceProgress / timespanPerWord)
-        outTime = thisSentenceProgress - wordIndex * timespanPerWord
-        If outTime > 0 Then wordIndex += 1
-        Return New WordPercentageResult() With {.Percentage = (outTime / timespanPerWord), .WordIndex = wordIndex - 1}
+        Return thisSentenceProgress / sentenceTimeSpan.TotalMilliseconds
     End Function
 
-End Class
-Public Class WordPercentageResult
-    Public Property WordIndex As Integer
-    Public Property Percentage As Double
 End Class

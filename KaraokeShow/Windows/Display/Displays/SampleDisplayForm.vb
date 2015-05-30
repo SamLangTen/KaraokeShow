@@ -11,15 +11,6 @@ Public Class SampleDisplayForm
             Me.Label1.Text = value
         End Set
     End Property
-    Public WriteOnly Property WordIndex As Integer
-        Set(value As Integer)
-            Try
-                Me.Label2.Text = Me.Label1.Text(value)
-            Catch ex As Exception
-
-            End Try
-        End Set
-    End Property
     Public WriteOnly Property Percentage As Double
         Set(value As Double)
             Me.Label3.Text = (value * 100).ToString() + "%"

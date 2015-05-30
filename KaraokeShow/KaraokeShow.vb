@@ -31,7 +31,7 @@ Public Class KaraokeShow
             'To refresh word displaing progress
             If (previousLyricIndex < 0) OrElse (previousLyricIndex > (LRCCtrl.LRC.TimeLines.Count - 1）) Then Continue While
             Dim wordPercentage = LRCCtrl.GetWordPercentage(previousLyricIndex, Me.GetNowPosition().Invoke())
-            displayManager.SendLyricsWordProgressChanged(wordPercentage.WordIndex, wordPercentage.Percentage)
+            displayManager.SendLyricsWordProgressChanged(wordPercentage)
             Thread.Sleep(10)
         End While
     End Sub

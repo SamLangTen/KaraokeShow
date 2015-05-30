@@ -26,9 +26,8 @@ Public Class SampleDisplay
         SDF.Lyric = Me.LyricsText(SentenceIndex)
     End Sub
 
-    Public Sub OnLyricsWordProgressChanged(WordIndex As Integer, WordProgressPercentage As Double) Implements IDisplay.OnLyricsWordProgressChanged
+    Public Sub OnLyricsWordProgressChanged(WordProgressPercentage As Double) Implements IDisplay.OnLyricsWordProgressChanged
         If _SDF Is Nothing OrElse _SDF.IsDisposed Then Exit Sub
-        SDF.WordIndex = WordIndex
         SDF.Percentage = WordProgressPercentage
     End Sub
 

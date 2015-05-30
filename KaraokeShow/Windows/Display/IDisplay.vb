@@ -6,5 +6,5 @@ Public Interface IDisplay
     Sub CloseDisplay()
     Sub OnLyricsFileChanged(LyricsText As List(Of String))
     Sub OnLyricsSentenceChanged(SentenceIndex As Integer)
-    Sub OnLyricsWordProgressChanged(WordIndex As Integer, WordProgressPercentage As Double)
+    Sub OnLyricsWordProgressChanged(WordProgressPercentage As Double)
 End Interface

@@ -44,10 +44,9 @@ Public Class DisplayManager
     ''' <summary>
     ''' Notify all displays that word percentage has changed
     ''' </summary>
-    Public Sub SendLyricsWordProgressChanged(WordIndex As Integer, WordProgressPercentage As Double)
-        If (NowLyric Is Nothing) OrElse (NowLyric.Length < WordIndex + 1) Then Exit Sub
+    Public Sub SendLyricsWordProgressChanged(WordProgressPercentage As Double)
         For Each item In Me.DisplayList
-            item.OnLyricsWordProgressChanged(WordIndex, WordProgressPercentage)
+            item.OnLyricsWordProgressChanged(WordProgressPercentage)
         Next
     End Sub
 
