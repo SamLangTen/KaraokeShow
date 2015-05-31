@@ -7,7 +7,7 @@ Imports MusicBeePlugin.Plugin
 Imports System.IO
 
 Public Class SampleDisplayForm
-    Private _paintWhat As String=""
+    Private _paintWhat As String = ""
     Private _lyric As String
     Private _percentage As Double
 

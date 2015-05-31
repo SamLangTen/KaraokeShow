@@ -13,8 +13,12 @@ Public Class LyricsManager
     ''' <returns>LRCFile instance</returns>
     Public Shared Function SearchFromContainingFolder(Filename As String, Title As String, Artist As String) As LRCFile
         'Check whether the lrc file exists
-        If File.Exists(New FileInfo(Filename).DirectoryName + "\" + Title + ".lrc") = True Then
-            Return New LRCFile(File.ReadAllText(New FileInfo(Filename).DirectoryName + "\" + Title + ".lrc", Text.Encoding.Default))
+        Dim vailTitle As String = Title
+        For Each item As Char In Path.GetInvalidFileNameChars
+            vailTitle = vailTitle.Replace(item, "_")
+        Next
+        If File.Exists(New FileInfo(Filename).DirectoryName + "\" + vailTitle + ".lrc") = True Then
+            Return New LRCFile(File.ReadAllText(New FileInfo(Filename).DirectoryName + "\" + vailTitle + ".lrc", Text.Encoding.Default))
         Else
             Return Nothing
         End If
