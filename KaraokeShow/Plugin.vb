@@ -1,7 +1,7 @@
 ﻿Imports System.Runtime.InteropServices
 Imports System.Drawing
 Imports System.Windows.Forms
-
+Imports System.Reflection
 Public Class Plugin
     Private mbApiInterface As New MusicBeeApiInterface
     Private about As New PluginInfo
@@ -89,11 +89,14 @@ Public Class Plugin
         ' perform some action depending on the notification type
         Select Case type
             Case NotificationType.PluginStartup
+                'init all class
                 displayManager = New DisplayManager()
                 KaraokeShowInterface = New KaraokeShow(displayManager)
                 KaraokeShowInterface.GetNowPosition = Function()
                                                           Return mbApiInterface.Player_GetPosition()
                                                       End Function
+                'optize plugin manager
+                PluginManager.KSPluginStorageFolder = Assembly.GetExecutingAssembly().Location + "\KaraokeShowPlugins\"
                 'Load basic manager
                 displayManager.LoadDisplayPlugin()
                 'Just for test

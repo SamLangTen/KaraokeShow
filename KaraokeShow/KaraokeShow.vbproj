@@ -97,6 +97,9 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="Plugin.vb" />
+    <Compile Include="Scraper\IScraper.vb" />
+    <Compile Include="Plugins\PluginAssembly.vb" />
+    <Compile Include="Plugins\PluginManager.vb" />
     <Compile Include="Scraper\ScraperManager.vb" />
     <Compile Include="Windows\DisplayManager.vb" />
     <Compile Include="Windows\Display\Displays\SampleDisplay.vb" />
