@@ -29,9 +29,13 @@ Public Class KaraokeShow
                 previousLyricIndex = nowLyricIndex
             End If
             'To refresh word displaing progress
-            If (previousLyricIndex < 0) OrElse (previousLyricIndex > (LRCCtrl.LRC.TimeLines.Count - 1）) Then Continue While
-            Dim wordPercentage = LRCCtrl.GetWordPercentage(previousLyricIndex, Me.GetNowPosition().Invoke())
-            displayManager.SendLyricsWordProgressChanged(wordPercentage)
+            If (previousLyricIndex < 0) OrElse (previousLyricIndex > (lrcCtrl.LRC.TimeLines.Count - 1）) Then Continue While
+
+            For i As Integer = 0 To 200 Step 10
+                Dim wordPercentage = lrcCtrl.GetWordPercentage(previousLyricIndex, Me.GetNowPosition().Invoke() + i)
+                displayManager.SendLyricsWordProgressChanged(wordPercentage)
+                Thread.Sleep(10)
+            Next
             Thread.Sleep(10)
         End While
     End Sub
