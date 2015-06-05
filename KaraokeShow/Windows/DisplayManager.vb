@@ -54,7 +54,10 @@ Public Class DisplayManager
     ''' Load all displays from PluginManager
     ''' </summary>
     Public Sub LoadDisplayPlugin()
-        Me.DisplayList.Add(New SampleDisplay)
+        Me.DisplayList.Clear()
+        PluginManager.GetAllAvailableDisplays().ForEach(Sub(t)
+                                                            Me.DisplayList.Add(PluginManager.CreateInstance(t))
+                                                        End Sub)
     End Sub
     ''' <summary>
     ''' Get name of all displays
