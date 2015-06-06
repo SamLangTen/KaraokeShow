@@ -33,13 +33,17 @@ Public Class SampleDisplayForm
     Public WriteOnly Property Lyric As String
         Set(value As String)
             _lyric = value
-            Me.Refresh()
+            Me.BeginInvoke(Sub()
+                               Me.Refresh()
+                           End Sub)
         End Set
     End Property
     Public WriteOnly Property Percentage As Double
         Set(value As Double)
             _percentage = value
-            Me.Refresh()
+            Me.BeginInvoke(Sub()
+                               Me.Refresh()
+                           End Sub)
         End Set
     End Property
     Private Function DrawOnBMP() As Bitmap
