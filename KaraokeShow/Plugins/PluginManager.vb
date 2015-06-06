@@ -1,6 +1,17 @@
 ﻿Imports System.IO
 Public Class PluginManager
 
+#Region "Private Members"
+
+    Private Shared Function KSPlugin_Setting_SetValueHandler(Caller As Object, Key As String, Value As String) As Boolean
+        Return True
+    End Function
+    Private Shared Function KSPlugin_Setting_GetValueHandler(Caller As Object, Key As String) As String
+        Return True
+    End Function
+
+#End Region
+
     ''' <summary>
     ''' To tell plugin manager where the plugins can be found
     ''' </summary>
@@ -40,7 +51,14 @@ Public Class PluginManager
     ''' </summary>
     ''' <param name="TypeName">Full typename</param>
     Public Shared Function CreateInstance(TypeName As Type) As Object
-        Return Activator.CreateInstance(TypeName)
+        If TypeName.GetInterfaces().Contains(GetType(IKSPlugin)) Then
+            Dim objInstance As IKSPlugin = Activator.CreateInstance(TypeName)
+            objInstance.SetSetting = AddressOf KSPlugin_Setting_SetValueHandler
+            objInstance.GetSetting = AddressOf KSPlugin_Setting_GetValueHandler
+            Return objInstance
+        Else
+            Return Nothing
+        End If
     End Function
 
     ''' <summary>

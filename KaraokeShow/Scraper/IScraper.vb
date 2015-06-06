@@ -1,6 +1,8 @@
-﻿Public Interface IScraper
+﻿''' <summary>
+''' The abtract of a scraper
+''' </summary>
+Public Interface IScraper
 
-    Property Description As String
     Function SearchLyrics(Title As String, Artist As String) As ScraperLyricInfo()
     Function DownloadLyrics(Index As ScraperLyricInfo) As String
 
