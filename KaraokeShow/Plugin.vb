@@ -107,7 +107,7 @@ Public Class Plugin
                 displayManager.LoadDisplayPlugin()
                 'Just for test
                 mbApiInterface.MB_AddMenuItem("mnuTools/Karaoke Show/SampleForm", "", Sub()
-                                                                                          displayManager.SetDisplayVisibility("SampleDisplay", True)
+                                                                                          displayManager.SetDisplayVisibility("KaraokeShowMainPlugin.SampleDisplay", True)
                                                                                       End Sub)
             ' perform startup initialisation
             Case NotificationType.PlayStateChanged

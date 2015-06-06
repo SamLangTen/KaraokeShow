@@ -70,7 +70,7 @@ Public Class DisplayManager
     ''' Set a display's visibility
     ''' </summary>
     Public Sub SetDisplayVisibility(DisplayName As String, IsVisible As Boolean)
-        Dim display = (From i In Me.DisplayList Where i.GetType().Name = DisplayName).FirstOrDefault()
+        Dim display = (From i In Me.DisplayList Where i.GetType().FullName = DisplayName).FirstOrDefault()
         If display IsNot Nothing Then
             If IsVisible = True Then display.ShowDisplay() Else display.CloseDisplay()
         End If

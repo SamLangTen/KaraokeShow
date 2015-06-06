@@ -4,10 +4,16 @@ Public Class PluginManager
 #Region "Private Members"
 
     Private Shared Sub KSPlugin_Setting_SetValueHandler(Caller As Object, Key As String, Value As String)
-
+        Dim pluginType As PluginType = PluginType.Display
+        If Caller.GetType().GetInterfaces().Contains(GetType(IScraper)) Then pluginType = PluginType.Scraper
+        If Caller.GetType().GetInterfaces().Contains(GetType(IDisplay)) Then pluginType = PluginType.Display
+        SettingManager.PluginSetValue(Caller.GetType().Assembly.FullName, Caller.GetType().FullName, pluginType, Key, Value)
     End Sub
     Private Shared Function KSPlugin_Setting_GetValueHandler(Caller As Object, Key As String) As String
-        Return True
+        Dim pluginType As PluginType = PluginType.Display
+        If Caller.GetType().GetInterfaces().Contains(GetType(IScraper)) Then pluginType = PluginType.Scraper
+        If Caller.GetType().GetInterfaces().Contains(GetType(IDisplay)) Then pluginType = PluginType.Display
+        Return SettingManager.PluginGetValue(Caller.GetType().Assembly.FullName, Caller.GetType().FullName, pluginType, Key)
     End Function
 
 #End Region
