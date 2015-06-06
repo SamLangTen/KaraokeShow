@@ -97,6 +97,7 @@ Public Class Plugin
                                                       End Function
                 'optize plugin manager
                 PluginManager.KSPluginStorageFolder = Assembly.GetExecutingAssembly().Location + "\KaraokeShowPlugins\"
+                PluginManager.InitializePluginInStorageFolder()
                 'Load basic manager
                 displayManager.LoadDisplayPlugin()
                 'Just for test

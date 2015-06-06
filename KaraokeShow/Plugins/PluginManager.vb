@@ -9,7 +9,7 @@ Public Class PluginManager
     ''' <summary>
     ''' Get all available loaded assemblies
     ''' </summary>
-    Public Shared Property AvailablePlugins As List(Of PluginAssembly)
+    Public Shared Property AvailablePlugins As New List(Of PluginAssembly)
 
     ''' <summary>
     ''' Get all available scrapers in all loaded assemblies
