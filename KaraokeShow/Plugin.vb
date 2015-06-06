@@ -89,6 +89,9 @@ Public Class Plugin
         ' perform some action depending on the notification type
         Select Case type
             Case NotificationType.PluginStartup
+                'initialize setting manager
+                SettingManager.SettingStoragePath = mbApiInterface.Setting_GetPersistentStoragePath.Invoke()
+                SettingManager.Load()
                 'init all class
                 displayManager = New DisplayManager()
                 KaraokeShowInterface = New KaraokeShow(displayManager)

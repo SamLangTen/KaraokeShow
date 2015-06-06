@@ -31,6 +31,6 @@ Public Class LyricsManager
     ''' <returns>LRCFile instance</returns>
     Public Shared Function SearchFromScraper(Title As String, Artist As String) As LRCFile
         Dim lyricsText As String = ScraperManager.AutoSearchLyrics(Title, Artist)
-        If lyricsText IsNot Nothing OrElse lyricsText <> "" Then Return New LRCFile(lyricsText) Else Return Nothing
+        If lyricsText IsNot Nothing AndAlso lyricsText <> "" Then Return New LRCFile(lyricsText) Else Return Nothing
     End Function
 End Class
