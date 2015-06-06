@@ -3,9 +3,9 @@ Public Class PluginManager
 
 #Region "Private Members"
 
-    Private Shared Function KSPlugin_Setting_SetValueHandler(Caller As Object, Key As String, Value As String) As Boolean
-        Return True
-    End Function
+    Private Shared Sub KSPlugin_Setting_SetValueHandler(Caller As Object, Key As String, Value As String)
+
+    End Sub
     Private Shared Function KSPlugin_Setting_GetValueHandler(Caller As Object, Key As String) As String
         Return True
     End Function

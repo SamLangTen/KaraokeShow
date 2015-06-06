@@ -8,5 +8,5 @@ Public Interface IKSPlugin
     Property SetSetting As KSPlugin_Setting_SetDelegate
 
 End Interface
-Public Delegate Function KSPlugin_Setting_SetDelegate(Caller As Object, Key As String, Value As String) As Boolean
+Public Delegate Sub KSPlugin_Setting_SetDelegate(Caller As Object, Key As String, Value As String)
 Public Delegate Function KSPlugin_Setting_GetDelegate(Caller As Object, Key As String) As String
