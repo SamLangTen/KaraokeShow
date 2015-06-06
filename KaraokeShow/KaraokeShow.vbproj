@@ -102,6 +102,10 @@
     <Compile Include="Plugins\PluginAssembly.vb" />
     <Compile Include="Plugins\PluginManager.vb" />
     <Compile Include="Scraper\ScraperManager.vb" />
+    <Compile Include="Settings\Serialization\InternalSettingItem.vb" />
+    <Compile Include="Settings\Serialization\PluginSettingItem.vb" />
+    <Compile Include="Settings\Serialization\SettingObject.vb" />
+    <Compile Include="Settings\SettingManager.vb" />
     <Compile Include="Windows\DisplayManager.vb" />
     <Compile Include="Windows\Display\Displays\SampleDisplay.vb" />
     <Compile Include="Windows\Display\IDisplay.vb" />
