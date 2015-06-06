@@ -4,14 +4,13 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{A413C497-6606-47E0-8A5E-028BA7B0432D}</ProjectGuid>
+    <ProjectGuid>{B26ABECE-E7DE-4693-AD37-02441DECF5DE}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>MusicBeePlugin</RootNamespace>
-    <AssemblyName>mb_KaraokeShow</AssemblyName>
+    <RootNamespace>KaraokeShowMainPlugin</RootNamespace>
+    <AssemblyName>KaraokeShowMainPlugin</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MyType>Windows</MyType>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -19,8 +18,9 @@
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\Debug\</OutputPath>
-    <DocumentationFile>mb_KaraokeShow.xml</DocumentationFile>
+    <DocumentationFile>KaraokeShowMainPlugin.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -28,7 +28,7 @@
     <DefineTrace>true</DefineTrace>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DocumentationFile>mb_KaraokeShow.xml</DocumentationFile>
+    <DocumentationFile>KaraokeShowMainPlugin.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
   </PropertyGroup>
   <PropertyGroup>
@@ -43,12 +43,12 @@
   <PropertyGroup>
     <OptionInfer>On</OptionInfer>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DebugToMB|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DebugToKS|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
-    <OutputPath>K:\Program Files %28x86%29\MusicBee\Plugins\</OutputPath>
-    <DocumentationFile>mb_KaraokeShow.xml</DocumentationFile>
+    <OutputPath>K:\Program Files %28x86%29\MusicBee\Plugins\KaraokeShowPlugins\</OutputPath>
+    <DocumentationFile>KaraokeShowMainPlugin.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
     <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
@@ -75,12 +75,13 @@
     <Import Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EventArgs\LyricsFetchFinishedEventArgs.vb" />
-    <Compile Include="KaraokeShow.vb" />
-    <Compile Include="LyricsDisplay\LRCFile.vb" />
-    <Compile Include="LyricsDisplay\LyricsManager.vb" />
-    <Compile Include="LyricsDisplay\LyricSynchronizationController.vb" />
-    <Compile Include="MusicBeeInterface.vb" />
+    <Compile Include="Displays\SampleDisplay.vb" />
+    <Compile Include="Displays\SampleDisplayForm.Designer.vb">
+      <DependentUpon>SampleDisplayForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Displays\SampleDisplayForm.vb">
+      <SubType>form</SubType>
+    </Compile>
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
@@ -96,21 +97,11 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="Plugin.vb" />
-    <Compile Include="Plugins\IKSPlugin.vb" />
-    <Compile Include="Scraper\IScraper.vb" />
-    <Compile Include="Plugins\PluginAssembly.vb" />
-    <Compile Include="Plugins\PluginManager.vb" />
-    <Compile Include="Scraper\ScraperManager.vb" />
-    <Compile Include="Settings\Serialization\InternalSettingItem.vb" />
-    <Compile Include="Settings\Serialization\PluginSettingItem.vb" />
-    <Compile Include="Settings\Serialization\SettingObject.vb" />
-    <Compile Include="Settings\SettingManager.vb" />
-    <Compile Include="Windows\DisplayManager.vb" />
-    <Compile Include="Windows\IDisplay.vb" />
-    <Compile Include="Windows\WindowsManager.vb" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Displays\SampleDisplayForm.resx">
+      <DependentUpon>SampleDisplayForm.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.resx">
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
@@ -129,12 +120,17 @@
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Scrapers\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\KaraokeShow\KaraokeShow.vbproj">
+      <Project>{a413c497-6606-47e0-8a5e-028ba7b0432d}</Project>
+      <Name>KaraokeShow</Name>
+      <Private>False</Private>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
-  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

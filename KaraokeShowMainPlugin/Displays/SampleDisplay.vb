@@ -2,9 +2,20 @@
 
 Public Class SampleDisplay
     Implements IDisplay
+    Implements IKSPlugin
 
     Private _SDF As SampleDisplayForm
     Private LyricsText As New List(Of String)
+
+    Public Property Description As String Implements IKSPlugin.Description
+
+
+    Public Property GetSetting As KSPlugin_Setting_GetDelegate Implements IKSPlugin.GetSetting
+
+
+    Public Property SetSetting As KSPlugin_Setting_SetDelegate Implements IKSPlugin.SetSetting
+
+
     Private ReadOnly Property SDF() As SampleDisplayForm
         Get
             If _SDF Is Nothing OrElse (_SDF.IsDisposed = True) Then _SDF = New SampleDisplayForm

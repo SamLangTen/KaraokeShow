@@ -21,9 +21,9 @@ Public Class PluginAssembly
     Public Sub Load()
         plgAssmbly = Assembly.LoadFrom(assemblyFilename)
         'Get all scrapers (the class that implements IScraper)
-        Me.AvailableScrapers = (From t In plgAssmbly.GetTypes() Where t.GetInterfaces.Contains(GetType(IScraper)) And t.GetInterfaces().Contains(GetType(IKSPlugin)))
+        Me.AvailableScrapers = (From t In plgAssmbly.GetTypes() Where t.GetInterfaces.Contains(GetType(IScraper)) And t.GetInterfaces().Contains(GetType(IKSPlugin))).ToList()
         'Get all displays (the class that implements IDisplay)
-        Me.AvailableDisplays = (From t In plgAssmbly.GetTypes() Where t.GetInterfaces.Contains(GetType(IDisplay)) And t.GetInterfaces().Contains(GetType(IKSPlugin)))
+        Me.AvailableDisplays = (From t In plgAssmbly.GetTypes() Where t.GetInterfaces.Contains(GetType(IDisplay)) And t.GetInterfaces().Contains(GetType(IKSPlugin))).ToList()
     End Sub
 
     ''' <summary>

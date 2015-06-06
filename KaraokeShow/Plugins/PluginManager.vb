@@ -66,8 +66,11 @@ Public Class PluginManager
     ''' </summary>
     Public Shared Sub InitializePluginInStorageFolder()
         'Get all ksplg files in folder
-        If Directory.Exists(KSPluginStorageFolder) = False Then Exit Sub
-        PluginManager.AvailablePlugins = (From f In Directory.GetFiles(KSPluginStorageFolder, "*.ksplg") Select New PluginAssembly(f))
+        If Directory.Exists(KSPluginStorageFolder) = False Then
+            Directory.CreateDirectory(KSPluginStorageFolder)
+            Exit Sub
+        End If
+        PluginManager.AvailablePlugins = (From f In Directory.GetFiles(KSPluginStorageFolder, "*.dll") Select New PluginAssembly(f)).ToList()
         PluginManager.AvailablePlugins.ForEach(Sub(e)
                                                    e.Load()
                                                End Sub)
