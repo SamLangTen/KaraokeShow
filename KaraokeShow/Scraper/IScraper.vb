@@ -10,7 +10,7 @@ End Interface
 Public Class ScraperLyricInfo
 
     Public Property Scraper As IScraper
-    Public Property Index As Integer
+    Public Property ID As String
     Public Property Title As String
     Public Property Artist As String
 
