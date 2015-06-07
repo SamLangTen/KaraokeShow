@@ -38,7 +38,7 @@ Public Class SampleDisplay
     Public Sub OnLyricsSentenceChanged(SentenceIndex As Integer) Implements IDisplay.OnLyricsSentenceChanged
         If _SDF Is Nothing OrElse _SDF.IsDisposed Then Exit Sub
         Me.SentenceIndex = SentenceIndex
-        SDF.Lyric = Me.LyricsText(Me.SentenceIndex)
+        If Not SentenceIndex > Me.LyricsText.Count - 1 Then SDF.Lyric = Me.LyricsText(Me.SentenceIndex)
     End Sub
 
     Public Sub OnLyricsWordProgressChanged(WordProgressPercentage As Double) Implements IDisplay.OnLyricsWordProgressChanged

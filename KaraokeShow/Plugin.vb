@@ -105,6 +105,8 @@ Public Class Plugin
                 PluginManager.InitializePluginInStorageFolder()
                 'Load basic manager
                 displayManager.LoadDisplayPlugin()
+                'Load scraper manager
+                ScraperManager.LoadScrapers()
                 'Just for test
                 mbApiInterface.MB_AddMenuItem("mnuTools/Karaoke Show/SampleForm", "", Sub()
                                                                                           displayManager.SetDisplayVisibility("KaraokeShowMainPlugin.SampleDisplay", True)
