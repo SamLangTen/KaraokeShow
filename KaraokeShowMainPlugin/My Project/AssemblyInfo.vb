@@ -8,11 +8,11 @@ Imports System.Runtime.InteropServices
 
 ' Review the values of the assembly attributes
 
-<Assembly: AssemblyTitle("KaraokeShowMainPlugin")> 
-<Assembly: AssemblyDescription("")> 
-<Assembly: AssemblyCompany("")> 
-<Assembly: AssemblyProduct("KaraokeShowMainPlugin")> 
-<Assembly: AssemblyCopyright("Copyright ©  2015")> 
+<Assembly: AssemblyTitle("KaraokeShow Main Plugin")>
+<Assembly: AssemblyDescription("A built-in plugin with some useful displays and scrapers of KaraokeShow")>
+<Assembly: AssemblyCompany("")>
+<Assembly: AssemblyProduct("KaraokeShow Main Plugin")>
+<Assembly: AssemblyCopyright("Copyright © Samersions 2015")>
 <Assembly: AssemblyTrademark("")> 
 
 <Assembly: ComVisible(False)>
