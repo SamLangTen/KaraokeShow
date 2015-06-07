@@ -6,6 +6,9 @@ Public Class SampleDisplay
 
     Private _SDF As SampleDisplayForm
     Private LyricsText As New List(Of String)
+    Private SentenceIndex As Integer = 0
+    Private WordPercentage As Double = 0
+
 
     Public Property Description As String Implements IKSPlugin.Description
 
@@ -34,15 +37,19 @@ Public Class SampleDisplay
 
     Public Sub OnLyricsSentenceChanged(SentenceIndex As Integer) Implements IDisplay.OnLyricsSentenceChanged
         If _SDF Is Nothing OrElse _SDF.IsDisposed Then Exit Sub
-        SDF.Lyric = Me.LyricsText(SentenceIndex)
+        Me.SentenceIndex = SentenceIndex
+        SDF.Lyric = Me.LyricsText(Me.SentenceIndex)
     End Sub
 
     Public Sub OnLyricsWordProgressChanged(WordProgressPercentage As Double) Implements IDisplay.OnLyricsWordProgressChanged
         If _SDF Is Nothing OrElse _SDF.IsDisposed Then Exit Sub
-        SDF.Percentage = WordProgressPercentage
+        Me.WordPercentage = WordProgressPercentage
+        SDF.Percentage = Me.WordPercentage
     End Sub
 
     Public Sub ShowDisplay() Implements IDisplay.ShowDisplay
         SDF.Show()
+        OnLyricsSentenceChanged(Me.SentenceIndex)
+        OnLyricsWordProgressChanged(Me.WordPercentage)
     End Sub
 End Class
