@@ -2,6 +2,8 @@
 Imports System.Drawing
 Imports System.Windows.Forms
 Imports System.Reflection
+Imports System.IO
+
 Public Class Plugin
     Private mbApiInterface As New MusicBeeApiInterface
     Private about As New PluginInfo
@@ -99,13 +101,13 @@ Public Class Plugin
                                                           Return mbApiInterface.Player_GetPosition()
                                                       End Function
                 'optize plugin manager
-                PluginManager.KSPluginStorageFolder = Assembly.GetExecutingAssembly().Location + "\KaraokeShowPlugins\"
+                PluginManager.KSPluginStorageFolder = New FileInfo(Assembly.GetExecutingAssembly().Location).DirectoryName + "\KaraokeShowPlugins\"
                 PluginManager.InitializePluginInStorageFolder()
                 'Load basic manager
                 displayManager.LoadDisplayPlugin()
                 'Just for test
                 mbApiInterface.MB_AddMenuItem("mnuTools/Karaoke Show/SampleForm", "", Sub()
-                                                                                          displayManager.SetDisplayVisibility("SampleDisplay", True)
+                                                                                          displayManager.SetDisplayVisibility("KaraokeShowMainPlugin.SampleDisplay", True)
                                                                                       End Sub)
             ' perform startup initialisation
             Case NotificationType.PlayStateChanged

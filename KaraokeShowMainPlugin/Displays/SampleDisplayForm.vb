@@ -33,21 +33,25 @@ Public Class SampleDisplayForm
     Public WriteOnly Property Lyric As String
         Set(value As String)
             _lyric = value
-            Me.Refresh()
+            Me.BeginInvoke(Sub()
+                               Me.Refresh()
+                           End Sub)
         End Set
     End Property
     Public WriteOnly Property Percentage As Double
         Set(value As Double)
             _percentage = value
-            Me.Refresh()
+            Me.BeginInvoke(Sub()
+                               Me.Refresh()
+                           End Sub)
         End Set
     End Property
-    Private Function DrawOnBMP() As Bitmap
-        Dim bmp As New Bitmap(Me.Width, Me.Height)
-        Dim g As Graphics = Graphics.FromImage(bmp)
+    Protected Overrides Sub OnPaint(e As PaintEventArgs)
+        MyBase.OnPaint(e)
+        Dim g As Graphics = e.Graphics
         g.CompositingQuality = CompositingQuality.HighSpeed
         g.SmoothingMode = SmoothingMode.HighSpeed
-        If _lyric Is Nothing Then Return Nothing
+        If _lyric Is Nothing Then Exit Sub
         Dim gp As New GraphicsPath()
         gp.AddString(_lyric, New FontFamily("微软雅黑"), 0, 50, New Point(10, 10), StringFormat.GenericTypographic)
 
@@ -65,15 +69,7 @@ Public Class SampleDisplayForm
         'e.Graphics.FillRegion(brushYellow, regionRight)
         g.FillRectangle(brushRed, rect.X, rect.Y, Convert.ToInt32(rect.Width * _percentage), rect.Height)
         g.FillRectangle(brushYellow, rect.X + Convert.ToInt32(rect.Width * _percentage), rect.Y, rect.Width - Convert.ToInt32(rect.Width * _percentage), rect.Height)
-        Return bmp
-    End Function
-    Protected Overrides Sub OnPaint(e As PaintEventArgs)
-        MyBase.OnPaint(e)
-        Dim bmp = DrawOnBMP()
-        If Not bmp Is Nothing Then
-            e.Graphics.DrawImage(bmp, New Point(0, 0))
-            bmp.Dispose()
-        End If
+
 
     End Sub
 End Class
