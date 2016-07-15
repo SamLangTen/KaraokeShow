@@ -2,8 +2,8 @@
 
 Partial Public Class Plugin
     Public Const PluginInfoVersion As Short = 1
-    Public Const MinInterfaceVersion As Short = 35
-    Public Const MinApiRevision As Short = 47
+    Public Const MinInterfaceVersion As Short = 36
+    Public Const MinApiRevision As Short = 48
 
     <StructLayout(LayoutKind.Sequential)> _
     Public Structure MusicBeeApiInterface
@@ -19,8 +19,10 @@ Partial Public Class Plugin
                     Return MusicBeeVersion.v2_3
                 ElseIf ApiRevision <= 43 Then
                     Return MusicBeeVersion.v2_4
-                Else
+                ElseIf ApiRevision <= 47 Then
                     Return MusicBeeVersion.v2_5
+                Else
+                    Return MusicBeeVersion.v3_0
                 End If
             End Get
         End Property
@@ -212,6 +214,8 @@ Partial Public Class Plugin
         Public MB_ShowPluginView As MB_ShowPluginViewDelegate
         Public Player_GetOutputDevices As Player_GetOutputDevicesDelegate
         Public Player_SetOutputDevice As Player_SetOutputDeviceDelegate
+        ' api version 48
+        Public MB_UninstallPlugin As MB_UninistallPluginDelegate
     End Structure  ' MusicBeeApiInterface
 
     Public Enum MusicBeeVersion
@@ -221,6 +225,7 @@ Partial Public Class Plugin
         v2_3 = 3
         v2_4 = 4
         v2_5 = 5
+        v3_0 = 6
     End Enum  ' MusicBeeVersion
 
     Public Enum PluginType
@@ -484,6 +489,24 @@ Partial Public Class Plugin
         PlayCountTriggerSeconds = 8
         SkipCountTriggerPercent = 9
         SkipCountTriggerSeconds = 10
+        CustomWebLinkName1 = 11
+        CustomWebLinkName2 = 12
+        CustomWebLinkName3 = 13
+        CustomWebLinkName4 = 14
+        CustomWebLinkName5 = 15
+        CustomWebLinkName6 = 16
+        CustomWebLink1 = 17
+        CustomWebLink2 = 18
+        CustomWebLink3 = 19
+        CustomWebLink4 = 20
+        CustomWebLink5 = 21
+        CustomWebLink6 = 22
+        CustomWebLinkNowPlaying1 = 23
+        CustomWebLinkNowPlaying2 = 24
+        CustomWebLinkNowPlaying3 = 25
+        CustomWebLinkNowPlaying4 = 26
+        CustomWebLinkNowPlaying5 = 27
+        CustomWebLinkNowPlaying6 = 28
     End Enum
 
     Public Enum ComparisonType
@@ -624,6 +647,7 @@ Partial Public Class Plugin
     Public Delegate Function MB_ShowVisualiserDelegate(visualiserName As String, state As WindowState) As Boolean
     Public Delegate Function MB_GetPluginViewInformationDelegate(pluginFilename As String, ByRef viewNames() As String, ByRef defaultViewName As String, ByRef defaultState As WindowState, ByRef currentState As WindowState) As Boolean
     Public Delegate Function MB_ShowPluginViewDelegate(pluginFilename As String, viewName As String, state As WindowState) As Boolean
+    Public Delegate Function MB_UninistallPluginDelegate(pluginFilename As String, password As String) As Boolean
     Public Delegate Function Setting_GetFieldNameDelegate(ByVal field As MetaDataType) As String
     Public Delegate Function Setting_GetPersistentStoragePathDelegate() As String
     Public Delegate Function Setting_GetSkinDelegate() As String

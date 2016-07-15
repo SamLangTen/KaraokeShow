@@ -23,6 +23,8 @@ Public Class Plugin
             CopyMemory(mbApiInterface, apiInterfacePtr, 596)
         ElseIf mbApiInterface.MusicBeeVersion = MusicBeeVersion.v2_4 Then
             CopyMemory(mbApiInterface, apiInterfacePtr, 604)
+        ElseIf mbApiInterface.MusicBeeVersion = MusicBeeVersion.v2_5 Then
+            CopyMemory(mbApiInterface, apiInterfacePtr, 648)
         Else
             CopyMemory(mbApiInterface, apiInterfacePtr, Marshal.SizeOf(mbApiInterface))
         End If
@@ -108,9 +110,10 @@ Public Class Plugin
                 'Load scraper manager
                 ScraperManager.LoadScrapers()
                 'Just for test
-                mbApiInterface.MB_AddMenuItem("mnuTools/Karaoke Show/SampleForm", "", Sub()
-                                                                                          displayManager.SetDisplayVisibility("KaraokeShowMainPlugin.SampleDisplay", True)
-                                                                                      End Sub)
+                Dim menu = mbApiInterface.MB_AddMenuItem("mnuTools/Karaoke Show", "HotKey For Start My Plugin", Sub()
+                                                                                                                    displayManager.SetDisplayVisibility("KaraokeShowMainPlugin.SampleDisplay", True)
+                                                                                                                End Sub)
+                menu.Visible = True
             ' perform startup initialisation
             Case NotificationType.PlayStateChanged
                 If Not (mbApiInterface.Player_GetPlayState() = PlayState.Playing Or mbApiInterface.Player_GetPlayState() = PlayState.Paused) Then
