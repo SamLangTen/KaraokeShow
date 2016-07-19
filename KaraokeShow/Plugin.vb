@@ -109,11 +109,15 @@ Public Class Plugin
                 displayManager.LoadDisplayPlugin()
                 'Load scraper manager
                 ScraperManager.LoadScrapers()
-                'Just for test
-                Dim menu = mbApiInterface.MB_AddMenuItem("mnuTools/Karaoke Show", "HotKey For Start My Plugin", Sub()
-                                                                                                                    displayManager.SetDisplayVisibility("KaraokeShowMainPlugin.SampleDisplay", True)
-                                                                                                                End Sub)
-                menu.Visible = True
+                'Add all display
+                mbApiInterface.MB_AddMenuItem("mnuView/Karaoke Show", "", Sub()
+                                                                          End Sub).Visible = True
+                displayManager.GetDisplays().ToList().ForEach(Sub(d)
+                                                                  mbApiInterface.MB_AddMenuItem("mnuView/Karaoke Show/" + d.GetType().Name, "", Sub()
+                                                                                                                                                    If d.Visible = True Then displayManager.SetDisplayVisibility(d.GetType().FullName, False) Else displayManager.SetDisplayVisibility(d.GetType().FullName, True)
+                                                                                                                                                End Sub).Visible = True
+                                                              End Sub)
+
             ' perform startup initialisation
             Case NotificationType.PlayStateChanged
                 If Not (mbApiInterface.Player_GetPlayState() = PlayState.Playing Or mbApiInterface.Player_GetPlayState() = PlayState.Paused) Then

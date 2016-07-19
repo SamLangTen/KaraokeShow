@@ -66,6 +66,10 @@ Public Class DisplayManager
         Return (From i In Me.DisplayList Select i.GetType().Name)
     End Function
 
+    Public Function GetDisplays() As IDisplay()
+        Return Me.DisplayList.ToArray()
+    End Function
+
     ''' <summary>
     ''' Set a display's visibility
     ''' </summary>

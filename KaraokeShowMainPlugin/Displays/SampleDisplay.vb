@@ -18,6 +18,11 @@ Public Class SampleDisplay
 
     Public Property SetSetting As KSPlugin_Setting_SetDelegate Implements IKSPlugin.SetSetting
 
+    Public ReadOnly Property Visible As Boolean Implements IDisplay.Visible
+        Get
+            Return SDF.Visible
+        End Get
+    End Property
 
     Private ReadOnly Property SDF() As SampleDisplayForm
         Get
