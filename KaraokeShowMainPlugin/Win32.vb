@@ -41,9 +41,15 @@ Module Win32
     Public Const ULW_OPAQUE As Int32 = &H4
     Public Const AC_SRC_OVER As Byte = &H0
     Public Const AC_SRC_ALPHA As Byte = &H1
+    Public Const GWL_EXSTYLE As Int32 = -20
+    Public Const WS_EX_LAYERED As Int32 = &H80000
 
-    <DllImport("user32.dll", EntryPoint:="SetWindowLong")>
-    Public Function SetWindowLong(hWnd As IntPtr, nIndex As Int32, dwNewLong As Int64) As Int64
+    <DllImport("user32.dll", EntryPoint:="SetWindowLongA")>
+    Public Function SetWindowLong(hWnd As IntPtr, nIndex As Int32, dwNewLong As Int32) As Int32
+    End Function
+
+    <DllImport("user32.dll")>
+    Public Function GetWindowLong(hWnd As IntPtr, nIndex As Int32) As Int32
     End Function
 
     <DllImport("user32.dll")>
@@ -58,7 +64,18 @@ Module Win32
     Public Function ReleaseDC(hWnd As IntPtr, hDC As IntPtr) As Int32
     End Function
 
-    <DllImport("user32.dll")>
-    Public Function CreateCompatitbleDC(hDC As IntPtr) As IntPtr
+    <DllImport("gdi32.dll")>
+    Public Function CreateCompatibleDC(hDC As IntPtr) As IntPtr
+    End Function
+    <DllImport("gdi32.dll")>
+    Public Function DeleteDC(hDC As IntPtr) As Boolean
+    End Function
+
+    <DllImport("gdi32.dll")>
+    Public Function SelectObject(hDC As IntPtr, hObject As IntPtr) As IntPtr
+    End Function
+
+    <DllImport("gdi32.dll")>
+    Public Function DeleteObject(hObject As IntPtr) As Boolean
     End Function
 End Module

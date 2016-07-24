@@ -33,7 +33,7 @@ Public Class KaraokeShow
             If (previousLyricIndex < 0) OrElse (previousLyricIndex > (lrcCtrl.LRC.TimeLines.Count - 1）) Then Continue While
             Dim wordPercentage = lrcCtrl.GetWordPercentage(previousLyricIndex, Me.GetNowPosition().Invoke())
             displayManager.SendLyricsWordProgressChanged(wordPercentage)
-            Thread.Sleep(10)
+            Thread.Sleep(25)
         End While
     End Sub
     ''' <summary>
