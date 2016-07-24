@@ -9,9 +9,9 @@ Public Class DesktopLyricsDisplay
     Implements IDisplay
     Implements IKSPlugin
 
-    Private lyrics As List(Of String)
-    Private Index As Integer
-    Private Percentage As Double
+    Private lyrics As List(Of String) = Nothing
+    Private Index As Integer = 0
+    Private Percentage As Double = 0
 
     Private colorB1 As Color = Color.Green
     Private colorB2 As Color = Color.LightGreen
@@ -55,7 +55,7 @@ Public Class DesktopLyricsDisplay
         Dim bshAfter As New LinearGradientBrush(New PointF(0, 0), New PointF(0, 100), ColorAfter1, ColorAfter2)
         'Add text path
         Dim gPath As New GraphicsPath()
-        gPath.AddString(Text, Font.FontFamily, Font.Style, Font.Size, New Drawing.Point(0, 0), StringFormat.GenericDefault)
+        gPath.AddString(Text, Font.FontFamily, Font.Style, Font.Size, New Drawing.Point(10, 10), StringFormat.GenericDefault)
         'scale text size
         Dim textWidth As Integer = Convert.ToInt32(fontSize.Width * Percentage)
         'create bitmap after time
@@ -108,12 +108,13 @@ Public Class DesktopLyricsDisplay
     ''' </summary>
     Private Sub RefreshWindow()
         'Exit if LyricsForm is disabled
-        If _LyricsForm Is Nothing OrElse _LyricsForm.IsDisposed Then Exit Sub
+        If Me.Visible = False Then Exit Sub
         'Get Font
         Dim font As New Font(fontName, fontSize, fStyle)
         'Get text
         Dim text As String = ""
-        If Me.lyrics IsNot Nothing And Me.Index < lyrics.Count - 1 Then text = Me.lyrics(Me.Index)
+        If Me.lyrics IsNot Nothing And Me.Index < lyrics.Count Then text = Me.lyrics(Me.Index)
+        If text Is Nothing Then Exit Sub
         'Get bmp
         Dim bmp As Bitmap = GetLyricsBMP(text, Percentage, font, colorB1, colorB2, colorA1, colorA2)
         'Enable to window
