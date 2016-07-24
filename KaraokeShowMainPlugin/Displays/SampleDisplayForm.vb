@@ -189,4 +189,23 @@ Public Class SampleDisplayForm
         Me.Top = Screen.PrimaryScreen.WorkingArea.Height - Me.Height - 50
         Me.Left = 0
     End Sub
+
+
+    Private IsMoving As Boolean = False
+    Private StartX, StartY, MouseX, MouseY As Integer
+    Private Sub SampleDisplayForm_MouseDown(sender As Object, e As MouseEventArgs) Handles MyBase.MouseDown
+        MouseX = e.X
+        MouseY = e.Y
+        IsMoving = True
+    End Sub
+
+    Private Sub SampleDisplayForm_MouseMove(sender As Object, e As MouseEventArgs) Handles MyBase.MouseMove
+        If IsMoving = True Then
+            Me.Location = New Drawing.Point((Me.Location.X - MouseX) + e.X, (Me.Location.Y - MouseY + e.Y))
+        End If
+    End Sub
+
+    Private Sub SampleDisplayForm_MouseUp(sender As Object, e As MouseEventArgs) Handles MyBase.MouseUp
+        IsMoving = False
+    End Sub
 End Class
