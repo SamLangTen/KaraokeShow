@@ -30,6 +30,7 @@ Public Class XiamiScraper
     Public Property SetSetting As KSPlugin_Setting_SetDelegate Implements IKSPlugin.SetSetting
 
 
+
     Public Function DownloadLyrics(Index As ScraperLyricInfo) As String Implements IScraper.DownloadLyrics
         'Request this url:http://www.xiami.com/song/playlist/id/songid
         'Regex:\<lyric_url\>\s*(.*)\s*\</lyric_url\>
@@ -61,4 +62,8 @@ Public Class XiamiScraper
         Next
         Return returnLyricInfo.ToArray()
     End Function
+
+    Public Sub OnLoaded() Implements IKSPlugin.OnLoaded
+
+    End Sub
 End Class

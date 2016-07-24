@@ -9,12 +9,13 @@ Public Class PluginManager
         If Caller.GetType().GetInterfaces().Contains(GetType(IDisplay)) Then pluginType = PluginType.Display
         SettingManager.PluginSetValue(Caller.GetType().Assembly.FullName, Caller.GetType().FullName, pluginType, Key, Value)
     End Sub
-    Private Shared Function KSPlugin_Setting_GetValueHandler(Caller As Object, Key As String) As String
+    Private Shared Sub KSPlugin_Setting_GetValueHandler(Caller As Object, Key As String, ByRef ReturnValue As String)
         Dim pluginType As PluginType = PluginType.Display
         If Caller.GetType().GetInterfaces().Contains(GetType(IScraper)) Then pluginType = PluginType.Scraper
         If Caller.GetType().GetInterfaces().Contains(GetType(IDisplay)) Then pluginType = PluginType.Display
-        Return SettingManager.PluginGetValue(Caller.GetType().Assembly.FullName, Caller.GetType().FullName, pluginType, Key)
-    End Function
+        Dim value = SettingManager.PluginGetValue(Caller.GetType().Assembly.FullName, Caller.GetType().FullName, pluginType, Key)
+        ReturnValue = If(value = "", ReturnValue, value)
+    End Sub
 
 #End Region
 
@@ -61,6 +62,7 @@ Public Class PluginManager
             Dim objInstance As IKSPlugin = Activator.CreateInstance(TypeName)
             objInstance.SetSetting = AddressOf KSPlugin_Setting_SetValueHandler
             objInstance.GetSetting = AddressOf KSPlugin_Setting_GetValueHandler
+            objInstance.OnLoaded()
             Return objInstance
         Else
             Return Nothing
