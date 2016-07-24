@@ -99,6 +99,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="Scrapers\XiamiScraper.vb" />
+    <Compile Include="Win32.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Displays\SampleDisplayForm.resx">
