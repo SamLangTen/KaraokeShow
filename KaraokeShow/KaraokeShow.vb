@@ -18,6 +18,7 @@ Public Class KaraokeShow
     ''' </summary>
     Private Sub BackgroundSynchronization()
         Dim previousLyricIndex As Integer = -1
+        Dim previousPercentage As Double = 0
         While True
             'Whether to exit background method
             If canBackgroundMethodRunning = False Then Exit Sub
@@ -32,8 +33,9 @@ Public Class KaraokeShow
             'To refresh word displaing progress
             If (previousLyricIndex < 0) OrElse (previousLyricIndex > (lrcCtrl.LRC.TimeLines.Count - 1）) Then Continue While
             Dim wordPercentage = lrcCtrl.GetWordPercentage(previousLyricIndex, Me.GetNowPosition().Invoke())
-            displayManager.SendLyricsWordProgressChanged(wordPercentage)
-            Thread.Sleep(25)
+            If Not previousPercentage = wordPercentage Then displayManager.SendLyricsWordProgressChanged(wordPercentage)
+            previousPercentage = wordPercentage
+            Thread.Sleep(5)
         End While
     End Sub
     ''' <summary>

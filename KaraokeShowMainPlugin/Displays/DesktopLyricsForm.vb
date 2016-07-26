@@ -35,6 +35,7 @@ Public Class DesktopLyricsForm
             Win32.DeleteDC(memDC)
         End Try
         bmp.Dispose()
+        GC.Collect()
     End Sub
 
     Private Sub DesktopLyricsForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load

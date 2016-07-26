@@ -113,7 +113,7 @@ Public Class DesktopLyricsDisplay
         Dim font As New Font(fontName, fontSize, fStyle)
         'Get text
         Dim text As String = ""
-        If Me.lyrics IsNot Nothing And Me.Index < lyrics.Count Then text = Me.lyrics(Me.Index)
+        If Me.lyrics IsNot Nothing AndAlso Me.Index < lyrics.Count Then text = Me.lyrics(Me.Index) Else Exit Sub
         If text Is Nothing Then Exit Sub
         'Get bmp
         Dim bmp As Bitmap = GetLyricsBMP(text, Percentage, font, colorB1, colorB2, colorA1, colorA2)
