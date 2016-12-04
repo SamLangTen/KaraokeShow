@@ -102,6 +102,9 @@ Public Class Plugin
                 KaraokeShowInterface.GetNowPosition = Function()
                                                           Return mbApiInterface.Player_GetPosition()
                                                       End Function
+                KaraokeShowInterface.GetLrycisFromMusicbee = Function()
+                                                                 Return mbApiInterface.NowPlaying_GetLyrics()
+                                                             End Function
                 'optize plugin manager
                 PluginManager.KSPluginStorageFolder = New FileInfo(Assembly.GetExecutingAssembly().Location).DirectoryName + "\KaraokeShowPlugins\"
                 PluginManager.InitializePluginInStorageFolder()

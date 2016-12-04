@@ -8,7 +8,7 @@ EndProject
 Project("{911E67C6-3D85-4FCE-B560-20A9C3E3FF48}") = "MusicBee", "K:\Program Files (x86)\MusicBee\MusicBee.exe", "{D0E53143-689E-4EB8-B9CB-2D7E8C6326C2}"
 	ProjectSection(DebuggerProjectSystem) = preProject
 		PortSupplier = 00000000-0000-0000-0000-000000000000
-		Executable = C:\Program Files (x86)\MusicBee\MusicBee3.exe
+		Executable = C:\Program Files (x86)\MusicBee\MusicBee.exe
 		RemoteMachine = SAMERSIONS-PC
 		StartingDirectory = C:\Program Files (x86)\MusicBee
 		Environment = 默认值

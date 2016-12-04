@@ -42,7 +42,13 @@ Public Class KaraokeShow
     ''' A background method for lyrics loading
     ''' </summary>
     Private Sub BackgroundLyricLoading()
-        Dim lrcf = LyricsManager.SearchFromContainingFolder(Me.filename, Me.trackTitle, Me.artist)
+        'TODO:User can change the order.
+        Dim lrcf As LRCFile
+        If (Me.GetLrycisFromMusicbee().Invoke <> "") Then
+            lrcf = New LRCFile(Me.GetLrycisFromMusicbee().Invoke())
+        Else
+            lrcf = LyricsManager.SearchFromContainingFolder(Me.filename, Me.trackTitle, Me.artist)
+        End If
         If lrcf Is Nothing Then lrcf = LyricsManager.SearchFromScraper(Me.trackTitle, Me.artist)
         If lrcf IsNot Nothing Then
             RaiseEvent LyricsDownloadFinished(Me, New LyricsFetchFinishedEventArgs() With {.Lyrics = lrcf})
@@ -71,6 +77,11 @@ Public Class KaraokeShow
     ''' </summary>
     ''' <returns>Position(Mileseconds)</returns>
     Public Property GetNowPosition As Func(Of Integer)
+
+    ''' <summary>
+    ''' Get lyrcis from MusicBee
+    ''' </summary>
+    Public Property GetLrycisFromMusicbee As Func(Of String)
 
     ''' <summary>
     ''' Get wether the playback of KaraokeShow is running
