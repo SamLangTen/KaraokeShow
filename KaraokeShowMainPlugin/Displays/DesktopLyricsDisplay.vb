@@ -44,6 +44,8 @@ Public Class DesktopLyricsDisplay
         'Get font size to create bitmap object
         Dim preGraphics As Graphics = Graphics.FromImage(New Bitmap(10, 10))
         Dim fontSize As SizeF = preGraphics.MeasureString(Text, Font)
+        Dim scalePercentage As Double = (preGraphics.DpiX / 0.96) / 100
+        Dim y = scalePercentage / 3 * 4
         preGraphics.Dispose()
         'Create bitmap and graphic
         Dim lrcBMP As New Bitmap(Convert.ToInt32(fontSize.Width), Convert.ToInt32(fontSize.Height))
