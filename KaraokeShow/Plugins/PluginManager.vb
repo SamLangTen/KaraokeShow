@@ -4,11 +4,18 @@ Public Class PluginManager
 #Region "Private Members"
 
     Private Shared Sub KSPlugin_Setting_SetValueHandler(Caller As Object, Key As String, Value As String)
-
+        Dim pluginType As PluginType = PluginType.Display
+        If Caller.GetType().GetInterfaces().Contains(GetType(IScraper)) Then pluginType = PluginType.Scraper
+        If Caller.GetType().GetInterfaces().Contains(GetType(IDisplay)) Then pluginType = PluginType.Display
+        SettingManager.PluginSetValue(Caller.GetType().Assembly.FullName, Caller.GetType().FullName, pluginType, Key, Value)
     End Sub
-    Private Shared Function KSPlugin_Setting_GetValueHandler(Caller As Object, Key As String) As String
-        Return True
-    End Function
+    Private Shared Sub KSPlugin_Setting_GetValueHandler(Caller As Object, Key As String, ByRef ReturnValue As String)
+        Dim pluginType As PluginType = PluginType.Display
+        If Caller.GetType().GetInterfaces().Contains(GetType(IScraper)) Then pluginType = PluginType.Scraper
+        If Caller.GetType().GetInterfaces().Contains(GetType(IDisplay)) Then pluginType = PluginType.Display
+        Dim value = SettingManager.PluginGetValue(Caller.GetType().Assembly.FullName, Caller.GetType().FullName, pluginType, Key)
+        ReturnValue = If(value = "", ReturnValue, value)
+    End Sub
 
 #End Region
 
@@ -55,6 +62,7 @@ Public Class PluginManager
             Dim objInstance As IKSPlugin = Activator.CreateInstance(TypeName)
             objInstance.SetSetting = AddressOf KSPlugin_Setting_SetValueHandler
             objInstance.GetSetting = AddressOf KSPlugin_Setting_GetValueHandler
+            objInstance.OnLoaded()
             Return objInstance
         Else
             Return Nothing
@@ -66,8 +74,11 @@ Public Class PluginManager
     ''' </summary>
     Public Shared Sub InitializePluginInStorageFolder()
         'Get all ksplg files in folder
-        If Directory.Exists(KSPluginStorageFolder) = False Then Exit Sub
-        PluginManager.AvailablePlugins = (From f In Directory.GetFiles(KSPluginStorageFolder, "*.ksplg") Select New PluginAssembly(f))
+        If Directory.Exists(KSPluginStorageFolder) = False Then
+            Directory.CreateDirectory(KSPluginStorageFolder)
+            Exit Sub
+        End If
+        PluginManager.AvailablePlugins = (From f In Directory.GetFiles(KSPluginStorageFolder, "*.dll") Select New PluginAssembly(f)).ToList()
         PluginManager.AvailablePlugins.ForEach(Sub(e)
                                                    e.Load()
                                                End Sub)

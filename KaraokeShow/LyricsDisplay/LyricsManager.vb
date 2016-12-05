@@ -18,7 +18,8 @@ Public Class LyricsManager
             vailTitle = vailTitle.Replace(item, "_")
         Next
         If File.Exists(New FileInfo(Filename).DirectoryName + "\" + vailTitle + ".lrc") = True Then
-            Return New LRCFile(File.ReadAllText(New FileInfo(Filename).DirectoryName + "\" + vailTitle + ".lrc", Text.Encoding.Default))
+            Return New LRCFile(File.ReadAllText(New FileInfo(Filename).DirectoryName + "\" + vailTitle + ".lrc"))
+
         Else
             Return Nothing
         End If

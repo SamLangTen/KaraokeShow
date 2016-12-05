@@ -2,6 +2,8 @@
 Imports System.Drawing
 Imports System.Windows.Forms
 Imports System.Reflection
+Imports System.IO
+
 Public Class Plugin
     Private mbApiInterface As New MusicBeeApiInterface
     Private about As New PluginInfo
@@ -21,6 +23,8 @@ Public Class Plugin
             CopyMemory(mbApiInterface, apiInterfacePtr, 596)
         ElseIf mbApiInterface.MusicBeeVersion = MusicBeeVersion.v2_4 Then
             CopyMemory(mbApiInterface, apiInterfacePtr, 604)
+        ElseIf mbApiInterface.MusicBeeVersion = MusicBeeVersion.v2_5 Then
+            CopyMemory(mbApiInterface, apiInterfacePtr, 648)
         Else
             CopyMemory(mbApiInterface, apiInterfacePtr, Marshal.SizeOf(mbApiInterface))
         End If
@@ -98,15 +102,25 @@ Public Class Plugin
                 KaraokeShowInterface.GetNowPosition = Function()
                                                           Return mbApiInterface.Player_GetPosition()
                                                       End Function
+                KaraokeShowInterface.GetLrycisFromMusicbee = Function()
+                                                                 Return mbApiInterface.NowPlaying_GetLyrics()
+                                                             End Function
                 'optize plugin manager
-                PluginManager.KSPluginStorageFolder = Assembly.GetExecutingAssembly().Location + "\KaraokeShowPlugins\"
+                PluginManager.KSPluginStorageFolder = New FileInfo(Assembly.GetExecutingAssembly().Location).DirectoryName + "\KaraokeShowPlugins\"
                 PluginManager.InitializePluginInStorageFolder()
                 'Load basic manager
                 displayManager.LoadDisplayPlugin()
-                'Just for test
-                mbApiInterface.MB_AddMenuItem("mnuTools/Karaoke Show/SampleForm", "", Sub()
-                                                                                          displayManager.SetDisplayVisibility("SampleDisplay", True)
-                                                                                      End Sub)
+                'Load scraper manager
+                ScraperManager.LoadScrapers()
+                'Add all display
+                mbApiInterface.MB_AddMenuItem("mnuView/Karaoke Show", "", Sub()
+                                                                          End Sub).Visible = True
+                displayManager.GetDisplays().ToList().ForEach(Sub(d)
+                                                                  mbApiInterface.MB_AddMenuItem("mnuView/Karaoke Show/" + d.GetType().Name, "", Sub()
+                                                                                                                                                    If d.Visible = True Then displayManager.SetDisplayVisibility(d.GetType().FullName, False) Else displayManager.SetDisplayVisibility(d.GetType().FullName, True)
+                                                                                                                                                End Sub).Visible = True
+                                                              End Sub)
+
             ' perform startup initialisation
             Case NotificationType.PlayStateChanged
                 If Not (mbApiInterface.Player_GetPlayState() = PlayState.Playing Or mbApiInterface.Player_GetPlayState() = PlayState.Paused) Then
