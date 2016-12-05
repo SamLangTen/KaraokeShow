@@ -46,6 +46,14 @@ Public Class DesktopLyricsForm
         Me.Left = 0
     End Sub
 
+#Region "Message Delivery"
+
+    ''' <summary>
+    ''' Deliver Message to upper
+    ''' </summary>
+    Public Property DeliverMessageHandler As Action(Of String)
+#End Region
+
 #Region "Window Movement"
     Private mouseX, mouseY As Integer
     Private Sub DesktopLyricsForm_MouseDown(sender As Object, e As MouseEventArgs) Handles Me.MouseDown
@@ -55,8 +63,18 @@ Public Class DesktopLyricsForm
 
     Private Sub DesktopLyricsForm_MouseMove(sender As Object, e As MouseEventArgs) Handles Me.MouseMove
         If e.Button = MouseButtons.Left Then
-            Me.Location = New Drawing.Point((Me.Location.X - MouseX) + e.X, (Me.Location.Y - MouseY + e.Y))
+            Me.Location = New Drawing.Point((Me.Location.X - mouseX) + e.X, (Me.Location.Y - mouseY + e.Y))
         End If
+    End Sub
+#End Region
+
+#Region "Event Handlers"
+    Private Sub DesktopLyricsForm_MouseHover(sender As Object, e As EventArgs) Handles MyBase.MouseHover
+        Me.DeliverMessageHandler?("mouse_hover")
+    End Sub
+
+    Private Sub DesktopLyricsForm_MouseLeave(sender As Object, e As EventArgs) Handles MyBase.MouseLeave
+        Me.DeliverMessageHandler?("mouse_leave")
     End Sub
 #End Region
 

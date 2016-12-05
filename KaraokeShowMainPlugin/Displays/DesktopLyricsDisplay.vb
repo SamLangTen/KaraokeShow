@@ -17,10 +17,12 @@ Public Class DesktopLyricsDisplay
     Private colorB2 As Color = Color.LightGreen
     Private colorA1 As Color = Color.Red
     Private colorA2 As Color = Color.DarkRed
+    Private colorRect As Color = Color.FromArgb(100, 0, 0, 0)
     Private fontName As String = "微软雅黑"
     Private fontSize As Single = 50
     Private fStyle As FontStyle = FontStyle.Bold
 
+    Private IsMouseHoverForm As Boolean = False
 
     Private _LyricsForm As DesktopLyricsForm
     ''' <summary>
@@ -30,6 +32,7 @@ Public Class DesktopLyricsDisplay
     Private ReadOnly Property LyricsForm() As DesktopLyricsForm
         Get
             If _LyricsForm Is Nothing OrElse _LyricsForm.IsDisposed = True Then _LyricsForm = New DesktopLyricsForm()
+            _LyricsForm.DeliverMessageHandler = AddressOf Me.FormMessageDeliveryHandler
             Return _LyricsForm
         End Get
     End Property
@@ -69,6 +72,11 @@ Public Class DesktopLyricsDisplay
             graphicAfter.PixelOffsetMode = PixelOffsetMode.HighQuality
             graphicAfter.FillPath(bshAfter, gPath)
         End If
+        'If cusor on the form, paint background
+        If (Me.IsMouseHoverForm) Then
+            Dim backBrush As New SolidBrush(colorRect)
+            paintGraphics.FillRectangle(backBrush, 0, 0, lrcBMP.Width, lrcBMP.Height)
+        End If
         'Paint basic background
         paintGraphics.FillPath(bshBefore, gPath)
         If textWidth > 0 Then
@@ -101,6 +109,18 @@ Public Class DesktopLyricsDisplay
         Dim fStyleS As String = fStyle.ToString()
         GetSetting.Invoke(Me, "FontStyle", fStyleS)
         fStyle = [Enum].Parse(GetType(FontStyle), fStyleS)
+    End Sub
+
+    ''' <summary>
+    ''' Handling message from lyrics form
+    ''' </summary>
+    Private Sub FormMessageDeliveryHandler(param As String)
+        Select Case param.ToLower()
+            Case "mouse_hover"
+                Me.IsMouseHoverForm = True
+            Case "mouse_leave"
+                Me.IsMouseHoverForm = False
+        End Select
     End Sub
 
     ''' <summary>
