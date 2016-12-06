@@ -46,6 +46,7 @@ Public Class DesktopLyricsDisplay
         Dim fontSize As SizeF = preGraphics.MeasureString(Text, Font)
         Dim scalePercentage As Double = (preGraphics.DpiX / 0.96) / 100
         Dim y = scalePercentage / 3 * 4
+        fontSize = New SizeF(fontSize.Width / y + 10, fontSize.Height / y + 10)
         preGraphics.Dispose()
         'Create bitmap and graphic
         Dim lrcBMP As New Bitmap(Convert.ToInt32(fontSize.Width), Convert.ToInt32(fontSize.Height))
@@ -123,6 +124,7 @@ Public Class DesktopLyricsDisplay
             Case "mouse_leave"
                 Me.IsMouseHoverForm = False
         End Select
+        Me.RefreshWindow()
     End Sub
 
     ''' <summary>
