@@ -60,13 +60,7 @@ Public Class Plugin
             'Dim textBox As New TextBox
             'textBox.Bounds = New Rectangle(60, 0, 100, textBox.Height)
             'configPanel.Controls.AddRange(New Control() {prompt, textBox})
-            Dim button As New Button
-            button.Text = "来个测试"
-            button.Location = New Point(10, 10)
-            AddHandler button.Click, Sub()
-                                         MsgBox("MusicBee插件测试")
-                                     End Sub
-            configPanel.Controls.Add(button)
+            configPanel.Controls.Add(New KSSettingPanel)
         End If
         Return True
     End Function
@@ -80,7 +74,10 @@ Public Class Plugin
 
     ' MusicBee is closing the plugin (plugin is being disabled by user or MusicBee is shutting down)
     Public Sub Close(ByVal reason As PluginCloseReason)
+        'Reset playback
         Me.KaraokeShowInterface.ResetPlayback()
+        'Write settings
+        SettingManager.Save()
     End Sub
 
     ' uninstall this plugin - clean up any persisted files
