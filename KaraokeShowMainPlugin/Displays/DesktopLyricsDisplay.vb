@@ -37,6 +37,7 @@ Public Class DesktopLyricsDisplay
         End Get
     End Property
 
+    Private lyricsBMPCache As BitmapCache
     ''' <summary>
     ''' Get Lyrcis Bitmap
     ''' </summary>
@@ -75,13 +76,21 @@ Public Class DesktopLyricsDisplay
             graphicAfter.PixelOffsetMode = PixelOffsetMode.HighQuality
             graphicAfter.FillPath(bshAfter, gPath)
         End If
+        'Paint basic background
+        'extract from cache if possible
+        If (lyricsBMPCache IsNot Nothing) AndAlso lyricsBMPCache.Tag = Text Then
+            paintGraphics.DrawImage(lyricsBMPCache.Image, New PointF(0, 0))
+        Else
+            paintGraphics.FillPath(bshBefore, gPath)
+            lyricsBMPCache = New BitmapCache()
+            lyricsBMPCache.Image = lrcBMP.Clone()
+            lyricsBMPCache.Tag = Text
+        End If
         'If cusor on the form, paint background
         If (Me.IsMouseHoverForm) Then
             Dim backBrush As New SolidBrush(colorRect)
             paintGraphics.FillRectangle(backBrush, 0, 0, lrcBMP.Width, lrcBMP.Height)
         End If
-        'Paint basic background
-        paintGraphics.FillPath(bshBefore, gPath)
         If textWidth > 0 Then
             paintGraphics.DrawImage(BMPAfter, New Drawing.Point(0, 0))
             BMPAfter.Dispose()
@@ -187,4 +196,12 @@ Public Class DesktopLyricsDisplay
     Public Sub OnLoaded() Implements IKSPlugin.OnLoaded
         Me.LoadSettings()
     End Sub
+End Class
+
+''' <summary>
+''' A bitmap cache
+''' </summary>
+Friend Class BitmapCache
+    Public Property Image As Bitmap
+    Public Property Tag As String
 End Class
