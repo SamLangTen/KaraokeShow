@@ -16,7 +16,7 @@ Public Class PluginManager
         Dim value = SettingManager.PluginGetValue(Caller.GetType().Assembly.FullName, Caller.GetType().FullName, pluginType, Key)
         ReturnValue = If(value = "", ReturnValue, value)
     End Sub
-
+    Private Shared Property PluginInstanceOnSettingResetFunction As New List(Of Action)
 #End Region
 
     ''' <summary>
@@ -63,6 +63,7 @@ Public Class PluginManager
             objInstance.SetSetting = AddressOf KSPlugin_Setting_SetValueHandler
             objInstance.GetSetting = AddressOf KSPlugin_Setting_GetValueHandler
             objInstance.OnLoaded()
+            PluginManager.PluginInstanceOnSettingResetFunction.Add(AddressOf objInstance.OnSettingReset)
             Return objInstance
         Else
             Return Nothing
@@ -82,5 +83,12 @@ Public Class PluginManager
         PluginManager.AvailablePlugins.ForEach(Sub(e)
                                                    e.Load()
                                                End Sub)
+    End Sub
+
+    ''' <summary>
+    ''' Notify All Plugins to Reset their settings
+    ''' </summary>
+    Public Shared Sub NotifyAllPluginResetSetting()
+        PluginManager.PluginInstanceOnSettingResetFunction.ForEach(Sub(a) a.Invoke())
     End Sub
 End Class

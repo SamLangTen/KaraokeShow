@@ -75,6 +75,7 @@ Public Class Plugin
             SettingManager.InternalSetValue("synchronization_rate", SettingPanel.SyncRate)
             SettingManager.InternalSetValue("lyrics_loading_timeout", SettingPanel.LyricsTimeout)
             SettingManager.Save()
+            PluginManager.NotifyAllPluginResetSetting()
         End If
     End Sub
 

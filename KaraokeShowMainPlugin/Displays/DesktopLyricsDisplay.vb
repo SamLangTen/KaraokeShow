@@ -228,6 +228,10 @@ Public Class DesktopLyricsDisplay
             SetSetting.Invoke(Me, "BorderColorBefore", sf.BorderColorB.ToArgb().ToString())
         End If
     End Sub
+
+    Public Sub OnSettingReset() Implements IKSPlugin.OnSettingReset
+        LoadSettings()
+    End Sub
 End Class
 
 ''' <summary>
