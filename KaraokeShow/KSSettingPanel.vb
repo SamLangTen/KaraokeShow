@@ -31,7 +31,7 @@
             MsgBox("Plugin Not Found", MsgBoxStyle.Critical)
             Exit Sub
         End If
-        Dim plugin As IKSPlugin = Activator.CreateInstance(pluginType)
+        Dim plugin As IKSPlugin = PluginManager.CreateInstance(pluginType)
         plugin.DisplaySetting()
     End Sub
 End Class

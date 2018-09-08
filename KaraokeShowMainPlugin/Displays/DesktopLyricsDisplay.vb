@@ -104,19 +104,25 @@ Public Class DesktopLyricsDisplay
 
     Private Sub LoadSettings()
         'Get colors
-        Dim cb1, cb2, ca1, ca2 As String
+        Dim cb1, cb2, ca1, ca2, bca, bcb As String
         cb1 = colorB1.ToArgb().ToString()
         cb2 = colorB2.ToArgb().ToString()
         ca1 = colorA1.ToArgb().ToString()
         ca2 = colorA2.ToArgb().ToString()
+        bca = outerColorA.ToArgb().ToString()
+        bcb = outerColorB.ToArgb().ToString()
         GetSetting.Invoke(Me, "ColorBefore1", cb1)
         GetSetting.Invoke(Me, "ColorBefore2", cb2)
         GetSetting.Invoke(Me, "ColorAfter1", ca1)
         GetSetting.Invoke(Me, "ColorAfter2", ca2)
+        GetSetting.Invoke(Me, "BorderColorAfter", bca)
+        GetSetting.Invoke(Me, "BorderColorBefore", bcb)
         colorB1 = Color.FromArgb(Integer.Parse(cb1))
         colorB2 = Color.FromArgb(Integer.Parse(cb2))
         colorA1 = Color.FromArgb(Integer.Parse(ca1))
         colorA2 = Color.FromArgb(Integer.Parse(ca2))
+        outerColorA = Color.FromArgb(Integer.Parse(bca))
+        outerColorB = Color.FromArgb(Integer.Parse(bcb))
         'Get Font
         GetSetting.Invoke(Me, "FontName", fontName)
         Dim fSizeS As String = fontSize.ToString()
@@ -203,8 +209,23 @@ Public Class DesktopLyricsDisplay
 
     Public Sub DisplaySetting() Implements IKSPlugin.DisplaySetting
         Dim sf As New DesktopLyricsSetting()
+        sf.FontSet = New Font(fontName, fontSize, fStyle)
+        sf.ColorA1 = colorA1
+        sf.ColorA2 = colorA2
+        sf.ColorB1 = colorB1
+        sf.ColorB2 = colorB2
+        sf.BorderColorA = outerColorA
+        sf.BorderColorB = outerColorB
         If sf.ShowDialog() = DialogResult.OK Then
-
+            SetSetting.Invoke(Me, "FontName", sf.FontSet.Name)
+            SetSetting.Invoke(Me, "FontStyle", sf.FontSet.Style.ToString())
+            SetSetting.Invoke(Me, "FontSize", sf.FontSet.Size.ToString())
+            SetSetting.Invoke(Me, "ColorBefore1", sf.ColorB1.ToArgb().ToString())
+            SetSetting.Invoke(Me, "ColorBefore2", sf.ColorB2.ToArgb().ToString())
+            SetSetting.Invoke(Me, "ColorAfter1", sf.ColorA1.ToArgb().ToString())
+            SetSetting.Invoke(Me, "ColorAfter2", sf.ColorA2.ToArgb().ToString())
+            SetSetting.Invoke(Me, "BorderColorAfter", sf.BorderColorA.ToArgb().ToString())
+            SetSetting.Invoke(Me, "BorderColorBefore", sf.BorderColorB.ToArgb().ToString())
         End If
     End Sub
 End Class
