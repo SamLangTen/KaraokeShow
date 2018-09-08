@@ -17,9 +17,11 @@ Public Class DesktopLyricsDisplay
     Private colorB2 As Color = Color.LightGreen
     Private colorA1 As Color = Color.Red
     Private colorA2 As Color = Color.DarkRed
+    Private outerColorA As Color = Color.PaleVioletRed
+    Private outerColorB As Color = Color.GreenYellow
     Private colorRect As Color = Color.FromArgb(100, 0, 0, 0)
     Private fontName As String = "微软雅黑"
-    Private fontSize As Single = 50
+    Private fontSize As Single = 60
     Private fStyle As FontStyle = FontStyle.Bold
 
     Private IsMouseHoverForm As Boolean = False
@@ -75,6 +77,7 @@ Public Class DesktopLyricsDisplay
             graphicAfter.TextRenderingHint = Drawing.Text.TextRenderingHint.SingleBitPerPixelGridFit
             graphicAfter.PixelOffsetMode = PixelOffsetMode.HighQuality
             graphicAfter.FillPath(bshAfter, gPath)
+            graphicAfter.DrawPath(New Pen(outerColorA, 2), gPath)
         End If
         'Paint basic background
         'extract from cache if possible
@@ -82,6 +85,7 @@ Public Class DesktopLyricsDisplay
             paintGraphics.DrawImage(lyricsBMPCache.Image, New PointF(0, 0))
         Else
             paintGraphics.FillPath(bshBefore, gPath)
+            paintGraphics.DrawPath(New Pen(outerColorB, 2), gPath)
             lyricsBMPCache = New BitmapCache()
             lyricsBMPCache.Image = lrcBMP.Clone()
             lyricsBMPCache.Tag = Text
