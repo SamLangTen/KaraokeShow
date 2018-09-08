@@ -231,6 +231,8 @@ Public Class DesktopLyricsDisplay
 
     Public Sub OnSettingReset() Implements IKSPlugin.OnSettingReset
         LoadSettings()
+        'Reset Cache
+        lyricsBMPCache = Nothing
     End Sub
 End Class
 
