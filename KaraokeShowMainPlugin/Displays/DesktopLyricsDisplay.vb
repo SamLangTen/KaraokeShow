@@ -40,6 +40,7 @@ Public Class DesktopLyricsDisplay
     End Property
 
     Private lyricsBMPCache As BitmapCache
+    Private lyricsBMPCacheAfter As BitmapCache
     ''' <summary>
     ''' Get Lyrcis Bitmap
     ''' </summary>
@@ -67,17 +68,29 @@ Public Class DesktopLyricsDisplay
         gPath.AddString(Text, Font.FontFamily, Font.Style, Font.Size, New Drawing.Point(10, 10), StringFormat.GenericDefault)
         'scale text size
         Dim textWidth As Integer = Convert.ToInt32(fontSize.Width * Percentage)
+
         'create bitmap after time
-        Dim BMPAfter As Bitmap = Nothing
-        If textWidth > 0 Then
-            BMPAfter = New Bitmap(textWidth, Convert.ToInt32(fontSize.Height))
-            Dim graphicAfter As Graphics = Graphics.FromImage(BMPAfter)
+        'paint foreground
+        Dim BMPAfterAll As Bitmap = Nothing
+        If lyricsBMPCacheAfter IsNot Nothing AndAlso lyricsBMPCacheAfter.Tag = Text Then
+            BMPAfterAll = lyricsBMPCacheAfter.Image
+        Else
+            BMPAfterAll = New Bitmap(Convert.ToInt32(fontSize.Width), Convert.ToInt32(fontSize.Height))
+            Dim graphicAfter As Graphics = Graphics.FromImage(BMPAfterAll)
             graphicAfter.CompositingQuality = CompositingQuality.HighQuality
             graphicAfter.SmoothingMode = SmoothingMode.HighQuality
             graphicAfter.TextRenderingHint = Drawing.Text.TextRenderingHint.SingleBitPerPixelGridFit
             graphicAfter.PixelOffsetMode = PixelOffsetMode.HighQuality
             graphicAfter.FillPath(bshAfter, gPath)
             graphicAfter.DrawPath(New Pen(outerColorA, 2), gPath)
+            lyricsBMPCacheAfter = New BitmapCache()
+            lyricsBMPCacheAfter.Image = BMPAfterAll
+            lyricsBMPCacheAfter.Tag = Text
+        End If
+        'Paint correct time foreground
+        Dim BMPAfter As Bitmap = Nothing
+        If textWidth > 0 Then
+            BMPAfter = BMPAfterAll.Clone(New Rectangle(0, 0, textWidth, Convert.ToInt32(fontSize.Height)), Imaging.PixelFormat.DontCare)
         End If
         'Paint basic background
         'extract from cache if possible
@@ -95,6 +108,7 @@ Public Class DesktopLyricsDisplay
             Dim backBrush As New SolidBrush(colorRect)
             paintGraphics.FillRectangle(backBrush, 0, 0, lrcBMP.Width, lrcBMP.Height)
         End If
+        'Compose two image
         If textWidth > 0 Then
             paintGraphics.DrawImage(BMPAfter, New Drawing.Point(0, 0))
             BMPAfter.Dispose()
@@ -233,6 +247,7 @@ Public Class DesktopLyricsDisplay
         LoadSettings()
         'Reset Cache
         lyricsBMPCache = Nothing
+        lyricsBMPCacheAfter = Nothing
     End Sub
 End Class
 
