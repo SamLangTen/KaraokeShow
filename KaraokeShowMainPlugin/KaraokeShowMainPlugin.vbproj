@@ -114,6 +114,9 @@
     <EmbeddedResource Include="Displays\DesktopLyricsSetting.resx">
       <DependentUpon>DesktopLyricsSetting.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Displays\DesktopLyricsSetting.zh-Hans.resx">
+      <DependentUpon>DesktopLyricsSetting.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.resx">
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
