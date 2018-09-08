@@ -82,7 +82,7 @@ Public Class DesktopLyricsDisplay
         'Paint basic background
         'extract from cache if possible
         If (lyricsBMPCache IsNot Nothing) AndAlso lyricsBMPCache.Tag = Text Then
-            paintGraphics.DrawImage(lyricsBMPCache.Image, New PointF(0, 0))
+            paintGraphics.DrawImage(lyricsBMPCache.Image.Clone(), New PointF(0, 0))
         Else
             paintGraphics.FillPath(bshBefore, gPath)
             paintGraphics.DrawPath(New Pen(outerColorB, 2), gPath)
@@ -199,6 +199,13 @@ Public Class DesktopLyricsDisplay
 
     Public Sub OnLoaded() Implements IKSPlugin.OnLoaded
         Me.LoadSettings()
+    End Sub
+
+    Public Sub DisplaySetting() Implements IKSPlugin.DisplaySetting
+        Dim sf As New DesktopLyricsSetting()
+        If sf.ShowDialog() = DialogResult.OK Then
+
+        End If
     End Sub
 End Class
 

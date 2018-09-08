@@ -26,12 +26,11 @@ Partial Class DesktopLyricsForm
         '
         'DesktopLyricsForm
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(9.0!, 18.0!)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 12.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.White
-        Me.ClientSize = New System.Drawing.Size(890, 372)
+        Me.ClientSize = New System.Drawing.Size(593, 248)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
-        Me.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.Name = "DesktopLyricsForm"
         Me.ShowIcon = False
         Me.ShowInTaskbar = False
