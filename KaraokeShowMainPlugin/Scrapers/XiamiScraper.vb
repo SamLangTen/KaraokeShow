@@ -66,4 +66,12 @@ Public Class XiamiScraper
     Public Sub OnLoaded() Implements IKSPlugin.OnLoaded
 
     End Sub
+
+    Public Sub DisplaySetting() Implements IKSPlugin.DisplaySetting
+
+    End Sub
+
+    Public Sub OnSettingReset() Implements IKSPlugin.OnSettingReset
+
+    End Sub
 End Class

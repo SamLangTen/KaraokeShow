@@ -17,10 +17,14 @@ Public Class DesktopLyricsDisplay
     Private colorB2 As Color = Color.LightGreen
     Private colorA1 As Color = Color.Red
     Private colorA2 As Color = Color.DarkRed
+    Private outerColorA As Color = Color.PaleVioletRed
+    Private outerColorB As Color = Color.GreenYellow
+    Private colorRect As Color = Color.FromArgb(100, 0, 0, 0)
     Private fontName As String = "微软雅黑"
-    Private fontSize As Single = 50
+    Private fontSize As Single = 60
     Private fStyle As FontStyle = FontStyle.Bold
 
+    Private IsMouseHoverForm As Boolean = False
 
     Private _LyricsForm As DesktopLyricsForm
     ''' <summary>
@@ -30,10 +34,13 @@ Public Class DesktopLyricsDisplay
     Private ReadOnly Property LyricsForm() As DesktopLyricsForm
         Get
             If _LyricsForm Is Nothing OrElse _LyricsForm.IsDisposed = True Then _LyricsForm = New DesktopLyricsForm()
+            _LyricsForm.DeliverMessageHandler = AddressOf Me.FormMessageDeliveryHandler
             Return _LyricsForm
         End Get
     End Property
 
+    Private lyricsBMPCache As BitmapCache
+    Private lyricsBMPCacheAfter As BitmapCache
     ''' <summary>
     ''' Get Lyrcis Bitmap
     ''' </summary>
@@ -41,6 +48,9 @@ Public Class DesktopLyricsDisplay
         'Get font size to create bitmap object
         Dim preGraphics As Graphics = Graphics.FromImage(New Bitmap(10, 10))
         Dim fontSize As SizeF = preGraphics.MeasureString(Text, Font)
+        Dim scalePercentage As Double = (preGraphics.DpiX / 0.96) / 100
+        Dim y = scalePercentage / 3 * 4
+        fontSize = New SizeF(fontSize.Width / y + 10, fontSize.Height / y + 10)
         preGraphics.Dispose()
         'Create bitmap and graphic
         Dim lrcBMP As New Bitmap(Convert.ToInt32(fontSize.Width), Convert.ToInt32(fontSize.Height))
@@ -58,19 +68,47 @@ Public Class DesktopLyricsDisplay
         gPath.AddString(Text, Font.FontFamily, Font.Style, Font.Size, New Drawing.Point(10, 10), StringFormat.GenericDefault)
         'scale text size
         Dim textWidth As Integer = Convert.ToInt32(fontSize.Width * Percentage)
+
         'create bitmap after time
-        Dim BMPAfter As Bitmap = Nothing
-        If textWidth > 0 Then
-            BMPAfter = New Bitmap(textWidth, Convert.ToInt32(fontSize.Height))
-            Dim graphicAfter As Graphics = Graphics.FromImage(BMPAfter)
+        'paint foreground
+        Dim BMPAfterAll As Bitmap = Nothing
+        If lyricsBMPCacheAfter IsNot Nothing AndAlso lyricsBMPCacheAfter.Tag = Text Then
+            BMPAfterAll = lyricsBMPCacheAfter.Image
+        Else
+            BMPAfterAll = New Bitmap(Convert.ToInt32(fontSize.Width), Convert.ToInt32(fontSize.Height))
+            Dim graphicAfter As Graphics = Graphics.FromImage(BMPAfterAll)
             graphicAfter.CompositingQuality = CompositingQuality.HighQuality
             graphicAfter.SmoothingMode = SmoothingMode.HighQuality
             graphicAfter.TextRenderingHint = Drawing.Text.TextRenderingHint.SingleBitPerPixelGridFit
             graphicAfter.PixelOffsetMode = PixelOffsetMode.HighQuality
             graphicAfter.FillPath(bshAfter, gPath)
+            graphicAfter.DrawPath(New Pen(outerColorA, 2), gPath)
+            lyricsBMPCacheAfter = New BitmapCache()
+            lyricsBMPCacheAfter.Image = BMPAfterAll
+            lyricsBMPCacheAfter.Tag = Text
+        End If
+        'Paint correct time foreground
+        Dim BMPAfter As Bitmap = Nothing
+        If textWidth > 0 Then
+            BMPAfter = BMPAfterAll.Clone(New Rectangle(0, 0, textWidth, Convert.ToInt32(fontSize.Height)), Imaging.PixelFormat.DontCare)
         End If
         'Paint basic background
-        paintGraphics.FillPath(bshBefore, gPath)
+        'extract from cache if possible
+        If (lyricsBMPCache IsNot Nothing) AndAlso lyricsBMPCache.Tag = Text Then
+            paintGraphics.DrawImage(lyricsBMPCache.Image.Clone(), New PointF(0, 0))
+        Else
+            paintGraphics.FillPath(bshBefore, gPath)
+            paintGraphics.DrawPath(New Pen(outerColorB, 2), gPath)
+            lyricsBMPCache = New BitmapCache()
+            lyricsBMPCache.Image = lrcBMP.Clone()
+            lyricsBMPCache.Tag = Text
+        End If
+        'If cusor on the form, paint background
+        If (Me.IsMouseHoverForm) Then
+            Dim backBrush As New SolidBrush(colorRect)
+            paintGraphics.FillRectangle(backBrush, 0, 0, lrcBMP.Width, lrcBMP.Height)
+        End If
+        'Compose two image
         If textWidth > 0 Then
             paintGraphics.DrawImage(BMPAfter, New Drawing.Point(0, 0))
             BMPAfter.Dispose()
@@ -80,19 +118,25 @@ Public Class DesktopLyricsDisplay
 
     Private Sub LoadSettings()
         'Get colors
-        Dim cb1, cb2, ca1, ca2 As String
+        Dim cb1, cb2, ca1, ca2, bca, bcb As String
         cb1 = colorB1.ToArgb().ToString()
         cb2 = colorB2.ToArgb().ToString()
         ca1 = colorA1.ToArgb().ToString()
         ca2 = colorA2.ToArgb().ToString()
+        bca = outerColorA.ToArgb().ToString()
+        bcb = outerColorB.ToArgb().ToString()
         GetSetting.Invoke(Me, "ColorBefore1", cb1)
         GetSetting.Invoke(Me, "ColorBefore2", cb2)
         GetSetting.Invoke(Me, "ColorAfter1", ca1)
         GetSetting.Invoke(Me, "ColorAfter2", ca2)
+        GetSetting.Invoke(Me, "BorderColorAfter", bca)
+        GetSetting.Invoke(Me, "BorderColorBefore", bcb)
         colorB1 = Color.FromArgb(Integer.Parse(cb1))
         colorB2 = Color.FromArgb(Integer.Parse(cb2))
         colorA1 = Color.FromArgb(Integer.Parse(ca1))
         colorA2 = Color.FromArgb(Integer.Parse(ca2))
+        outerColorA = Color.FromArgb(Integer.Parse(bca))
+        outerColorB = Color.FromArgb(Integer.Parse(bcb))
         'Get Font
         GetSetting.Invoke(Me, "FontName", fontName)
         Dim fSizeS As String = fontSize.ToString()
@@ -101,6 +145,19 @@ Public Class DesktopLyricsDisplay
         Dim fStyleS As String = fStyle.ToString()
         GetSetting.Invoke(Me, "FontStyle", fStyleS)
         fStyle = [Enum].Parse(GetType(FontStyle), fStyleS)
+    End Sub
+
+    ''' <summary>
+    ''' Handling message from lyrics form
+    ''' </summary>
+    Private Sub FormMessageDeliveryHandler(param As String)
+        Select Case param.ToLower()
+            Case "mouse_hover"
+                Me.IsMouseHoverForm = True
+            Case "mouse_leave"
+                Me.IsMouseHoverForm = False
+        End Select
+        Me.RefreshWindow()
     End Sub
 
     ''' <summary>
@@ -163,4 +220,41 @@ Public Class DesktopLyricsDisplay
     Public Sub OnLoaded() Implements IKSPlugin.OnLoaded
         Me.LoadSettings()
     End Sub
+
+    Public Sub DisplaySetting() Implements IKSPlugin.DisplaySetting
+        Dim sf As New DesktopLyricsSetting()
+        sf.FontSet = New Font(fontName, fontSize, fStyle)
+        sf.ColorA1 = colorA1
+        sf.ColorA2 = colorA2
+        sf.ColorB1 = colorB1
+        sf.ColorB2 = colorB2
+        sf.BorderColorA = outerColorA
+        sf.BorderColorB = outerColorB
+        If sf.ShowDialog() = DialogResult.OK Then
+            SetSetting.Invoke(Me, "FontName", sf.FontSet.Name)
+            SetSetting.Invoke(Me, "FontStyle", sf.FontSet.Style.ToString())
+            SetSetting.Invoke(Me, "FontSize", sf.FontSet.Size.ToString())
+            SetSetting.Invoke(Me, "ColorBefore1", sf.ColorB1.ToArgb().ToString())
+            SetSetting.Invoke(Me, "ColorBefore2", sf.ColorB2.ToArgb().ToString())
+            SetSetting.Invoke(Me, "ColorAfter1", sf.ColorA1.ToArgb().ToString())
+            SetSetting.Invoke(Me, "ColorAfter2", sf.ColorA2.ToArgb().ToString())
+            SetSetting.Invoke(Me, "BorderColorAfter", sf.BorderColorA.ToArgb().ToString())
+            SetSetting.Invoke(Me, "BorderColorBefore", sf.BorderColorB.ToArgb().ToString())
+        End If
+    End Sub
+
+    Public Sub OnSettingReset() Implements IKSPlugin.OnSettingReset
+        LoadSettings()
+        'Reset Cache
+        lyricsBMPCache = Nothing
+        lyricsBMPCacheAfter = Nothing
+    End Sub
+End Class
+
+''' <summary>
+''' A bitmap cache
+''' </summary>
+Friend Class BitmapCache
+    Public Property Image As Bitmap
+    Public Property Tag As String
 End Class

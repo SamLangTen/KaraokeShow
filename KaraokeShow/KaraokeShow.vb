@@ -6,6 +6,22 @@ Imports System.Threading.Tasks
 Public Class KaraokeShow
 
 #Region "Private Members"
+
+#Region "Settings"
+    Private ReadOnly Property set_RefreshRate As Integer
+        Get
+            Return Integer.Parse(If(SettingManager.InternalGetValue("synchronization_rate"), "25"))
+        End Get
+    End Property
+    Private ReadOnly Property set_LyricsLoadTimeout As Integer
+        Get
+            Return Integer.Parse(If(SettingManager.InternalGetValue("lyrics_loading_timeout"), "10000"))
+
+        End Get
+    End Property
+
+#End Region
+
     Private lrcCtrl As LyricSynchronizationController
     Private canBackgroundMethodRunning As Boolean = False
     Private filename As String
@@ -35,7 +51,7 @@ Public Class KaraokeShow
             Dim wordPercentage = lrcCtrl.GetWordPercentage(previousLyricIndex, Me.GetNowPosition().Invoke())
             If Not previousPercentage = wordPercentage Then displayManager.SendLyricsWordProgressChanged(wordPercentage)
             previousPercentage = wordPercentage
-            Thread.Sleep(5)
+            Thread.Sleep(set_RefreshRate)
         End While
     End Sub
     ''' <summary>
@@ -120,7 +136,7 @@ Public Class KaraokeShow
                                        Dim cts As New CancellationTokenSource()
                                        Dim threadKidLoad As New Task(AddressOf BackgroundLyricLoading, cts)
                                        threadKidLoad.Start()
-                                       Thread.Sleep(10000) 'Set timeout
+                                       Thread.Sleep(set_LyricsLoadTimeout) 'Set timeout
                                        cts.Cancel()
                                    End Sub)
         threadLoad.Start()

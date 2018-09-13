@@ -53,7 +53,7 @@ Public Class SettingManager
         If settingItem IsNot Nothing Then
             Return If(settingItem.SettingValue, "")
         Else
-            Return ""
+            Return Nothing
         End If
     End Function
 
@@ -82,7 +82,7 @@ Public Class SettingManager
         If settingItem IsNot Nothing Then
             Return If(settingItem.Value, "")
         Else
-            Return ""
+            Return Nothing
         End If
     End Function
 

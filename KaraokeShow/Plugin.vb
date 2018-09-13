@@ -44,7 +44,7 @@ Public Class Plugin
 
         Return about
     End Function
-
+    Private SettingPanel As KSSettingPanel
     Public Function Configure(ByVal panelHandle As IntPtr) As Boolean
         ' save any persistent settings in a sub-folder of this path
         Dim dataPath As String = mbApiInterface.Setting_GetPersistentStoragePath()
@@ -60,13 +60,8 @@ Public Class Plugin
             'Dim textBox As New TextBox
             'textBox.Bounds = New Rectangle(60, 0, 100, textBox.Height)
             'configPanel.Controls.AddRange(New Control() {prompt, textBox})
-            Dim button As New Button
-            button.Text = "来个测试"
-            button.Location = New Point(10, 10)
-            AddHandler button.Click, Sub()
-                                         MsgBox("MusicBee插件测试")
-                                     End Sub
-            configPanel.Controls.Add(button)
+            SettingPanel = New KSSettingPanel()
+            configPanel.Controls.Add(SettingPanel)
         End If
         Return True
     End Function
@@ -76,11 +71,20 @@ Public Class Plugin
     Public Sub SaveSettings()
         ' save any persistent settings in a sub-folder of this path
         Dim dataPath As String = mbApiInterface.Setting_GetPersistentStoragePath()
+        If SettingPanel IsNot Nothing Then
+            SettingManager.InternalSetValue("synchronization_rate", SettingPanel.SyncRate)
+            SettingManager.InternalSetValue("lyrics_loading_timeout", SettingPanel.LyricsTimeout)
+            SettingManager.Save()
+            PluginManager.NotifyAllPluginResetSetting()
+        End If
     End Sub
 
     ' MusicBee is closing the plugin (plugin is being disabled by user or MusicBee is shutting down)
     Public Sub Close(ByVal reason As PluginCloseReason)
+        'Reset playback
         Me.KaraokeShowInterface.ResetPlayback()
+        'Write settings
+        SettingManager.Save()
     End Sub
 
     ' uninstall this plugin - clean up any persisted files
@@ -120,7 +124,6 @@ Public Class Plugin
                                                                                                                                                     If d.Visible = True Then displayManager.SetDisplayVisibility(d.GetType().FullName, False) Else displayManager.SetDisplayVisibility(d.GetType().FullName, True)
                                                                                                                                                 End Sub).Visible = True
                                                               End Sub)
-
             ' perform startup initialisation
             Case NotificationType.PlayStateChanged
                 If Not (mbApiInterface.Player_GetPlayState() = PlayState.Playing Or mbApiInterface.Player_GetPlayState() = PlayState.Paused) Then

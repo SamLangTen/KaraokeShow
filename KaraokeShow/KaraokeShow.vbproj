@@ -102,6 +102,12 @@
     <Compile Include="Plugins\PluginAssembly.vb" />
     <Compile Include="Plugins\PluginManager.vb" />
     <Compile Include="Scraper\ScraperManager.vb" />
+    <Compile Include="KSSettingPanel.Designer.vb">
+      <DependentUpon>KSSettingPanel.vb</DependentUpon>
+    </Compile>
+    <Compile Include="KSSettingPanel.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Settings\Serialization\InternalSettingItem.vb" />
     <Compile Include="Settings\Serialization\PluginSettingItem.vb" />
     <Compile Include="Settings\Serialization\SettingObject.vb" />
@@ -111,6 +117,12 @@
     <Compile Include="Windows\WindowsManager.vb" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="KSSettingPanel.resx">
+      <DependentUpon>KSSettingPanel.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="KSSettingPanel.zh-Hans.resx">
+      <DependentUpon>KSSettingPanel.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.resx">
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
@@ -129,7 +141,9 @@
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Service Include="{94E38DFF-614B-4CBD-B67C-F211BB35CE8B}" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <PropertyGroup>
     <PostBuildEvent>
