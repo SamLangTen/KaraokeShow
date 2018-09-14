@@ -30,6 +30,7 @@ Partial Class KSSettingPanel
         Me.Label3 = New System.Windows.Forms.Label()
         Me.ComboBox1 = New System.Windows.Forms.ComboBox()
         Me.Button1 = New System.Windows.Forms.Button()
+        Me.CheckBox1 = New System.Windows.Forms.CheckBox()
         Me.SuspendLayout()
         '
         'Label1
@@ -71,11 +72,18 @@ Partial Class KSSettingPanel
         Me.Button1.Name = "Button1"
         Me.Button1.UseVisualStyleBackColor = False
         '
+        'CheckBox1
+        '
+        resources.ApplyResources(Me.CheckBox1, "CheckBox1")
+        Me.CheckBox1.Name = "CheckBox1"
+        Me.CheckBox1.UseVisualStyleBackColor = True
+        '
         'KSSettingPanel
         '
         resources.ApplyResources(Me, "$this")
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.Transparent
+        Me.Controls.Add(Me.CheckBox1)
         Me.Controls.Add(Me.Button1)
         Me.Controls.Add(Me.ComboBox1)
         Me.Controls.Add(Me.Label3)
@@ -96,4 +104,5 @@ Partial Class KSSettingPanel
     Friend WithEvents Label3 As Windows.Forms.Label
     Friend WithEvents ComboBox1 As Windows.Forms.ComboBox
     Friend WithEvents Button1 As Windows.Forms.Button
+    Friend WithEvents CheckBox1 As Windows.Forms.CheckBox
 End Class

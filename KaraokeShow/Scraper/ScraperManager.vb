@@ -60,4 +60,12 @@ Public Class ScraperManager
         Return Scraper.DownloadLyrics(DownloadInfo)
     End Function
 
+    ''' <summary>
+    ''' Get scraper instance from ScraperManager internal list
+    ''' </summary>
+    ''' <param name="ScraperName"></param>
+    ''' <returns></returns>
+    Public Shared Function GetScraper(ScraperName As String) As IScraper
+        Return ScraperManager.availableScraperInstance.FirstOrDefault(Function(s) s.GetType().Name = ScraperName)
+    End Function
 End Class

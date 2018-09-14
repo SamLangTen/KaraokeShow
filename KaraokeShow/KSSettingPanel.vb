@@ -10,6 +10,11 @@
             Return TextBox2.Text
         End Get
     End Property
+    Public ReadOnly Property Scraper2Musicbee As Boolean
+        Get
+            Return CheckBox1.Checked
+        End Get
+    End Property
 
     Private Sub LoadSettings()
         'Load Plugins List
@@ -19,6 +24,9 @@
         TextBox1.Text = If(SettingManager.InternalGetValue("synchronization_rate"), "25")
         'Load Timeout
         TextBox2.Text = If(SettingManager.InternalGetValue("lyrics_loading_timeout"), "10000")
+        'Scraper to LR
+        CheckBox1.Checked = Boolean.Parse(If(SettingManager.InternalGetValue("convert_scraper_to_musicbee_lyrics_provider"), "False"))
+
     End Sub
 
     Private Sub KSSettingPanel_Load(sender As Object, e As EventArgs) Handles MyBase.Load

@@ -133,4 +133,11 @@
   <data name="Button1.Text" xml:space="preserve">
     <value>设置(&amp;S)</value>
   </data>
+  <data name="CheckBox1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>348, 16</value>
+  </data>
+  <data name="CheckBox1.Text" xml:space="preserve">
+    <value>将KaraokeShow内置歌词刮削器导入MusicBee的歌词查询器(&amp;C)
+</value>
+  </data>
 </root>

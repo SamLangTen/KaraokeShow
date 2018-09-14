@@ -28,12 +28,23 @@ Public Class Plugin
         Else
             CopyMemory(mbApiInterface, apiInterfacePtr, Marshal.SizeOf(mbApiInterface))
         End If
+        'initialize setting manager
+        SettingManager.SettingStoragePath = mbApiInterface.Setting_GetPersistentStoragePath.Invoke()
+        SettingManager.Load()
+        'optize plugin manager
+        PluginManager.KSPluginStorageFolder = New FileInfo(Assembly.GetExecutingAssembly().Location).DirectoryName + "\KaraokeShowPlugins\"
+        PluginManager.InitializePluginInStorageFolder()
+        'Load scraper manager
+        ScraperManager.LoadScrapers()
+        'Load KaraokeShow Mode
+        Dim lrMode As Boolean = Boolean.Parse(If(SettingManager.InternalGetValue("convert_scraper_to_musicbee_lyrics_provider"), "False"))
+
         about.PluginInfoVersion = PluginInfoVersion
         about.Name = "KaraokeShow"
         about.Description = "A lyric searching and displaying plugin for MusicBee"
         about.Author = "Samersions"
         'about.TargetApplication = "None"  ' current only applies to artwork, lyrics or instant messenger name that appears in the provider drop down selector or target Instant Messenger
-        about.Type = PluginType.General
+        about.Type = If(lrMode = True, PluginType.LyricsRetrieval, PluginType.General)
         about.VersionMajor = 1  ' your plugin version
         about.VersionMinor = 0
         about.Revision = 1
@@ -74,6 +85,7 @@ Public Class Plugin
         If SettingPanel IsNot Nothing Then
             SettingManager.InternalSetValue("synchronization_rate", SettingPanel.SyncRate)
             SettingManager.InternalSetValue("lyrics_loading_timeout", SettingPanel.LyricsTimeout)
+            SettingManager.InternalSetValue("convert_scraper_to_musicbee_lyrics_provider", SettingPanel.Scraper2Musicbee.ToString())
             SettingManager.Save()
             PluginManager.NotifyAllPluginResetSetting()
         End If
@@ -97,9 +109,6 @@ Public Class Plugin
         ' perform some action depending on the notification type
         Select Case type
             Case NotificationType.PluginStartup
-                'initialize setting manager
-                SettingManager.SettingStoragePath = mbApiInterface.Setting_GetPersistentStoragePath.Invoke()
-                SettingManager.Load()
                 'init all class
                 displayManager = New DisplayManager()
                 KaraokeShowInterface = New KaraokeShow(displayManager)
@@ -109,13 +118,8 @@ Public Class Plugin
                 KaraokeShowInterface.GetLrycisFromMusicbee = Function()
                                                                  Return mbApiInterface.NowPlaying_GetLyrics()
                                                              End Function
-                'optize plugin manager
-                PluginManager.KSPluginStorageFolder = New FileInfo(Assembly.GetExecutingAssembly().Location).DirectoryName + "\KaraokeShowPlugins\"
-                PluginManager.InitializePluginInStorageFolder()
                 'Load basic manager
                 displayManager.LoadDisplayPlugin()
-                'Load scraper manager
-                ScraperManager.LoadScrapers()
                 'Add all display
                 mbApiInterface.MB_AddMenuItem("mnuView/Karaoke Show", "", Sub()
                                                                           End Sub).Visible = True
@@ -137,4 +141,39 @@ Public Class Plugin
                 End If
         End Select
     End Sub
+
+    ' return an array of lyric or artwork provider names this plugin supports
+    ' the providers will be iterated through one by one and passed to the RetrieveLyrics/ RetrieveArtwork function in order set by the user in the MusicBee Tags(2) preferences screen until a match is found
+    Public Function GetProviders() As String()
+        'If LyricsRetrieval mode is enabled, return provider
+        Dim lrMode As Boolean = Boolean.Parse(If(SettingManager.InternalGetValue("convert_scraper_to_musicbee_lyrics_provider"), "False"))
+        If lrMode = True Then
+            Return PluginManager.GetAllAvailableScrapers().Select(Function(t) $"{t.Name}(KaraokeShow)").ToArray()
+        Else
+            Return New String() {}
+        End If
+    End Function
+
+    ' return lyrics for the requested artist/title from the requested provider
+    ' only required if PluginType = LyricsRetrieval
+    ' return Nothing if no lyrics are found
+    Public Function RetrieveLyrics(ByVal sourceFileUrl As String, ByVal artist As String, ByVal trackTitle As String, ByVal album As String, ByVal synchronisedPreferred As Boolean, ByVal provider As String) As String
+        If Not provider.Contains("(KaraokeShow)") Then Return Nothing
+        'Get scraper instance
+        Dim scraper As IScraper = ScraperManager.GetScraper(provider.Replace("(KaraokeShow)", ""))
+        'Search lyrics
+        Dim lyricsInfo() As ScraperLyricInfo = ScraperManager.SearchLyricsFrom(scraper, trackTitle, artist)
+        If lyricsInfo.Length = 0 Then Return Nothing
+        'Download Lyrics
+        Dim lyricsText As String = ScraperManager.DownloadLyricsFrom(scraper, lyricsInfo(0))
+        If lyricsText IsNot Nothing AndAlso lyricsText <> "" Then Return lyricsText Else Return Nothing
+    End Function
+
+    ' return Base64 string representation of the artwork binary data from the requested provider
+    ' only required if PluginType = ArtworkRetrieval
+    ' return Nothing if no artwork is found
+    Public Function RetrieveArtwork(ByVal sourceFileUrl As String, ByVal albumArtist As String, ByVal album As String, ByVal provider As String) As String
+        'Return Convert.ToBase64String(artworkBinaryData)
+        Return Nothing
+    End Function
 End Class
