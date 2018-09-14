@@ -67,6 +67,7 @@ Public Class DesktopLyricsDisplay
         Dim gPath As New GraphicsPath()
         gPath.AddString(Text, Font.FontFamily, Font.Style, Font.Size, New Drawing.Point(10, 10), StringFormat.GenericDefault)
         'scale text size
+        Percentage = If(Percentage <= 1, Percentage, 1)
         Dim textWidth As Integer = Convert.ToInt32(fontSize.Width * Percentage)
 
         'create bitmap after time
@@ -89,7 +90,7 @@ Public Class DesktopLyricsDisplay
         End If
         'Paint correct time foreground
         Dim BMPAfter As Bitmap = Nothing
-        If textWidth > 0 Then
+        If textWidth > 0 And Percentage <= 1 Then
             BMPAfter = BMPAfterAll.Clone(New Rectangle(0, 0, textWidth, Convert.ToInt32(fontSize.Height)), Imaging.PixelFormat.DontCare)
         End If
         'Paint basic background
@@ -109,7 +110,7 @@ Public Class DesktopLyricsDisplay
             paintGraphics.FillRectangle(backBrush, 0, 0, lrcBMP.Width, lrcBMP.Height)
         End If
         'Compose two image
-        If textWidth > 0 Then
+        If textWidth > 0 And Percentage <= 1 Then
             paintGraphics.DrawImage(BMPAfter, New Drawing.Point(0, 0))
             BMPAfter.Dispose()
         End If
