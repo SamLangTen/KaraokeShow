@@ -28,6 +28,7 @@ Public Class DesktopLyricsDisplay
     Private lyrics As List(Of String) = Nothing
     Private Index As Integer = 0
     Private Percentage As Double = 0
+    Private IsLastLyricsUpper As Boolean = False
 
     Private PaintingCaches As New Dictionary(Of String, BitmapCache)
     Private ValuesCaches As New Dictionary(Of String, Object)
@@ -52,7 +53,7 @@ Public Class DesktopLyricsDisplay
         'Extract fontsize from ValuesCaches
         fontSize = If(ValuesCaches.Keys.Contains(NowText), ValuesCaches(NowText), Nothing)
         If fontSize = Nothing Then
-            Dim font As New Font(fontName, Me.fontSize, fStyle)
+            Dim font As New Font(fontName, ConvertPxToPt(Me.LyricsForm.Height / 2), fStyle)
             fontSize = GetCorrectFontSize(NowText, font)
         End If
         'Paint basic background
@@ -61,23 +62,12 @@ Public Class DesktopLyricsDisplay
         If (lyricsBMPCache IsNot Nothing) AndAlso lyricsBMPCache.Tag = NowText Then
             g.DrawImage(lyricsBMPCache.Image, New PointF(0, 0))
         Else
-            'Add Font
-            Dim font As New Font(fontName, Me.fontSize, fStyle)
-            'Add text path
-            Dim gPath As New GraphicsPath()
-            gPath.AddString(NowText, font.FontFamily, font.Style, font.Size, New Drawing.Point(10, 10), StringFormat.GenericDefault)
             'Add brush
             Dim bshBefore As New LinearGradientBrush(New PointF(0, 0), New PointF(0, 100), colorB1, colorB2)
-            'Create bitmap and graphic
-            Dim lrcBMP As New Bitmap(Convert.ToInt32(fontSize.Width), Convert.ToInt32(fontSize.Height))
-            Dim specialGraphics As Graphics = Graphics.FromImage(lrcBMP)
-            'paint text
-            specialGraphics.CompositingQuality = CompositingQuality.HighQuality
-            specialGraphics.SmoothingMode = SmoothingMode.HighQuality
-            specialGraphics.TextRenderingHint = Drawing.Text.TextRenderingHint.SingleBitPerPixelGridFit
-            specialGraphics.PixelOffsetMode = PixelOffsetMode.HighQuality
-            specialGraphics.FillPath(bshBefore, gPath)
-            specialGraphics.DrawPath(New Pen(outerColorB, 2), gPath)
+            'Add Outer pen
+            Dim outerPen As New Pen(outerColorB, 2)
+            'Get FullsizeTextBitmap
+            Dim lrcBMP = DrawOriginalFullsizeTextBitmap(NowText, bshBefore, outerPen, fontSize)
             'save caches
             lyricsBMPCache = New BitmapCache()
             lyricsBMPCache.Image = lrcBMP
@@ -107,21 +97,12 @@ Public Class DesktopLyricsDisplay
         If lyricsBMPCache IsNot Nothing AndAlso lyricsBMPCache.Tag = NowText Then
             bmpAfterAll = lyricsBMPCache.Image
         Else
-            'Add Font
-            Dim font As New Font(fontName, Me.fontSize, fStyle)
             'Add brush
             Dim bshAfter As New LinearGradientBrush(New PointF(0, 0), New PointF(0, 100), colorA1, colorA2)
-            'Add text path
-            Dim gPath As New GraphicsPath()
-            gPath.AddString(NowText, font.FontFamily, font.Style, font.Size, New Drawing.Point(10, 10), StringFormat.GenericDefault)
-            bmpAfterAll = New Bitmap(Convert.ToInt32(fontSize.Width), Convert.ToInt32(fontSize.Height))
-            Dim graphicAfter As Graphics = Graphics.FromImage(bmpAfterAll)
-            graphicAfter.CompositingQuality = CompositingQuality.HighQuality
-            graphicAfter.SmoothingMode = SmoothingMode.HighQuality
-            graphicAfter.TextRenderingHint = Drawing.Text.TextRenderingHint.SingleBitPerPixelGridFit
-            graphicAfter.PixelOffsetMode = PixelOffsetMode.HighQuality
-            graphicAfter.FillPath(bshAfter, gPath)
-            graphicAfter.DrawPath(New Pen(outerColorA, 2), gPath)
+            'Add pen
+            Dim outerPen As New Pen(outerColorA, 2)
+            'Get FullsizeTextBitmap
+            bmpAfterAll = DrawOriginalFullsizeTextBitmap(NowText, bshAfter, outerPen, fontSize)
             lyricsBMPCache = New BitmapCache()
             lyricsBMPCache.Image = bmpAfterAll
             lyricsBMPCache.Tag = NowText
@@ -129,8 +110,12 @@ Public Class DesktopLyricsDisplay
         End If
         'curtail and paint on pipeline g
         If textWidth > 0 And Percentage <= 1 Then
-            Dim BMPAfter = bmpAfterAll.Clone(New Rectangle(0, 0, textWidth, Convert.ToInt32(fontSize.Height)), Imaging.PixelFormat.DontCare)
-            g.DrawImage(BMPAfter, New Drawing.Point(0, 0))
+            Try
+                Dim BMPAfter = bmpAfterAll.Clone(New Rectangle(0, 0, textWidth, Convert.ToInt32(fontSize.Height)), Imaging.PixelFormat.DontCare)
+                g.DrawImage(BMPAfter, New Drawing.Point(0, 0))
+            Catch ex As Exception
+
+            End Try
         End If
         Return g
     End Function
@@ -151,6 +136,25 @@ Public Class DesktopLyricsDisplay
 #End Region
 
 #Region "Painting Methods"
+
+    Private Function DrawOriginalFullsizeTextBitmap(Text As String, Brush As Brush, OuterPen As Pen, Size As SizeF) As Bitmap
+        'Add Font
+        Dim font As New Font(fontName, Me.fontSize, fStyle)
+        'Add text path
+        Dim gPath As New GraphicsPath()
+        gPath.AddString(NowText, font.FontFamily, font.Style, font.Size, New Drawing.Point(10, 10), StringFormat.GenericDefault)
+        'Create bitmap and graphic
+        Dim lrcBMP As New Bitmap(Convert.ToInt32(Size.Width), Convert.ToInt32(Size.Height))
+        Dim specialGraphics As Graphics = Graphics.FromImage(lrcBMP)
+        'paint text
+        specialGraphics.CompositingQuality = CompositingQuality.HighQuality
+        specialGraphics.SmoothingMode = SmoothingMode.HighQuality
+        specialGraphics.TextRenderingHint = Drawing.Text.TextRenderingHint.SingleBitPerPixelGridFit
+        specialGraphics.PixelOffsetMode = PixelOffsetMode.HighQuality
+        specialGraphics.FillPath(Brush, gPath)
+        specialGraphics.DrawPath(OuterPen, gPath)
+        Return lrcBMP
+    End Function
 
     Private Function ConvertPxToPt(px As Single) As Single
         Dim preGraphics As Graphics = Graphics.FromImage(New Bitmap(10, 10))
