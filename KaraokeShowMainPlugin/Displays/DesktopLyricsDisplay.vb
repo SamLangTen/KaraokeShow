@@ -29,6 +29,10 @@ Public Class DesktopLyricsDisplay
     Private Index As Integer = 0
     Private Percentage As Double = 0
     Private IsLastLyricsUpper As Boolean = False
+    Private bmpNowWidth As Single
+    Private bmpNowHeight As Single
+    Private bmpHalfX As Single
+    Private bmpLastHalfX As Single
 
     Private PaintingCaches As New Dictionary(Of String, BitmapCache)
     Private ValuesCaches As New Dictionary(Of String, Object)
@@ -53,15 +57,13 @@ Public Class DesktopLyricsDisplay
         'Extract fontsize from ValuesCaches
         fontSize = If(ValuesCaches.Keys.Contains(NowText), ValuesCaches(NowText), Nothing)
         If fontSize = Nothing Then
-            Dim font As New Font(fontName, ConvertPxToPt(Me.LyricsForm.Height / 2), fStyle)
+            Dim font As New Font(fontName, Me.fontSize, fStyle)
             fontSize = GetCorrectFontSize(NowText, font)
         End If
         'Paint basic background
         'extract from cache if possible
         Dim lyricsBMPCache = If(PaintingCaches.Keys.Contains("DrawBeforeText"), PaintingCaches("DrawBeforeText"), Nothing)
-        If (lyricsBMPCache IsNot Nothing) AndAlso lyricsBMPCache.Tag = NowText Then
-            g.DrawImage(lyricsBMPCache.Image, New PointF(0, 0))
-        Else
+        If (lyricsBMPCache Is Nothing) OrElse lyricsBMPCache.Tag <> NowText Then
             'Add brush
             Dim bshBefore As New LinearGradientBrush(New PointF(0, 0), New PointF(0, 100), colorB1, colorB2)
             'Add Outer pen
@@ -73,8 +75,12 @@ Public Class DesktopLyricsDisplay
             lyricsBMPCache.Image = lrcBMP
             lyricsBMPCache.Tag = NowText
             PaintingCaches.Item("DrawBeforeText") = lyricsBMPCache
-            'draw on pipeline graphics
-            g.DrawImage(lrcBMP, New PointF(0, 0))
+        End If
+        'Point on upper or down
+        If Me.Index Mod 2 = 0 Then
+            g.DrawImage(lyricsBMPCache.Image, New PointF(0, 0))
+        Else
+            g.DrawImage(lyricsBMPCache.Image, New PointF(0, bmpNowHeight / 2))
         End If
         Return g
     End Function
@@ -112,7 +118,11 @@ Public Class DesktopLyricsDisplay
         If textWidth > 0 And Percentage <= 1 Then
             Try
                 Dim BMPAfter = bmpAfterAll.Clone(New Rectangle(0, 0, textWidth, Convert.ToInt32(fontSize.Height)), Imaging.PixelFormat.DontCare)
-                g.DrawImage(BMPAfter, New Drawing.Point(0, 0))
+                If Me.Index Mod 2 = 0 Then
+                    g.DrawImage(BMPAfter, New PointF(0, 0))
+                Else
+                    g.DrawImage(BMPAfter, New PointF(0, bmpNowHeight / 2))
+                End If
             Catch ex As Exception
 
             End Try
@@ -130,7 +140,42 @@ Public Class DesktopLyricsDisplay
     End Function
 
     Private Function PP_DrawNextLyrics(g As Graphics) As Graphics
-        Throw New NotImplementedException
+        If Me.lyrics Is Nothing Or (Me.Index + 1) >= Me.lyrics.Count Then Return g
+        Dim nextText As String = Me.lyrics(Me.Index + 1)
+        Dim fontSize As SizeF
+        'Extract fontsize from ValuesCaches
+        fontSize = If(ValuesCaches.Keys.Contains(nextText), ValuesCaches(nextText), Nothing)
+        If fontSize = Nothing Then
+            Dim font As New Font(fontName, Me.fontSize, fStyle)
+            fontSize = GetCorrectFontSize(nextText, font)
+        End If
+        'Paint basic background
+        'extract from cache if possible
+        Dim lyricsBMPCache = If(PaintingCaches.Keys.Contains("DrawNextLyrics"), PaintingCaches("DrawNextLyrics"), Nothing)
+        If (lyricsBMPCache Is Nothing) OrElse lyricsBMPCache.Tag <> nextText Then
+            'Add brush
+            Dim bshBefore As New LinearGradientBrush(New PointF(0, 0), New PointF(0, 100), colorB1, colorB2)
+            'Add Outer pen
+            Dim outerPen As New Pen(outerColorB, 2)
+            'Get FullsizeTextBitmap
+            Dim lrcBMP = DrawOriginalFullsizeTextBitmap(nextText, bshBefore, outerPen, fontSize)
+            'save caches
+            lyricsBMPCache = New BitmapCache()
+            lyricsBMPCache.Image = lrcBMP
+            lyricsBMPCache.Tag = nextText
+            PaintingCaches.Item("DrawNextLyrics") = lyricsBMPCache
+        End If
+        'Point on upper or down
+        Try
+            If (Me.Index + 1) Mod 2 = 0 Then
+                g.DrawImage(lyricsBMPCache.Image, New PointF(0, 0))
+            Else
+                g.DrawImage(lyricsBMPCache.Image, New PointF(0, bmpNowHeight / 2))
+            End If
+        Catch ex As Exception
+
+        End Try
+        Return g
     End Function
 
 #End Region
@@ -142,7 +187,7 @@ Public Class DesktopLyricsDisplay
         Dim font As New Font(fontName, Me.fontSize, fStyle)
         'Add text path
         Dim gPath As New GraphicsPath()
-        gPath.AddString(NowText, font.FontFamily, font.Style, font.Size, New Drawing.Point(10, 10), StringFormat.GenericDefault)
+        gPath.AddString(Text, font.FontFamily, font.Style, font.Size, New Drawing.Point(10, 10), StringFormat.GenericDefault)
         'Create bitmap and graphic
         Dim lrcBMP As New Bitmap(Convert.ToInt32(Size.Width), Convert.ToInt32(Size.Height))
         Dim specialGraphics As Graphics = Graphics.FromImage(lrcBMP)
@@ -231,14 +276,20 @@ Public Class DesktopLyricsDisplay
         'Get bmp
         'Dim bmp As Bitmap = GetLyricsBMP(Me.NowText, Percentage, font, colorB1, colorB2, colorA1, colorA2)
         Dim fs = GetCorrectFontSize(NowText, font)
-        Dim bmp As New Bitmap(Convert.ToInt32(fs.Width), Convert.ToInt32(fs.Height))
+        Dim nextfs = If((Me.Index + 1) < lyrics.Count, GetCorrectFontSize(Me.lyrics(Me.Index + 1), font), New SizeF(0, 0))
+        'bmpNowWidth = If(Me.Index Mod 2 = 0, If(fs.Width / 2 + nextfs.Width > fs.Width, fs.Width / 2 + nextfs.Width, fs.Width), If(nextfs.Width / 2 + fs.Width > nextfs.Width, nextfs.Width / 2 + fs.Width, nextfs.Width))
+        bmpNowWidth = If(fs.Width > nextfs.Width, fs.Width, nextfs.Width)
+        bmpNowHeight = fs.Height + nextfs.Height
+        'bmpLastHalfX = bmpHalfX
+        'bmpHalfX = If(Me.Index Mod 2 = 0, fs.Width / 2, nextfs.Width / 2)
+        Dim bmp As New Bitmap(Convert.ToInt32(bmpNowWidth), Convert.ToInt32(bmpNowHeight))
         Dim pipelineGraphics As Graphics = Graphics.FromImage(bmp)
         pipelineGraphics.CompositingQuality = CompositingQuality.HighQuality
         pipelineGraphics.SmoothingMode = SmoothingMode.HighQuality
         pipelineGraphics.TextRenderingHint = Drawing.Text.TextRenderingHint.SingleBitPerPixelGridFit
         pipelineGraphics.PixelOffsetMode = PixelOffsetMode.HighQuality
         'Set Pipeline
-        pipelineGraphics = PP_DrawAfterText(PP_DrawBeforeText(PP_DrawMouseHover(pipelineGraphics)))
+        pipelineGraphics = PP_DrawAfterText(PP_DrawBeforeText(PP_DrawNextLyrics(PP_DrawMouseHover(pipelineGraphics))))
         'Enable to window
         Me.LyricsForm.BeginInvoke(Sub()
                                       Me.LyricsForm.UpdateLayeredWindow(bmp)
