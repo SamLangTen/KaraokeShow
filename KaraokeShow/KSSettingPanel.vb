@@ -1,4 +1,8 @@
-﻿Public Class KSSettingPanel
+﻿Imports System.Globalization
+Imports System.Threading
+Imports System.Windows.Forms
+
+Public Class KSSettingPanel
 
     Public ReadOnly Property SyncRate As String
         Get
@@ -29,8 +33,20 @@
 
     End Sub
 
+    Private Sub ApplyResource()
+        Dim res = New System.ComponentModel.ComponentResourceManager(Me.GetType())
+        For Each item As Control In Me.Controls
+            res.ApplyResources(item, item.Name)
+        Next
+        Me.ResumeLayout(False)
+        Me.PerformLayout()
+        res.ApplyResources(Me, Me.Name)
+    End Sub
+
     Private Sub KSSettingPanel_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         LoadSettings()
+        InternationalizationManager.EnableLanguage()
+        ApplyResource()
     End Sub
 
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click

@@ -31,6 +31,10 @@ Public Class Plugin
         'initialize setting manager
         SettingManager.SettingStoragePath = mbApiInterface.Setting_GetPersistentStoragePath.Invoke()
         SettingManager.Load()
+        'Bind I18nManager API
+        InternationalizationManager.MB_GetLocalizationAPI = Function(id, d)
+                                                                Return mbApiInterface.MB_GetLocalisation(id, d)
+                                                            End Function
         'optize plugin manager
         PluginManager.KSPluginStorageFolder = New FileInfo(Assembly.GetExecutingAssembly().Location).DirectoryName + "\KaraokeShowPlugins\"
         PluginManager.InitializePluginInStorageFolder()
