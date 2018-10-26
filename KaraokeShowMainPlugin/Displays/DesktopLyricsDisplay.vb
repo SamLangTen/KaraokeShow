@@ -25,14 +25,13 @@ Public Class DesktopLyricsDisplay
     'Fields Used by Paint Pipelines
     Private IsMouseHoverForm As Boolean = False
     Private NowText As String = ""
+    Private NextText As String = ""
     Private lyrics As List(Of String) = Nothing
     Private Index As Integer = 0
     Private Percentage As Double = 0
     Private IsLastLyricsUpper As Boolean = False
     Private bmpNowWidth As Single
     Private bmpNowHeight As Single
-    Private bmpHalfX As Single
-    Private bmpLastHalfX As Single
 
     Private PaintingCaches As New Dictionary(Of String, BitmapCache)
     Private ValuesCaches As New Dictionary(Of String, Object)
@@ -77,11 +76,15 @@ Public Class DesktopLyricsDisplay
             PaintingCaches.Item("DrawBeforeText") = lyricsBMPCache
         End If
         'Point on upper or down
-        If Me.Index Mod 2 = 0 Then
-            g.DrawImage(lyricsBMPCache.Image, New PointF(0, 0))
-        Else
-            g.DrawImage(lyricsBMPCache.Image, New PointF(0, bmpNowHeight / 2))
-        End If
+        Try
+            If IsLastLyricsUpper Then
+                g.DrawImage(lyricsBMPCache.Image, New PointF(0, 0))
+            Else
+                g.DrawImage(lyricsBMPCache.Image, New PointF(0, bmpNowHeight / 2))
+            End If
+        Catch ex As Exception
+
+        End Try
         Return g
     End Function
 
@@ -118,7 +121,7 @@ Public Class DesktopLyricsDisplay
         If textWidth > 0 And Percentage <= 1 Then
             Try
                 Dim BMPAfter = bmpAfterAll.Clone(New Rectangle(0, 0, textWidth, Convert.ToInt32(fontSize.Height)), Imaging.PixelFormat.DontCare)
-                If Me.Index Mod 2 = 0 Then
+                If IsLastLyricsUpper Then
                     g.DrawImage(BMPAfter, New PointF(0, 0))
                 Else
                     g.DrawImage(BMPAfter, New PointF(0, bmpNowHeight / 2))
@@ -140,34 +143,32 @@ Public Class DesktopLyricsDisplay
     End Function
 
     Private Function PP_DrawNextLyrics(g As Graphics) As Graphics
-        If Me.lyrics Is Nothing Or (Me.Index + 1) >= Me.lyrics.Count Then Return g
-        Dim nextText As String = Me.lyrics(Me.Index + 1)
         Dim fontSize As SizeF
         'Extract fontsize from ValuesCaches
-        fontSize = If(ValuesCaches.Keys.Contains(nextText), ValuesCaches(nextText), Nothing)
+        fontSize = If(ValuesCaches.Keys.Contains(NextText), ValuesCaches(NextText), Nothing)
         If fontSize = Nothing Then
             Dim font As New Font(fontName, Me.fontSize, fStyle)
-            fontSize = GetCorrectFontSize(nextText, font)
+            fontSize = GetCorrectFontSize(NextText, font)
         End If
         'Paint basic background
         'extract from cache if possible
         Dim lyricsBMPCache = If(PaintingCaches.Keys.Contains("DrawNextLyrics"), PaintingCaches("DrawNextLyrics"), Nothing)
-        If (lyricsBMPCache Is Nothing) OrElse lyricsBMPCache.Tag <> nextText Then
+        If (lyricsBMPCache Is Nothing) OrElse lyricsBMPCache.Tag <> NextText Then
             'Add brush
             Dim bshBefore As New LinearGradientBrush(New PointF(0, 0), New PointF(0, 100), colorB1, colorB2)
             'Add Outer pen
             Dim outerPen As New Pen(outerColorB, 2)
             'Get FullsizeTextBitmap
-            Dim lrcBMP = DrawOriginalFullsizeTextBitmap(nextText, bshBefore, outerPen, fontSize)
+            Dim lrcBMP = DrawOriginalFullsizeTextBitmap(NextText, bshBefore, outerPen, fontSize)
             'save caches
             lyricsBMPCache = New BitmapCache()
             lyricsBMPCache.Image = lrcBMP
-            lyricsBMPCache.Tag = nextText
+            lyricsBMPCache.Tag = NextText
             PaintingCaches.Item("DrawNextLyrics") = lyricsBMPCache
         End If
         'Point on upper or down
         Try
-            If (Me.Index + 1) Mod 2 = 0 Then
+            If Not IsLastLyricsUpper Then
                 g.DrawImage(lyricsBMPCache.Image, New PointF(0, 0))
             Else
                 g.DrawImage(lyricsBMPCache.Image, New PointF(0, bmpNowHeight / 2))
@@ -271,15 +272,21 @@ Public Class DesktopLyricsDisplay
         'Get Font
         Dim font As New Font(fontName, fontSize, fStyle)
         'Get text
-        If Me.lyrics IsNot Nothing AndAlso Me.Index < lyrics.Count Then Me.NowText = Me.lyrics(Me.Index) Else Exit Sub
+        If Me.lyrics IsNot Nothing Then
+            If Me.Index < lyrics.Count Then Me.NowText = Me.lyrics(Me.Index)
+            Me.NextText = If(Me.lyrics.Skip(Me.Index + 1).FirstOrDefault(Function(s) s?.Trim() <> ""), "")
+        Else
+            Exit Sub
+        End If
         If Me.NowText Is Nothing Then Exit Sub
         'Get bmp
         'Dim bmp As Bitmap = GetLyricsBMP(Me.NowText, Percentage, font, colorB1, colorB2, colorA1, colorA2)
         Dim fs = GetCorrectFontSize(NowText, font)
-        Dim nextfs = If((Me.Index + 1) < lyrics.Count, GetCorrectFontSize(Me.lyrics(Me.Index + 1), font), New SizeF(0, 0))
+        Dim nextfs = If((Me.Index + 1) < lyrics.Count, GetCorrectFontSize(NextText, font), New SizeF(0, 0))
         'bmpNowWidth = If(Me.Index Mod 2 = 0, If(fs.Width / 2 + nextfs.Width > fs.Width, fs.Width / 2 + nextfs.Width, fs.Width), If(nextfs.Width / 2 + fs.Width > nextfs.Width, nextfs.Width / 2 + fs.Width, nextfs.Width))
         bmpNowWidth = If(fs.Width > nextfs.Width, fs.Width, nextfs.Width)
-        bmpNowHeight = fs.Height + nextfs.Height
+        bmpNowHeight = fs.Height * 2
+
         'bmpLastHalfX = bmpHalfX
         'bmpHalfX = If(Me.Index Mod 2 = 0, fs.Width / 2, nextfs.Width / 2)
         Dim bmp As New Bitmap(Convert.ToInt32(bmpNowWidth), Convert.ToInt32(bmpNowHeight))
@@ -322,6 +329,10 @@ Public Class DesktopLyricsDisplay
 
     Public Sub OnLyricsSentenceChanged(SentenceIndex As Integer) Implements IDisplay.OnLyricsSentenceChanged
         Me.Index = SentenceIndex
+        'Change Upper Down
+        If Me.lyrics IsNot Nothing AndAlso Me.lyrics(SentenceIndex) IsNot Nothing AndAlso Me.lyrics(SentenceIndex).Trim() <> "" Then
+            IsLastLyricsUpper = Not IsLastLyricsUpper
+        End If
         Me.RefreshWindow()
     End Sub
 
