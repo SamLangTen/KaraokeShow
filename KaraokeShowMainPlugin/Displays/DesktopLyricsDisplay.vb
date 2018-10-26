@@ -324,11 +324,16 @@ Public Class DesktopLyricsDisplay
 
     Public Sub OnLyricsFileChanged(LyricsText As List(Of String)) Implements IDisplay.OnLyricsFileChanged
         Me.lyrics = LyricsText
+        Me.NowText = ""
+        Me.NextText = ""
+        Me.IsLastLyricsUpper = False
+        Me.Percentage = 0
         Me.RefreshWindow()
     End Sub
 
     Public Sub OnLyricsSentenceChanged(SentenceIndex As Integer) Implements IDisplay.OnLyricsSentenceChanged
         Me.Index = SentenceIndex
+        Me.Percentage = 0
         'Change Upper Down
         If Me.lyrics IsNot Nothing AndAlso Me.lyrics(SentenceIndex) IsNot Nothing AndAlso Me.lyrics(SentenceIndex).Trim() <> "" Then
             IsLastLyricsUpper = Not IsLastLyricsUpper
