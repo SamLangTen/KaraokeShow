@@ -136,6 +136,10 @@ Public Class Plugin
                 '        Me.KaraokeShowInterface.StartNewPlayback(mbApiInterface.NowPlaying_GetFileProperty(FilePropertyType.Url), mbApiInterface.NowPlaying_GetFileTag(MetaDataType.TrackTitle), mbApiInterface.NowPlaying_GetFileTag(MetaDataType.Artist))
                 '    End If
                 'End If
+            Case NotificationType.PlayStateChanged
+                If mbApiInterface.Player_GetPlayState() = PlayState.Stopped Then
+                    Me.KaraokeShowInterface.ResetPlayback()
+                End If
         End Select
     End Sub
 
