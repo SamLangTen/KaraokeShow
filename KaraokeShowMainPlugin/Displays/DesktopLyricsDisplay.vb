@@ -24,12 +24,11 @@ Public Class DesktopLyricsDisplay
 
     'Fields Used by Paint Pipelines
     Private IsMouseHoverForm As Boolean = False
-    Private NowText As String = ""
-    Private NextText As String = ""
-    Private lyrics As List(Of String) = Nothing
+    Private NowText As LyricsDLDItem
+    Private NextText As LyricsDLDItem
+    Private lyrics As List(Of LyricsDLDItem) = Nothing
     Private Index As Integer = 0
     Private Percentage As Double = 0
-    Private IsLastLyricsUpper As Boolean = False
     Private bmpNowWidth As Single
     Private bmpNowHeight As Single
 
@@ -52,32 +51,33 @@ Public Class DesktopLyricsDisplay
 #Region "Paint Pipelines"
 
     Private Function PP_DrawBeforeText(g As Graphics) As Graphics
+        If NowText Is Nothing Then Return g
         Dim fontSize As SizeF
         'Extract fontsize from ValuesCaches
-        fontSize = If(ValuesCaches.Keys.Contains(NowText), ValuesCaches(NowText), Nothing)
+        fontSize = If(ValuesCaches.Keys.Contains(NowText.Text), ValuesCaches(NowText.Text), Nothing)
         If fontSize = Nothing Then
             Dim font As New Font(fontName, Me.fontSize, fStyle)
-            fontSize = GetCorrectFontSize(NowText, font)
+            fontSize = GetCorrectFontSize(NowText.Text, font)
         End If
         'Paint basic background
         'extract from cache if possible
         Dim lyricsBMPCache = If(PaintingCaches.Keys.Contains("DrawBeforeText"), PaintingCaches("DrawBeforeText"), Nothing)
-        If (lyricsBMPCache Is Nothing) OrElse lyricsBMPCache.Tag <> NowText Then
+        If (lyricsBMPCache Is Nothing) OrElse lyricsBMPCache.Tag <> NowText.Text Then
             'Add brush
             Dim bshBefore As New LinearGradientBrush(New PointF(0, 0), New PointF(0, 100), colorB1, colorB2)
             'Add Outer pen
             Dim outerPen As New Pen(outerColorB, 2)
             'Get FullsizeTextBitmap
-            Dim lrcBMP = DrawOriginalFullsizeTextBitmap(NowText, bshBefore, outerPen, fontSize)
+            Dim lrcBMP = DrawOriginalFullsizeTextBitmap(NowText.Text, bshBefore, outerPen, fontSize)
             'save caches
             lyricsBMPCache = New BitmapCache()
             lyricsBMPCache.Image = lrcBMP
-            lyricsBMPCache.Tag = NowText
+            lyricsBMPCache.Tag = NowText.Text
             PaintingCaches.Item("DrawBeforeText") = lyricsBMPCache
         End If
         'Point on upper or down
         Try
-            If IsLastLyricsUpper Then
+            If NowText.IsUpper Then
                 g.DrawImage(lyricsBMPCache.Image, New PointF(0, 0))
             Else
                 g.DrawImage(lyricsBMPCache.Image, New PointF(0, bmpNowHeight / 2))
@@ -89,12 +89,13 @@ Public Class DesktopLyricsDisplay
     End Function
 
     Private Function PP_DrawAfterText(g As Graphics) As Graphics
+        If NowText Is Nothing Then Return g
         Dim fontSize As SizeF
         'Extract fontsize from ValuesCaches
-        fontSize = If(ValuesCaches.Keys.Contains(NowText), ValuesCaches(NowText), Nothing)
+        fontSize = If(ValuesCaches.Keys.Contains(NowText.Text), ValuesCaches(NowText.Text), Nothing)
         If fontSize = Nothing Then
             Dim font As New Font(fontName, Me.fontSize, fStyle)
-            fontSize = GetCorrectFontSize(NowText, font)
+            fontSize = GetCorrectFontSize(NowText.Text, font)
         End If
         'Calc Percentage
         Dim percentageA = If(Percentage <= 1, Percentage, 1)
@@ -103,7 +104,7 @@ Public Class DesktopLyricsDisplay
         'paint fullsize foreground bmp or extract from cache
         Dim bmpAfterAll As Bitmap = Nothing
         Dim lyricsBMPCache = If(PaintingCaches.Keys.Contains("DrawAfterText"), PaintingCaches("DrawAfterText"), Nothing)
-        If lyricsBMPCache IsNot Nothing AndAlso lyricsBMPCache.Tag = NowText Then
+        If lyricsBMPCache IsNot Nothing AndAlso lyricsBMPCache.Tag = NowText.Text Then
             bmpAfterAll = lyricsBMPCache.Image
         Else
             'Add brush
@@ -111,17 +112,17 @@ Public Class DesktopLyricsDisplay
             'Add pen
             Dim outerPen As New Pen(outerColorA, 2)
             'Get FullsizeTextBitmap
-            bmpAfterAll = DrawOriginalFullsizeTextBitmap(NowText, bshAfter, outerPen, fontSize)
+            bmpAfterAll = DrawOriginalFullsizeTextBitmap(NowText.Text, bshAfter, outerPen, fontSize)
             lyricsBMPCache = New BitmapCache()
             lyricsBMPCache.Image = bmpAfterAll
-            lyricsBMPCache.Tag = NowText
+            lyricsBMPCache.Tag = NowText.Text
             PaintingCaches.Item("DrawAfterText") = lyricsBMPCache
         End If
         'curtail and paint on pipeline g
         If textWidth > 0 And Percentage <= 1 Then
             Try
                 Dim BMPAfter = bmpAfterAll.Clone(New Rectangle(0, 0, textWidth, Convert.ToInt32(fontSize.Height)), Imaging.PixelFormat.DontCare)
-                If IsLastLyricsUpper Then
+                If NowText.IsUpper Then
                     g.DrawImage(BMPAfter, New PointF(0, 0))
                 Else
                     g.DrawImage(BMPAfter, New PointF(0, bmpNowHeight / 2))
@@ -143,32 +144,33 @@ Public Class DesktopLyricsDisplay
     End Function
 
     Private Function PP_DrawNextLyrics(g As Graphics) As Graphics
+        If NextText Is Nothing Then Return g
         Dim fontSize As SizeF
         'Extract fontsize from ValuesCaches
-        fontSize = If(ValuesCaches.Keys.Contains(NextText), ValuesCaches(NextText), Nothing)
+        fontSize = If(ValuesCaches.Keys.Contains(NextText.Text), ValuesCaches(NextText.Text), Nothing)
         If fontSize = Nothing Then
             Dim font As New Font(fontName, Me.fontSize, fStyle)
-            fontSize = GetCorrectFontSize(NextText, font)
+            fontSize = GetCorrectFontSize(NextText.Text, font)
         End If
         'Paint basic background
         'extract from cache if possible
         Dim lyricsBMPCache = If(PaintingCaches.Keys.Contains("DrawNextLyrics"), PaintingCaches("DrawNextLyrics"), Nothing)
-        If (lyricsBMPCache Is Nothing) OrElse lyricsBMPCache.Tag <> NextText Then
+        If (lyricsBMPCache Is Nothing) OrElse lyricsBMPCache.Tag <> NextText.Text Then
             'Add brush
             Dim bshBefore As New LinearGradientBrush(New PointF(0, 0), New PointF(0, 100), colorB1, colorB2)
             'Add Outer pen
             Dim outerPen As New Pen(outerColorB, 2)
             'Get FullsizeTextBitmap
-            Dim lrcBMP = DrawOriginalFullsizeTextBitmap(NextText, bshBefore, outerPen, fontSize)
+            Dim lrcBMP = DrawOriginalFullsizeTextBitmap(NextText.Text, bshBefore, outerPen, fontSize)
             'save caches
             lyricsBMPCache = New BitmapCache()
             lyricsBMPCache.Image = lrcBMP
-            lyricsBMPCache.Tag = NextText
+            lyricsBMPCache.Tag = NextText.Text
             PaintingCaches.Item("DrawNextLyrics") = lyricsBMPCache
         End If
         'Point on upper or down
         Try
-            If Not IsLastLyricsUpper Then
+            If NextText.IsUpper Then
                 g.DrawImage(lyricsBMPCache.Image, New PointF(0, 0))
             Else
                 g.DrawImage(lyricsBMPCache.Image, New PointF(0, bmpNowHeight / 2))
@@ -273,16 +275,16 @@ Public Class DesktopLyricsDisplay
         Dim font As New Font(fontName, fontSize, fStyle)
         'Get text
         If Me.lyrics IsNot Nothing Then
-            If Me.Index < lyrics.Count Then Me.NowText = Me.lyrics(Me.Index)
-            Me.NextText = If(Me.lyrics.Skip(Me.Index + 1).FirstOrDefault(Function(s) s?.Trim() <> ""), "")
+            If Me.Index < lyrics.Count Then Me.NowText = Me.lyrics.FirstOrDefault(Function(l) l.OriginalIndex = Index)
+            Me.NextText = Me.lyrics.FirstOrDefault(Function(l) l.OriginalIndex > Me.Index)
         Else
             Exit Sub
         End If
         If Me.NowText Is Nothing Then Exit Sub
         'Get bmp
         'Dim bmp As Bitmap = GetLyricsBMP(Me.NowText, Percentage, font, colorB1, colorB2, colorA1, colorA2)
-        Dim fs = GetCorrectFontSize(NowText, font)
-        Dim nextfs = If((Me.Index + 1) < lyrics.Count, GetCorrectFontSize(NextText, font), New SizeF(0, 0))
+        Dim fs = GetCorrectFontSize(NowText.Text, font)
+        Dim nextfs = If((Me.Index + 1) < lyrics.Count, GetCorrectFontSize(NextText.Text, font), New SizeF(0, 0))
         'bmpNowWidth = If(Me.Index Mod 2 = 0, If(fs.Width / 2 + nextfs.Width > fs.Width, fs.Width / 2 + nextfs.Width, fs.Width), If(nextfs.Width / 2 + fs.Width > nextfs.Width, nextfs.Width / 2 + fs.Width, nextfs.Width))
         bmpNowWidth = If(fs.Width > nextfs.Width, fs.Width, nextfs.Width)
         bmpNowHeight = fs.Height * 2
@@ -323,10 +325,18 @@ Public Class DesktopLyricsDisplay
     End Sub
 
     Public Sub OnLyricsFileChanged(LyricsText As List(Of String)) Implements IDisplay.OnLyricsFileChanged
-        Me.lyrics = LyricsText
-        Me.NowText = ""
-        Me.NextText = ""
-        Me.IsLastLyricsUpper = False
+        If LyricsText IsNot Nothing Then
+            Me.lyrics = New List(Of LyricsDLDItem)
+            Dim isUpper As Boolean = True
+            For i = 0 To LyricsText.Count - 1
+                If LyricsText(i) IsNot Nothing AndAlso LyricsText(i).Trim() <> "" Then
+                    Me.lyrics.Add(New LyricsDLDItem() With {.IsUpper = isUpper, .OriginalIndex = i, .Text = LyricsText(i)})
+                    isUpper = Not isUpper
+                End If
+            Next
+        End If
+        Me.NowText = Nothing
+        Me.NextText = Nothing
         Me.Percentage = 0
         Me.RefreshWindow()
     End Sub
@@ -334,10 +344,6 @@ Public Class DesktopLyricsDisplay
     Public Sub OnLyricsSentenceChanged(SentenceIndex As Integer) Implements IDisplay.OnLyricsSentenceChanged
         Me.Index = SentenceIndex
         Me.Percentage = 0
-        'Change Upper Down
-        If Me.lyrics IsNot Nothing AndAlso Me.lyrics(SentenceIndex) IsNot Nothing AndAlso Me.lyrics(SentenceIndex).Trim() <> "" Then
-            IsLastLyricsUpper = Not IsLastLyricsUpper
-        End If
         Me.RefreshWindow()
     End Sub
 
@@ -385,6 +391,12 @@ Public Class DesktopLyricsDisplay
 
 #End Region
 
+End Class
+
+Friend Class LyricsDLDItem
+    Public Property IsUpper As Boolean
+    Public Property OriginalIndex As Integer
+    Public Property Text As String
 End Class
 
 ''' <summary>
