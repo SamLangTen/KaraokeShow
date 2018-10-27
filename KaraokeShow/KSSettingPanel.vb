@@ -66,6 +66,7 @@ Public Class KSSettingPanel
     End Sub
 
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
+        If ComboBox1.SelectedItem Is Nothing Then Exit Sub
         Dim pluginType As Type = If(PluginManager.GetAllAvailableDisplays().FirstOrDefault(Function(s) s.FullName = CType(ComboBox1.SelectedItem, ComboboxItemPluginTypePair).Fullname), PluginManager.GetAllAvailableScrapers().FirstOrDefault(Function(s) s.FullName = CType(ComboBox1.SelectedItem, ComboboxItemPluginTypePair).Fullname))
         If pluginType Is Nothing Then
             MsgBox("Plugin Not Found", MsgBoxStyle.Critical)

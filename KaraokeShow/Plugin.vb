@@ -9,30 +9,9 @@ Public Class Plugin
     Private about As New PluginInfo
     Private KaraokeShowInterface As KaraokeShow
     Private displayManager As DisplayManager
-    Private ReadOnly Property set_InternalLyricsScraper As Boolean
-        Get
-            Return Boolean.Parse(If(SettingManager.InternalGetValue("use_internal_lyrics_scraper"), "False"))
-        End Get
-    End Property
 
     Public Function Initialise(ByVal apiInterfacePtr As IntPtr) As PluginInfo
-        CopyMemory(mbApiInterface, apiInterfacePtr, 4)
-        If mbApiInterface.MusicBeeVersion = MusicBeeVersion.v2_0 Then
-            ' MusicBee version 2.0 - Api methods > revision 25 are not available
-            CopyMemory(mbApiInterface, apiInterfacePtr, 456)
-        ElseIf mbApiInterface.MusicBeeVersion = MusicBeeVersion.v2_1 Then
-            CopyMemory(mbApiInterface, apiInterfacePtr, 516)
-        ElseIf mbApiInterface.MusicBeeVersion = MusicBeeVersion.v2_2 Then
-            CopyMemory(mbApiInterface, apiInterfacePtr, 584)
-        ElseIf mbApiInterface.MusicBeeVersion = MusicBeeVersion.v2_3 Then
-            CopyMemory(mbApiInterface, apiInterfacePtr, 596)
-        ElseIf mbApiInterface.MusicBeeVersion = MusicBeeVersion.v2_4 Then
-            CopyMemory(mbApiInterface, apiInterfacePtr, 604)
-        ElseIf mbApiInterface.MusicBeeVersion = MusicBeeVersion.v2_5 Then
-            CopyMemory(mbApiInterface, apiInterfacePtr, 648)
-        Else
-            CopyMemory(mbApiInterface, apiInterfacePtr, Marshal.SizeOf(mbApiInterface))
-        End If
+        MusicBeeApiInterface.Initialise(mbApiInterface, apiInterfacePtr)
         'initialize setting manager
         SettingManager.SettingStoragePath = mbApiInterface.Setting_GetPersistentStoragePath.Invoke()
         SettingManager.Load()

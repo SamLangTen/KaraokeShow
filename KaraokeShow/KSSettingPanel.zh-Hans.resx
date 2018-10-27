@@ -131,7 +131,7 @@
     <value>插件(&amp;P)</value>
   </data>
   <data name="Button1.Text" xml:space="preserve">
-    <value>设置(&amp;S)</value>
+    <value>设置(&amp;E)</value>
   </data>
   <data name="CheckBox1.Size" type="System.Drawing.Size, System.Drawing">
     <value>348, 16</value>
@@ -139,5 +139,11 @@
   <data name="CheckBox1.Text" xml:space="preserve">
     <value>将KaraokeShow内置歌词刮削器导入MusicBee的歌词查询器(&amp;C)
 </value>
+  </data>
+  <data name="CheckBox2.Size" type="System.Drawing.Size, System.Drawing">
+    <value>276, 16</value>
+  </data>
+  <data name="CheckBox2.Text" xml:space="preserve">
+    <value>使用KaraokeShow内置歌词搜索程序加载歌词(&amp;U)</value>
   </data>
 </root>
