@@ -12,13 +12,13 @@ Imports System.Runtime.InteropServices
 <Assembly: AssemblyDescription("A lyric searching and displaying plugin for MusicBee")>
 <Assembly: AssemblyCompany("")>
 <Assembly: AssemblyProduct("KaraokeShow for MusicBee")>
-<Assembly: AssemblyCopyright("Copyright © Samersions 2015")>
-<Assembly: AssemblyTrademark("")> 
+<Assembly: AssemblyCopyright("Copyright © Samersions 2018")>
+<Assembly: AssemblyTrademark("")>
 
 <Assembly: ComVisible(False)>
 
 'The following GUID is for the ID of the typelib if this project is exposed to COM
-<Assembly: Guid("9f68bf65-7a93-428e-8bee-5aba35694a55")> 
+<Assembly: Guid("9f68bf65-7a93-428e-8bee-5aba35694a55")>
 
 ' Version information for an assembly consists of the following four values:
 '
@@ -31,5 +31,4 @@ Imports System.Runtime.InteropServices
 ' by using the '*' as shown below:
 ' <Assembly: AssemblyVersion("1.0.*")> 
 
-<Assembly: AssemblyVersion("1.0.0.0")> 
-<Assembly: AssemblyFileVersion("1.0.0.0")> 
+<Assembly: AssemblyVersion("0.1.*")>
