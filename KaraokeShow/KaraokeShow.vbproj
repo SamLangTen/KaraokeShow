@@ -118,6 +118,9 @@
     <Compile Include="Windows\WindowsManager.vb" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="KSSettingPanel.ja.resx">
+      <DependentUpon>KSSettingPanel.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="KSSettingPanel.resx">
       <DependentUpon>KSSettingPanel.vb</DependentUpon>
     </EmbeddedResource>

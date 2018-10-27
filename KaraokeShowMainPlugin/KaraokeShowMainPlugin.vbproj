@@ -110,6 +110,9 @@
     <EmbeddedResource Include="Displays\DesktopLyricsForm.resx">
       <DependentUpon>DesktopLyricsForm.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Displays\DesktopLyricsSetting.ja.resx">
+      <DependentUpon>DesktopLyricsSetting.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Displays\DesktopLyricsSetting.resx">
       <DependentUpon>DesktopLyricsSetting.vb</DependentUpon>
     </EmbeddedResource>

@@ -153,13 +153,13 @@
     <value>6</value>
   </data>
   <data name="TextBox2.Location" type="System.Drawing.Point, System.Drawing">
-    <value>99, 23</value>
+    <value>133, 23</value>
   </data>
   <data name="CheckBox2.TabIndex" type="System.Int32, mscorlib">
     <value>6</value>
   </data>
   <data name="Button1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>268, 49</value>
+    <value>302, 49</value>
   </data>
   <data name="&gt;&gt;Label1.ZOrder" xml:space="preserve">
     <value>8</value>
@@ -183,7 +183,7 @@
     <value>0</value>
   </data>
   <data name="TextBox1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>99, 0</value>
+    <value>133, 0</value>
   </data>
   <data name="Label2.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
@@ -195,7 +195,7 @@
     <value>2</value>
   </data>
   <data name="Label2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>89, 12</value>
+    <value>125, 12</value>
   </data>
   <data name="CheckBox1.Text" xml:space="preserve">
     <value>&amp;Import KaraokeShow Internal Scraper as MusicBee LyricsRetrieval</value>
@@ -204,7 +204,7 @@
     <value>Label1</value>
   </data>
   <data name="Label2.Text" xml:space="preserve">
-    <value>&amp;Lyrics Timeout</value>
+    <value>&amp;Lyrics Query Timeout</value>
   </data>
   <data name="Label3.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -325,7 +325,7 @@
     <value>$this</value>
   </data>
   <data name="ComboBox1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>99, 49</value>
+    <value>133, 49</value>
   </data>
   <data name="TextBox1.Size" type="System.Drawing.Size, System.Drawing">
     <value>163, 21</value>
@@ -374,8 +374,5 @@
   </data>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
-  </metadata>
-  <metadata name="$this.Language" type="System.Globalization.CultureInfo, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>zh-Hans</value>
   </metadata>
 </root>

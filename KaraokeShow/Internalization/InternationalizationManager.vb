@@ -5,6 +5,7 @@
         Dim langDict As New Dictionary(Of String, String)
         langDict("Language") = "en"
         langDict("语言") = "zh-Hans"
+        langDict("言語") = "ja"
         'Get culture text
         Dim mbLang = MB_GetLocalizationAPI?.Invoke("Main.field.173", "Language")
         Dim cultureText = If(langDict.ContainsKey(mbLang), langDict(mbLang), "en")
