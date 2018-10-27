@@ -20,7 +20,8 @@ Public Class DesktopLyricsDisplay
     Private fontName As String = "微软雅黑"
     Private fontSize As Single = 60
     Private fStyle As FontStyle = FontStyle.Bold
-    Private windowWidth As Single = 1000
+    Private windowX As Integer = 0
+    Private windowY As Integer = 0
 
     'Fields Used by Paint Pipelines
     Private IsMouseHoverForm As Boolean = False
@@ -35,6 +36,7 @@ Public Class DesktopLyricsDisplay
     Private PaintingCaches As New Dictionary(Of String, BitmapCache)
     Private ValuesCaches As New Dictionary(Of String, Object)
     Private _LyricsForm As DesktopLyricsForm
+
     ''' <summary>
     ''' Represent the display form entity
     ''' </summary>
@@ -220,7 +222,9 @@ Public Class DesktopLyricsDisplay
 
 #End Region
 
-
+    ''' <summary>
+    ''' Load Settings through KaraokeShow
+    ''' </summary>
     Private Sub LoadSettings()
         'Get colors
         Dim cb1, cb2, ca1, ca2, bca, bcb As String
@@ -250,6 +254,21 @@ Public Class DesktopLyricsDisplay
         Dim fStyleS As String = fStyle.ToString()
         GetSetting.Invoke(Me, "FontStyle", fStyleS)
         fStyle = [Enum].Parse(GetType(FontStyle), fStyleS)
+        'Get Window Position
+        Dim wx As String = windowX.ToString()
+        Dim wy As String = windowY.ToString()
+        GetSetting.Invoke(Me, "WindowX", wx)
+        GetSetting.Invoke(Me, "WindowY", wy)
+        windowX = Integer.Parse(wx)
+        windowY = Integer.Parse(wy)
+    End Sub
+
+    ''' <summary>
+    ''' Save Position Settings of DLD into KaraokeShow Setting File
+    ''' </summary>
+    Private Sub SavePositionSettings()
+        SetSetting.Invoke(Me, "WindowX", windowX.ToString())
+        SetSetting.Invoke(Me, "WindowY", windowY.ToString())
     End Sub
 
     ''' <summary>
@@ -262,6 +281,8 @@ Public Class DesktopLyricsDisplay
             Case "mouse_leave"
                 Me.IsMouseHoverForm = False
         End Select
+        windowX = Me.LyricsForm.Location.X
+        windowY = Me.LyricsForm.Location.Y
         Me.RefreshWindow()
     End Sub
 
@@ -322,6 +343,7 @@ Public Class DesktopLyricsDisplay
 
     Public Sub CloseDisplay() Implements IDisplay.CloseDisplay
         Me.LyricsForm.Close()
+        SavePositionSettings()
     End Sub
 
     Public Sub OnLyricsFileChanged(LyricsText As List(Of String)) Implements IDisplay.OnLyricsFileChanged
@@ -354,6 +376,7 @@ Public Class DesktopLyricsDisplay
 
     Public Sub ShowDisplay() Implements IDisplay.ShowDisplay
         Me.LyricsForm.Show()
+        Me.LyricsForm.Location = New Drawing.Point(windowX, windowY)
     End Sub
 
     Public Sub OnLoaded() Implements IKSPlugin.OnLoaded
@@ -387,6 +410,10 @@ Public Class DesktopLyricsDisplay
         'Reset Cache
         Me.ValuesCaches.Clear()
         Me.PaintingCaches.Clear()
+    End Sub
+
+    Public Sub OnUnloaded() Implements IKSPlugin.OnUnloaded
+        SavePositionSettings()
     End Sub
 
 #End Region

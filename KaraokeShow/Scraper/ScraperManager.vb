@@ -19,6 +19,16 @@ Public Class ScraperManager
     End Sub
 
     ''' <summary>
+    ''' Unload all scrapers and clear scraper list
+    ''' </summary>
+    Public Shared Sub UnloadScrapers()
+        ScraperManager.availableScraperInstance.ForEach(Sub(s)
+                                                            CType(s, IKSPlugin).OnUnloaded()
+                                                        End Sub)
+        ScraperManager.availableScraperInstance.Clear()
+    End Sub
+
+    ''' <summary>
     ''' Search and download lyric file automatically
     ''' </summary>
     ''' <param name="Title">music title</param>

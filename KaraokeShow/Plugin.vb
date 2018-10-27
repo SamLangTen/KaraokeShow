@@ -97,6 +97,9 @@ Public Class Plugin
 
     ' MusicBee is closing the plugin (plugin is being disabled by user or MusicBee is shutting down)
     Public Sub Close(ByVal reason As PluginCloseReason)
+        'Unload all plugins
+        Me.displayManager.UnloadDisplayPlugin()
+        ScraperManager.UnloadScrapers()
         'Reset playback
         Me.KaraokeShowInterface.ResetPlayback()
         'Write settings

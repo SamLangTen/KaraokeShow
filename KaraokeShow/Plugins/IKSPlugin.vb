@@ -8,6 +8,7 @@ Public Interface IKSPlugin
     Property SetSetting As KSPlugin_Setting_SetDelegate
     Sub DisplaySetting()
     Sub OnLoaded()
+    Sub OnUnloaded()
     Sub OnSettingReset()
 End Interface
 Public Delegate Sub KSPlugin_Setting_SetDelegate(Caller As Object, Key As String, Value As String)
