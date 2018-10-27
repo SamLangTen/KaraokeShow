@@ -9,7 +9,12 @@ Public Class LRCFile
         Normal
     End Enum
     Sub New(LRCString As String)
-        Me.LoadFileInNormalMode(LRCString)
+        Try
+            Me.LoadFileInNormalMode(LRCString)
+        Catch ex As Exception
+            Me.IsLRCFormat = False
+        End Try
+        If (Me.TimeLines.Count = 0) Then Me.IsLRCFormat = False
     End Sub
 
     Public Property Artist As String
@@ -24,6 +29,8 @@ Public Class LRCFile
         End Get
     End Property
     Public Property TimeLines As New List(Of LRCTimeline)
+
+    Public Property IsLRCFormat() As Boolean = True
 
     Private Sub LoadFileInNormalMode(ByVal lrcfilestr As String)
         'Regex expressions to analyze timeline And other info：\[[\d\.:\]\[]*\][^(\[)]*

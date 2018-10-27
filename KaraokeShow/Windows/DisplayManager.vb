@@ -21,6 +21,9 @@ Public Class DisplayManager
     Public Sub ResetAllLyricTicking()
         Me.LyricsText = Nothing
         Me.NowLyric = Nothing
+        Me.SendLyricsFileChanged(Nothing)
+        Me.SendLyricsSentenceChanged(0)
+        Me.SendLyricsWordProgressChanged(0)
     End Sub
     ''' <summary>
     ''' Notify all display that a new lyric file is coming
@@ -64,6 +67,10 @@ Public Class DisplayManager
     ''' </summary>
     Public Function GetDisplayNames() As String()
         Return (From i In Me.DisplayList Select i.GetType().Name)
+    End Function
+
+    Public Function GetDisplays() As IDisplay()
+        Return Me.DisplayList.ToArray()
     End Function
 
     ''' <summary>

@@ -9,13 +9,14 @@ Public Class PluginManager
         If Caller.GetType().GetInterfaces().Contains(GetType(IDisplay)) Then pluginType = PluginType.Display
         SettingManager.PluginSetValue(Caller.GetType().Assembly.FullName, Caller.GetType().FullName, pluginType, Key, Value)
     End Sub
-    Private Shared Function KSPlugin_Setting_GetValueHandler(Caller As Object, Key As String) As String
+    Private Shared Sub KSPlugin_Setting_GetValueHandler(Caller As Object, Key As String, ByRef ReturnValue As String)
         Dim pluginType As PluginType = PluginType.Display
         If Caller.GetType().GetInterfaces().Contains(GetType(IScraper)) Then pluginType = PluginType.Scraper
         If Caller.GetType().GetInterfaces().Contains(GetType(IDisplay)) Then pluginType = PluginType.Display
-        Return SettingManager.PluginGetValue(Caller.GetType().Assembly.FullName, Caller.GetType().FullName, pluginType, Key)
-    End Function
-
+        Dim value = SettingManager.PluginGetValue(Caller.GetType().Assembly.FullName, Caller.GetType().FullName, pluginType, Key)
+        ReturnValue = If(value = "", ReturnValue, value)
+    End Sub
+    Private Shared Property PluginInstanceOnSettingResetFunction As New List(Of Action)
 #End Region
 
     ''' <summary>
@@ -61,6 +62,8 @@ Public Class PluginManager
             Dim objInstance As IKSPlugin = Activator.CreateInstance(TypeName)
             objInstance.SetSetting = AddressOf KSPlugin_Setting_SetValueHandler
             objInstance.GetSetting = AddressOf KSPlugin_Setting_GetValueHandler
+            objInstance.OnLoaded()
+            PluginManager.PluginInstanceOnSettingResetFunction.Add(AddressOf objInstance.OnSettingReset)
             Return objInstance
         Else
             Return Nothing
@@ -80,5 +83,12 @@ Public Class PluginManager
         PluginManager.AvailablePlugins.ForEach(Sub(e)
                                                    e.Load()
                                                End Sub)
+    End Sub
+
+    ''' <summary>
+    ''' Notify All Plugins to Reset their settings
+    ''' </summary>
+    Public Shared Sub NotifyAllPluginResetSetting()
+        PluginManager.PluginInstanceOnSettingResetFunction.ForEach(Sub(a) a.Invoke())
     End Sub
 End Class

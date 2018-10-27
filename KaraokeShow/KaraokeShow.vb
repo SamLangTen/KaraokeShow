@@ -6,6 +6,22 @@ Imports System.Threading.Tasks
 Public Class KaraokeShow
 
 #Region "Private Members"
+
+#Region "Settings"
+    Private ReadOnly Property set_RefreshRate As Integer
+        Get
+            Return Integer.Parse(If(SettingManager.InternalGetValue("synchronization_rate"), "25"))
+        End Get
+    End Property
+    Private ReadOnly Property set_LyricsLoadTimeout As Integer
+        Get
+            Return Integer.Parse(If(SettingManager.InternalGetValue("lyrics_loading_timeout"), "10000"))
+
+        End Get
+    End Property
+
+#End Region
+
     Private lrcCtrl As LyricSynchronizationController
     Private canBackgroundMethodRunning As Boolean = False
     Private filename As String
@@ -18,6 +34,7 @@ Public Class KaraokeShow
     ''' </summary>
     Private Sub BackgroundSynchronization()
         Dim previousLyricIndex As Integer = -1
+        Dim previousPercentage As Double = 0
         While True
             'Whether to exit background method
             If canBackgroundMethodRunning = False Then Exit Sub
@@ -32,15 +49,22 @@ Public Class KaraokeShow
             'To refresh word displaing progress
             If (previousLyricIndex < 0) OrElse (previousLyricIndex > (lrcCtrl.LRC.TimeLines.Count - 1）) Then Continue While
             Dim wordPercentage = lrcCtrl.GetWordPercentage(previousLyricIndex, Me.GetNowPosition().Invoke())
-            displayManager.SendLyricsWordProgressChanged(wordPercentage)
-            Thread.Sleep(200)
+            If Not previousPercentage = wordPercentage Then displayManager.SendLyricsWordProgressChanged(wordPercentage)
+            previousPercentage = wordPercentage
+            Thread.Sleep(set_RefreshRate)
         End While
     End Sub
     ''' <summary>
     ''' A background method for lyrics loading
     ''' </summary>
     Private Sub BackgroundLyricLoading()
-        Dim lrcf = LyricsManager.SearchFromContainingFolder(Me.filename, Me.trackTitle, Me.artist)
+        'TODO:User can change the order.
+        Dim lrcf As LRCFile
+        If (Me.GetLrycisFromMusicbee().Invoke <> "") Then
+            lrcf = New LRCFile(Me.GetLrycisFromMusicbee().Invoke())
+        Else
+            lrcf = LyricsManager.SearchFromContainingFolder(Me.filename, Me.trackTitle, Me.artist)
+        End If
         If lrcf Is Nothing Then lrcf = LyricsManager.SearchFromScraper(Me.trackTitle, Me.artist)
         If lrcf IsNot Nothing Then
             RaiseEvent LyricsDownloadFinished(Me, New LyricsFetchFinishedEventArgs() With {.Lyrics = lrcf})
@@ -69,6 +93,11 @@ Public Class KaraokeShow
     ''' </summary>
     ''' <returns>Position(Mileseconds)</returns>
     Public Property GetNowPosition As Func(Of Integer)
+
+    ''' <summary>
+    ''' Get lyrcis from MusicBee
+    ''' </summary>
+    Public Property GetLrycisFromMusicbee As Func(Of String)
 
     ''' <summary>
     ''' Get wether the playback of KaraokeShow is running
@@ -107,7 +136,7 @@ Public Class KaraokeShow
                                        Dim cts As New CancellationTokenSource()
                                        Dim threadKidLoad As New Task(AddressOf BackgroundLyricLoading, cts)
                                        threadKidLoad.Start()
-                                       Thread.Sleep(10000) 'Set timeout
+                                       Thread.Sleep(set_LyricsLoadTimeout) 'Set timeout
                                        cts.Cancel()
                                    End Sub)
         threadLoad.Start()
