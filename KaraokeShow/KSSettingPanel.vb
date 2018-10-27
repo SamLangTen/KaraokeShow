@@ -29,6 +29,12 @@ Public Class KSSettingPanel
         End Get
     End Property
 
+    Public ReadOnly Property KSInternalLyricsLoader As Boolean
+        Get
+            Return CheckBox2.Checked
+        End Get
+    End Property
+
     Private Sub LoadSettings()
         'Load Plugins List
         PluginManager.GetAllAvailableScrapers().ForEach(Sub(t) ComboBox1.Items.Add(New ComboboxItemPluginTypePair() With {.Fullname = t.FullName, .DisplayName = $"{t.Name}({t.Assembly.FullName})"}))
@@ -39,7 +45,8 @@ Public Class KSSettingPanel
         TextBox2.Text = If(SettingManager.InternalGetValue("lyrics_loading_timeout"), "10000")
         'Scraper to LR
         CheckBox1.Checked = Boolean.Parse(If(SettingManager.InternalGetValue("convert_scraper_to_musicbee_lyrics_provider"), "False"))
-
+        'Internal Scraper
+        CheckBox2.Checked = Boolean.Parse(If(SettingManager.InternalGetValue("use_internal_lyrics_scraper"), "False"))
     End Sub
 
     Private Sub ApplyResource()

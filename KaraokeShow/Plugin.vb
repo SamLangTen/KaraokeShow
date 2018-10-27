@@ -9,6 +9,11 @@ Public Class Plugin
     Private about As New PluginInfo
     Private KaraokeShowInterface As KaraokeShow
     Private displayManager As DisplayManager
+    Private ReadOnly Property set_InternalLyricsScraper As Boolean
+        Get
+            Return Boolean.Parse(If(SettingManager.InternalGetValue("use_internal_lyrics_scraper"), "False"))
+        End Get
+    End Property
 
     Public Function Initialise(ByVal apiInterfacePtr As IntPtr) As PluginInfo
         CopyMemory(mbApiInterface, apiInterfacePtr, 4)
@@ -90,6 +95,7 @@ Public Class Plugin
             SettingManager.InternalSetValue("synchronization_rate", SettingPanel.SyncRate)
             SettingManager.InternalSetValue("lyrics_loading_timeout", SettingPanel.LyricsTimeout)
             SettingManager.InternalSetValue("convert_scraper_to_musicbee_lyrics_provider", SettingPanel.Scraper2Musicbee.ToString())
+            SettingManager.InternalSetValue("use_internal_lyrics_scraper", SettingPanel.KSInternalLyricsLoader.ToString())
             SettingManager.Save()
             PluginManager.NotifyAllPluginResetSetting()
         End If
@@ -136,16 +142,21 @@ Public Class Plugin
                                                                                                                                                 End Sub).Visible = True
                                                               End Sub)
             ' perform startup initialisation
-            Case NotificationType.PlayStateChanged
-                If Not (mbApiInterface.Player_GetPlayState() = PlayState.Playing Or mbApiInterface.Player_GetPlayState() = PlayState.Paused) Then
-                    Me.KaraokeShowInterface.ResetPlayback()
-                End If
-                If mbApiInterface.Player_GetPlayState() = PlayState.Playing Then
-                    If Me.KaraokeShowInterface.IsPlaybackRunning = False Then
-                        Me.KaraokeShowInterface.ResetPlayback()
-                        Me.KaraokeShowInterface.StartNewPlayback(mbApiInterface.NowPlaying_GetFileProperty(FilePropertyType.Url), mbApiInterface.NowPlaying_GetFileTag(MetaDataType.TrackTitle), mbApiInterface.NowPlaying_GetFileTag(MetaDataType.Artist))
-                    End If
-                End If
+            Case NotificationType.TrackChanged
+                Me.KaraokeShowInterface.ResetPlayback()
+
+                Threading.Thread.Sleep(500)
+                Me.KaraokeShowInterface.StartNewPlayback(mbApiInterface.NowPlaying_GetFileProperty(FilePropertyType.Url), mbApiInterface.NowPlaying_GetFileTag(MetaDataType.TrackTitle), mbApiInterface.NowPlaying_GetFileTag(MetaDataType.Artist))
+
+                'If Not (mbApiInterface.Player_GetPlayState() = PlayState.Playing Or mbApiInterface.Player_GetPlayState() = PlayState.Paused) Then
+                '    Me.KaraokeShowInterface.ResetPlayback()
+                'End If
+                'If mbApiInterface.Player_GetPlayState() = PlayState.Playing Then
+                '    If Me.KaraokeShowInterface.IsPlaybackRunning = False Then
+                '        Me.KaraokeShowInterface.ResetPlayback()
+                '        Me.KaraokeShowInterface.StartNewPlayback(mbApiInterface.NowPlaying_GetFileProperty(FilePropertyType.Url), mbApiInterface.NowPlaying_GetFileTag(MetaDataType.TrackTitle), mbApiInterface.NowPlaying_GetFileTag(MetaDataType.Artist))
+                '    End If
+                'End If
         End Select
     End Sub
 
