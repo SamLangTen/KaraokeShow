@@ -275,7 +275,7 @@ Public Class DesktopLyricsDisplay
         Dim font As New Font(fontName, fontSize, fStyle)
         'Get text
         If Me.lyrics IsNot Nothing Then
-            If Me.Index < lyrics.Count Then Me.NowText = Me.lyrics.FirstOrDefault(Function(l) l.OriginalIndex = Index)
+            If Me.Index <= Me.lyrics.LastOrDefault().OriginalIndex Then Me.NowText = Me.lyrics.FirstOrDefault(Function(l) l.OriginalIndex = Index)
             Me.NextText = Me.lyrics.FirstOrDefault(Function(l) l.OriginalIndex > Me.Index)
         Else
             Exit Sub
@@ -284,7 +284,7 @@ Public Class DesktopLyricsDisplay
         'Get bmp
         'Dim bmp As Bitmap = GetLyricsBMP(Me.NowText, Percentage, font, colorB1, colorB2, colorA1, colorA2)
         Dim fs = GetCorrectFontSize(NowText.Text, font)
-        Dim nextfs = If((Me.Index + 1) < lyrics.Count, GetCorrectFontSize(NextText.Text, font), New SizeF(0, 0))
+        Dim nextfs = If((Me.Index + 1) <= Me.lyrics.LastOrDefault().OriginalIndex, GetCorrectFontSize(NextText.Text, font), New SizeF(0, 0))
         'bmpNowWidth = If(Me.Index Mod 2 = 0, If(fs.Width / 2 + nextfs.Width > fs.Width, fs.Width / 2 + nextfs.Width, fs.Width), If(nextfs.Width / 2 + fs.Width > nextfs.Width, nextfs.Width / 2 + fs.Width, nextfs.Width))
         bmpNowWidth = If(fs.Width > nextfs.Width, fs.Width, nextfs.Width)
         bmpNowHeight = fs.Height * 2
@@ -397,6 +397,9 @@ Friend Class LyricsDLDItem
     Public Property IsUpper As Boolean
     Public Property OriginalIndex As Integer
     Public Property Text As String
+    Public Overrides Function ToString() As String
+        Return $"{OriginalIndex.ToString()},{IsUpper.ToString()},{Text}"
+    End Function
 End Class
 
 ''' <summary>
