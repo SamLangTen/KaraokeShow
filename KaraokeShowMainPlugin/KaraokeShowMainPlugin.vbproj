@@ -104,7 +104,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="Scrapers\XiamiScraper.vb" />
     <Compile Include="Win32.vb" />
   </ItemGroup>
   <ItemGroup>
@@ -135,7 +134,9 @@
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Scrapers\" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\KaraokeShow\KaraokeShow.vbproj">
       <Project>{a413c497-6606-47e0-8a5e-028ba7b0432d}</Project>
