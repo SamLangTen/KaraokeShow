@@ -1,4 +1,17 @@
-﻿Public Class KSSettingPanel
+﻿Imports System.Globalization
+Imports System.Threading
+Imports System.Windows.Forms
+
+Public Class KSSettingPanel
+    Private Class ComboboxItemPluginTypePair
+
+        Public Property Fullname As String
+        Public Property DisplayName As String
+
+        Public Overrides Function ToString() As String
+            Return DisplayName
+        End Function
+    End Class
 
     Public ReadOnly Property SyncRate As String
         Get
@@ -18,8 +31,8 @@
 
     Private Sub LoadSettings()
         'Load Plugins List
-        PluginManager.GetAllAvailableScrapers().Select(Function(s) s.FullName).ToList().ForEach(Sub(t) ComboBox1.Items.Add(t))
-        PluginManager.GetAllAvailableDisplays().Select(Function(d) d.FullName).ToList().ForEach(Sub(t) ComboBox1.Items.Add(t))
+        PluginManager.GetAllAvailableScrapers().ForEach(Sub(t) ComboBox1.Items.Add(New ComboboxItemPluginTypePair() With {.Fullname = t.FullName, .DisplayName = $"{t.Name}({t.Assembly.FullName})"}))
+        PluginManager.GetAllAvailableDisplays().ForEach(Sub(t) ComboBox1.Items.Add(New ComboboxItemPluginTypePair() With {.Fullname = t.FullName, .DisplayName = $"{t.Name}({t.Assembly.FullName})"}))
         'Load Rate
         TextBox1.Text = If(SettingManager.InternalGetValue("synchronization_rate"), "25")
         'Load Timeout
@@ -29,12 +42,24 @@
 
     End Sub
 
+    Private Sub ApplyResource()
+        Dim res = New System.ComponentModel.ComponentResourceManager(Me.GetType())
+        For Each item As Control In Me.Controls
+            res.ApplyResources(item, item.Name)
+        Next
+        Me.ResumeLayout(False)
+        Me.PerformLayout()
+        res.ApplyResources(Me, Me.Name)
+    End Sub
+
     Private Sub KSSettingPanel_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         LoadSettings()
+        InternationalizationManager.EnableLanguage()
+        ApplyResource()
     End Sub
 
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
-        Dim pluginType As Type = If(PluginManager.GetAllAvailableDisplays().FirstOrDefault(Function(s) s.FullName = ComboBox1.SelectedItem), PluginManager.GetAllAvailableScrapers().FirstOrDefault(Function(s) s.FullName = ComboBox1.SelectedItem))
+        Dim pluginType As Type = If(PluginManager.GetAllAvailableDisplays().FirstOrDefault(Function(s) s.FullName = CType(ComboBox1.SelectedItem, ComboboxItemPluginTypePair).Fullname), PluginManager.GetAllAvailableScrapers().FirstOrDefault(Function(s) s.FullName = CType(ComboBox1.SelectedItem, ComboboxItemPluginTypePair).Fullname))
         If pluginType Is Nothing Then
             MsgBox("Plugin Not Found", MsgBoxStyle.Critical)
             Exit Sub
