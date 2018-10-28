@@ -3,7 +3,7 @@ Imports System.Text.RegularExpressions
 ''' <summary>
 ''' Represent a lrc file object
 '''</summary>
-Public Class LRCFile
+Friend Class LRCFile
     Public Enum LRCFilemode
         Accurate
         Normal

@@ -116,7 +116,6 @@
     <Compile Include="Settings\SettingManager.vb" />
     <Compile Include="Windows\DisplayManager.vb" />
     <Compile Include="Windows\IDisplay.vb" />
-    <Compile Include="Windows\WindowsManager.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="KSSettingPanel.ja.resx">

@@ -2,7 +2,7 @@
 ''' <summary>
 ''' Represent an assembly of plugin
 ''' </summary>
-Public Class PluginAssembly
+Friend Class PluginAssembly
 
     Private plgAssmbly As Assembly
     Private assemblyFilename As String

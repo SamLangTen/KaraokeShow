@@ -1,7 +1,7 @@
 ﻿''' <summary>
 ''' The manager of all display,used to load display from PluginManager and be as a hub to resend message coming from Karaokeshow to all display
 ''' </summary>
-Public Class DisplayManager
+Friend Class DisplayManager
     ''' <summary>
     ''' Contains all displays loading from PluginManager
     ''' </summary>

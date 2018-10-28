@@ -4,7 +4,7 @@ Imports System.Xml.Serialization
 ''' <summary>
 ''' A setting manager in charge of setting writing and reading
 ''' </summary>
-Public Class SettingManager
+Friend Class SettingManager
 
 #Region "Private Members"
 

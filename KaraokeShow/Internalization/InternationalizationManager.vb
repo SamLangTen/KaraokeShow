@@ -1,7 +1,7 @@
 ﻿Imports System.Windows.Forms
 
 Public Class InternationalizationManager
-    Public Shared MB_GetLocalizationAPI As Func(Of String, String, String)
+    Friend Shared MB_GetLocalizationAPI As Func(Of String, String, String)
     Public Shared Function GetCurrentMusicBeeLanguage() As String
         'Initialize langDict that convert MusicBee setting to .Net Culture Text
         Dim langDict As New Dictionary(Of String, String)

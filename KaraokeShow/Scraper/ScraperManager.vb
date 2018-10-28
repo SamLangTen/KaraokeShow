@@ -1,7 +1,7 @@
 ﻿''' <summary>
 ''' A manager of scrapers
 ''' </summary>
-Public Class ScraperManager
+Friend Class ScraperManager
 
     ''' <summary>
     ''' Contains all available scrapers creating by scraper types that loading from plugin manager.

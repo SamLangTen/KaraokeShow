@@ -3,7 +3,7 @@ Imports System.Threading.Tasks
 ''' <summary>
 ''' Represent main interaction class of KaraokeShow
 ''' </summary>
-Public Class KaraokeShow
+Friend Class KaraokeShow
 
 #Region "Private Members"
 
