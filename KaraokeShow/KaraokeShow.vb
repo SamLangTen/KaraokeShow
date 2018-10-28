@@ -72,7 +72,7 @@ Friend Class KaraokeShow
                 lrcf = LyricsManager.SearchFromContainingFolder(Me.filename, Me.trackTitle, Me.artist)
             End If
             If lrcf Is Nothing Then lrcf = LyricsManager.SearchFromScraper(Me.trackTitle, Me.artist)
-            If lrcf IsNot Nothing Then
+            If lrcf IsNot Nothing AndAlso lrcf.IsLRCFormat = True Then
                 RaiseEvent LyricsDownloadFinished(Me, New LyricsFetchFinishedEventArgs() With {.Lyrics = lrcf})
             Else
                 'If no lyrics can be found,KaraokeShow will be reset
@@ -84,7 +84,12 @@ Friend Class KaraokeShow
                 If Me.GetLrycisFromMusicbee.Invoke() <> "" Then
                     Dim lrcf As LRCFile
                     lrcf = New LRCFile(Me.GetLrycisFromMusicbee.Invoke())
-                    RaiseEvent LyricsDownloadFinished(Me, New LyricsFetchFinishedEventArgs() With {.Lyrics = lrcf})
+                    If lrcf.IsLRCFormat = True Then
+                        RaiseEvent LyricsDownloadFinished(Me, New LyricsFetchFinishedEventArgs() With {.Lyrics = lrcf})
+                    Else
+                        Me.ResetPlayback()
+                        Exit While
+                    End If
                     Exit While
                 End If
             End While

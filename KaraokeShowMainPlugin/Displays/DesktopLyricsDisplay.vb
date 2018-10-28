@@ -295,7 +295,7 @@ Public Class DesktopLyricsDisplay
         'Get Font
         Dim font As New Font(fontName, fontSize, fStyle)
         'Get text
-        If Me.lyrics IsNot Nothing Then
+        If Me.lyrics IsNot Nothing AndAlso Me.lyrics.LastOrDefault() IsNot Nothing Then
             If Me.Index <= Me.lyrics.LastOrDefault().OriginalIndex Then Me.NowText = Me.lyrics.FirstOrDefault(Function(l) l.OriginalIndex = Index)
             Me.NextText = Me.lyrics.FirstOrDefault(Function(l) l.OriginalIndex > Me.Index)
         Else
