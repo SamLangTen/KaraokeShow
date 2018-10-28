@@ -49,20 +49,11 @@ Public Class KSSettingPanel
         CheckBox2.Checked = Boolean.Parse(If(SettingManager.InternalGetValue("use_internal_lyrics_scraper"), "False"))
     End Sub
 
-    Private Sub ApplyResource()
-        Dim res = New EmbedResourceManager(Me.GetType())
-        For Each item As Control In Me.Controls
-            res.ApplyResources(item, item.Name)
-        Next
-        Me.ResumeLayout(False)
-        Me.PerformLayout()
-        res.ApplyResources(Me, Me.Name)
-    End Sub
 
     Private Sub KSSettingPanel_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         LoadSettings()
         InternationalizationManager.EnableLanguage()
-        ApplyResource()
+        InternationalizationManager.ApplyResourceToWinForm(Me)
     End Sub
 
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click

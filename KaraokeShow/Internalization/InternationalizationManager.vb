@@ -1,4 +1,6 @@
-﻿Public Class InternationalizationManager
+﻿Imports System.Windows.Forms
+
+Public Class InternationalizationManager
     Public Shared MB_GetLocalizationAPI As Func(Of String, String, String)
     Public Shared Function GetCurrentMusicBeeLanguage() As String
         'Initialize langDict that convert MusicBee setting to .Net Culture Text
@@ -14,5 +16,14 @@
     Public Shared Sub EnableLanguage()
         Dim cultureText = InternationalizationManager.GetCurrentMusicBeeLanguage()
         Threading.Thread.CurrentThread.CurrentUICulture = New Globalization.CultureInfo(cultureText)
+    End Sub
+    Public Shared Sub ApplyResourceToWinForm(c As Control)
+        Dim res = New EmbedResourceManager(c.GetType())
+        For Each item As Control In c.Controls
+            res.ApplyResources(item, item.Name)
+        Next
+        c.ResumeLayout(False)
+        c.PerformLayout()
+        res.ApplyResources(c, c.Name)
     End Sub
 End Class
