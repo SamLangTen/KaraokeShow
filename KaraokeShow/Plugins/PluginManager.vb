@@ -7,13 +7,13 @@ Friend Class PluginManager
         Dim pluginType As PluginType = PluginType.Display
         If Caller.GetType().GetInterfaces().Contains(GetType(IScraper)) Then pluginType = PluginType.Scraper
         If Caller.GetType().GetInterfaces().Contains(GetType(IDisplay)) Then pluginType = PluginType.Display
-        SettingManager.PluginSetValue(Caller.GetType().Assembly.FullName, Caller.GetType().FullName, pluginType, Key, Value)
+        SettingManager.PluginSetValue(Caller.GetType().Assembly.FullName.Split(",")(0), Caller.GetType().FullName, pluginType, Key, Value)
     End Sub
     Private Shared Sub KSPlugin_Setting_GetValueHandler(Caller As Object, Key As String, ByRef ReturnValue As String)
         Dim pluginType As PluginType = PluginType.Display
         If Caller.GetType().GetInterfaces().Contains(GetType(IScraper)) Then pluginType = PluginType.Scraper
         If Caller.GetType().GetInterfaces().Contains(GetType(IDisplay)) Then pluginType = PluginType.Display
-        Dim value = SettingManager.PluginGetValue(Caller.GetType().Assembly.FullName, Caller.GetType().FullName, pluginType, Key)
+        Dim value = SettingManager.PluginGetValue(Caller.GetType().Assembly.FullName.Split(",")(0), Caller.GetType().FullName, pluginType, Key)
         ReturnValue = If(value = "", ReturnValue, value)
     End Sub
     Private Shared Property PluginInstanceOnSettingResetFunction As New List(Of Action)
