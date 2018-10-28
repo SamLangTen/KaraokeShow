@@ -2,7 +2,7 @@
 ''' <summary>
 ''' A manager which provides lyrics searching and loading functions
 ''' </summary>
-Public Class LyricsManager
+Friend Class LyricsManager
 
     ''' <summary>
     ''' Search from music containing folder

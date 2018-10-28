@@ -1,7 +1,7 @@
 ﻿''' <summary>
 ''' A controller to sync lyric and position
 ''' </summary>
-Public Class LyricSynchronizationController
+Friend Class LyricSynchronizationController
 
     ''' <summary>
     ''' Create a new LyricSynchronizationController instance with LyricFile instance

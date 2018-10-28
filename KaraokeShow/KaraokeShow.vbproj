@@ -76,6 +76,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EventArgs\LyricsFetchFinishedEventArgs.vb" />
+    <Compile Include="Internalization\EmbedResourceManager.vb" />
+    <Compile Include="Internalization\InternationalizationManager.vb" />
     <Compile Include="KaraokeShow.vb" />
     <Compile Include="LyricsDisplay\LRCFile.vb" />
     <Compile Include="LyricsDisplay\LyricsManager.vb" />
@@ -114,9 +116,11 @@
     <Compile Include="Settings\SettingManager.vb" />
     <Compile Include="Windows\DisplayManager.vb" />
     <Compile Include="Windows\IDisplay.vb" />
-    <Compile Include="Windows\WindowsManager.vb" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="KSSettingPanel.ja.resx">
+      <DependentUpon>KSSettingPanel.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="KSSettingPanel.resx">
       <DependentUpon>KSSettingPanel.vb</DependentUpon>
     </EmbeddedResource>

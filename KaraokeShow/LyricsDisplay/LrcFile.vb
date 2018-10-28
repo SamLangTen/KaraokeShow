@@ -3,7 +3,7 @@ Imports System.Text.RegularExpressions
 ''' <summary>
 ''' Represent a lrc file object
 '''</summary>
-Public Class LRCFile
+Friend Class LRCFile
     Public Enum LRCFilemode
         Accurate
         Normal
@@ -83,28 +83,7 @@ Public Class LRCFile
             Next
         Next
         'Adjust timeline order
-        Dim newtl As New ArrayList
-        Dim savetemptl As New ArrayList
-        For Each item As LRCTimeline In TimeLines
-            savetemptl.Add(item)
-        Next
-        For i As Integer = 1 To TimeLines.Count
-            Dim max As New LRCTimeline
-            For Each item As LRCTimeline In savetemptl
-                Dim intvalue As Integer = item.StartPoint.Millisecond + item.StartPoint.Minute * 60000 + item.StartPoint.Second * 1000
-                Dim maxintvalue As Integer = max.StartPoint.Millisecond + max.StartPoint.Minute * 60000 + max.StartPoint.Second * 1000
-                If intvalue > maxintvalue Then
-                    max.StartPoint = item.StartPoint
-                    max.Lyric = item.Lyric
-                End If
-            Next
-            savetemptl.Remove(max)
-            newtl.Insert(0, max)
-        Next
-        TimeLines.Clear()
-        For Each item As LRCTimeline In newtl
-            TimeLines.Add(item)
-        Next
+        Me.TimeLines = From i In Me.TimeLines Order By i.StartPoint
     End Sub
 End Class
 ''' <summary>

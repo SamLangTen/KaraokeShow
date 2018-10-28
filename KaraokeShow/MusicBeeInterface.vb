@@ -2,11 +2,33 @@
 
 Partial Public Class Plugin
     Public Const PluginInfoVersion As Short = 1
-    Public Const MinInterfaceVersion As Short = 36
-    Public Const MinApiRevision As Short = 48
+    Public Const MinInterfaceVersion As Short = 39
+    Public Const MinApiRevision As Short = 51
 
-    <StructLayout(LayoutKind.Sequential)> _
+    <StructLayout(LayoutKind.Sequential)>
     Public Structure MusicBeeApiInterface
+        Public Shared Sub Initialise(ByRef mbApiInterface As MusicBeeApiInterface, apiInterfacePtr As IntPtr)
+            CopyMemory(mbApiInterface, apiInterfacePtr, 4)
+            If mbApiInterface.MusicBeeVersion = MusicBeeVersion.v2_0 Then
+                ' MusicBee version 2.0 - Api methods > revision 25 are not available
+                CopyMemory(mbApiInterface, apiInterfacePtr, 456)
+            ElseIf mbApiInterface.MusicBeeVersion = MusicBeeVersion.v2_1 Then
+                CopyMemory(mbApiInterface, apiInterfacePtr, 516)
+            ElseIf mbApiInterface.MusicBeeVersion = MusicBeeVersion.v2_2 Then
+                CopyMemory(mbApiInterface, apiInterfacePtr, 584)
+            ElseIf mbApiInterface.MusicBeeVersion = MusicBeeVersion.v2_3 Then
+                CopyMemory(mbApiInterface, apiInterfacePtr, 596)
+            ElseIf mbApiInterface.MusicBeeVersion = MusicBeeVersion.v2_4 Then
+                CopyMemory(mbApiInterface, apiInterfacePtr, 604)
+            ElseIf mbApiInterface.MusicBeeVersion = MusicBeeVersion.v2_5 Then
+                CopyMemory(mbApiInterface, apiInterfacePtr, 648)
+            ElseIf mbApiInterface.MusicBeeVersion = MusicBeeVersion.v3_0 Then
+                CopyMemory(mbApiInterface, apiInterfacePtr, 652)
+            Else
+                CopyMemory(mbApiInterface, apiInterfacePtr, Marshal.SizeOf(mbApiInterface))
+            End If
+        End Sub
+
         Public ReadOnly Property MusicBeeVersion() As MusicBeeVersion
             Get
                 If ApiRevision <= 25 Then
@@ -21,8 +43,10 @@ Partial Public Class Plugin
                     Return MusicBeeVersion.v2_4
                 ElseIf ApiRevision <= 47 Then
                     Return MusicBeeVersion.v2_5
-                Else
+                ElseIf ApiRevision <= 48 Then
                     Return MusicBeeVersion.v3_0
+                Else
+                    Return MusicBeeVersion.v3_1
                 End If
             End Get
         End Property
@@ -39,7 +63,7 @@ Partial Public Class Plugin
         Public Library_SetFileTag As Library_SetFileTagDelegate
         Public Library_CommitTagsToFile As Library_CommitTagsToFileDelegate
         Public Library_GetLyrics As Library_GetLyricsDelegate
-        <Obsolete("Use Library_GetArtworkEx")> _
+        <Obsolete("Use Library_GetArtworkEx")>
         Public Library_GetArtwork As Library_GetArtworkDelegate
         Public Library_QueryFiles As Library_QueryFilesDelegate
         Public Library_QueryGetNextFile As Library_QueryGetNextFileDelegate
@@ -90,11 +114,11 @@ Partial Public Class Plugin
         Public MB_SendNotification As MB_SendNotificationDelegate
         Public MB_AddMenuItem As MB_AddMenuItemDelegate
         Public Setting_GetFieldName As Setting_GetFieldNameDelegate
-        <Obsolete("Use Library_QueryFilesEx", True)> _
+        <Obsolete("Use Library_QueryFilesEx", True)>
         Public Library_QueryGetAllFiles As Library_QueryGetAllFilesDelegate
-        <Obsolete("Use NowPlayingList_QueryFilesEx", True)> _
+        <Obsolete("Use NowPlayingList_QueryFilesEx", True)>
         Public NowPlayingList_QueryGetAllFiles As Library_QueryGetAllFilesDelegate
-        <Obsolete("Use Playlist_QueryFilesEx", True)> _
+        <Obsolete("Use Playlist_QueryFilesEx", True)>
         Public Playlist_QueryGetAllFiles As Library_QueryGetAllFilesDelegate
         Public MB_CreateBackgroundTask As MB_CreateBackgroundTaskDelegate
         Public MB_SetBackgroundTaskMessage As MB_SetBackgroundTaskMessageDelegate
@@ -216,6 +240,15 @@ Partial Public Class Plugin
         Public Player_SetOutputDevice As Player_SetOutputDeviceDelegate
         ' api version 48
         Public MB_UninstallPlugin As MB_UninistallPluginDelegate
+        ' api version 50
+        Public Player_PlayPreviousAlbum As Player_ActionDelegate
+        Public Player_PlayNextAlbum As Player_ActionDelegate
+        ' api version 51
+        Public Podcasts_QuerySubscriptions As Podcasts_QuerySubscriptionsDelegate
+        Public Podcasts_GetSubscription As Podcasts_GetSubscriptionDelegate
+        Public Podcasts_GetSubscriptionArtwork As Podcasts_GetSubscriptionArtworkDelegate
+        Public Podcasts_GetSubscriptionEpisodes As Podcasts_GetSubscriptionEpisodesDelegate
+        Public Podcasts_GetSubscriptionEpisode As Podcasts_GetSubscriptionEpisodeDelegate
     End Structure  ' MusicBeeApiInterface
 
     Public Enum MusicBeeVersion
@@ -226,6 +259,7 @@ Partial Public Class Plugin
         v2_4 = 4
         v2_5 = 5
         v3_0 = 6
+        v3_1 = 7
     End Enum  ' MusicBeeVersion
 
     Public Enum PluginType
@@ -242,9 +276,10 @@ Partial Public Class Plugin
         TagRetrieval = 10
         TagOrArtworkRetrieval = 11
         Upnp = 12
+        WebBrowser = 13
     End Enum  ' PluginType
 
-    <StructLayout(LayoutKind.Sequential)> _
+    <StructLayout(LayoutKind.Sequential)>
     Public Class PluginInfo
         Public PluginInfoVersion As Short
         Public Type As PluginType
@@ -261,7 +296,7 @@ Partial Public Class Plugin
         Public ConfigurationPanelHeight As Integer
     End Class
 
-    <Flags()> _
+    <Flags()>
     Public Enum ReceiveNotificationFlags
         StartupOnly = &H0
         PlayerEvents = &H1
@@ -279,7 +314,7 @@ Partial Public Class Plugin
         AutoDjStopped = 4
         VolumeMuteChanged = 5
         VolumeLevelChanged = 6
-        NowPlayingListChanged = 7
+        <Obsolete("Use PlayingTracksChanged")> NowPlayingListChanged = 7
         NowPlayingListEnded = 18
         NowPlayingArtworkReady = 8
         NowPlayingLyricsReady = 9
@@ -306,6 +341,8 @@ Partial Public Class Plugin
         SyncCompleted = 32
         DownloadCompleted = 33
         MusicBeeStarted = 34
+        PlayingTracksChanged = 35
+        PlayingTracksQueueChanged = 36
     End Enum
 
     Public Enum CallbackType
@@ -425,7 +462,30 @@ Partial Public Class Plugin
         Virtual14 = 139
         Virtual15 = 140
         Virtual16 = 141
+        Virtual17 = 149
+        Virtual18 = 150
+        Virtual19 = 151
+        Virtual20 = 152
+        Virtual21 = 153
+        Virtual22 = 154
+        Virtual23 = 155
+        Virtual24 = 156
+        Virtual25 = 157
         Year = 88
+        SortTitle = 163
+        SortAlbum = 164
+        SortAlbumArtist = 165
+        SortArtist = 166
+        SortComposer = 167
+        Work = 168
+        MovementName = 169
+        MovementNo = 170
+        MovementCount = 171
+        ShowMovement = 172
+        Language = 173
+        OriginalArtist = 174
+        OriginalYear = 175
+        OriginalTitle = 177
     End Enum
 
     Public Enum FileCodec
@@ -456,7 +516,7 @@ Partial Public Class Plugin
         Archiving = 4
     End Enum
 
-    <Flags()> _
+    <Flags()>
     Public Enum LibraryCategory
         Music = 0
         Audiobook = 1
@@ -465,6 +525,7 @@ Partial Public Class Plugin
     End Enum
 
     Public Enum DeviceIdType
+        MusicBeeNativeId = 0
         GooglePlay = 1
         AppleDevice = 2
         GooglePlay2 = 3
@@ -482,31 +543,36 @@ Partial Public Class Plugin
         CompactPlayerFlickrEnabled = 1
         FileTaggingPreserveModificationTime = 2
         LastDownloadFolder = 3
-        ArtistGenresOnly = 4
-        IgnoreNamePrefixes = 5
-        IgnoreNameChars = 6
-        PlayCountTriggerPercent = 7
-        PlayCountTriggerSeconds = 8
-        SkipCountTriggerPercent = 9
-        SkipCountTriggerSeconds = 10
         CustomWebLinkName1 = 11
         CustomWebLinkName2 = 12
         CustomWebLinkName3 = 13
         CustomWebLinkName4 = 14
         CustomWebLinkName5 = 15
         CustomWebLinkName6 = 16
+        CustomWebLinkName7 = 29
+        CustomWebLinkName8 = 30
+        CustomWebLinkName9 = 31
+        CustomWebLinkName10 = 32
         CustomWebLink1 = 17
         CustomWebLink2 = 18
         CustomWebLink3 = 19
         CustomWebLink4 = 20
         CustomWebLink5 = 21
         CustomWebLink6 = 22
+        CustomWebLink7 = 33
+        CustomWebLink8 = 34
+        CustomWebLink9 = 35
+        CustomWebLink10 = 36
         CustomWebLinkNowPlaying1 = 23
         CustomWebLinkNowPlaying2 = 24
         CustomWebLinkNowPlaying3 = 25
         CustomWebLinkNowPlaying4 = 26
         CustomWebLinkNowPlaying5 = 27
         CustomWebLinkNowPlaying6 = 28
+        CustomWebLinkNowPlaying7 = 37
+        CustomWebLinkNowPlaying8 = 38
+        CustomWebLinkNowPlaying9 = 39
+        CustomWebLinkNowPlaying10 = 40
     End Enum
 
     Public Enum ComparisonType
@@ -557,6 +623,7 @@ Partial Public Class Plugin
     End Enum
 
     Public Enum SkinElement
+        SkinSubPanel = 0
         SkinInputControl = 7
         SkinInputPanel = 10
         SkinInputPanelLabel = 14
@@ -579,8 +646,7 @@ Partial Public Class Plugin
         TrackAndArtistPanel = 1
         TextBox = 3
         ComboBox = 4
-        ListView = 5
-        MainPanel = 6
+        MainPanel = 5
     End Enum
 
     Public Enum ReplayGainMode
@@ -606,7 +672,7 @@ Partial Public Class Plugin
         SpecificFolder = 3
     End Enum
 
-    <Flags()> _
+    <Flags()>
     Public Enum PictureLocations As Byte
         None = 0
         EmbedInFile = 1
@@ -620,6 +686,25 @@ Partial Public Class Plugin
         Normal = 0
         Fullscreen = 1
         Desktop = 2
+    End Enum
+
+    Public Enum SubscriptionMetaDataType
+        Id = 0
+        Title = 1
+        Grouping = 2
+        Genre = 3
+        Description = 4
+        DounloadedCount = 5
+    End Enum
+
+    Public Enum EpisodeMetaDataType
+        Id = 0
+        Title = 1
+        DateTime = 2
+        Description = 3
+        Duration = 4
+        IsDownloaded = 5
+        HasBeenPlayed = 6
     End Enum
 
     Public Delegate Sub MB_ReleaseStringDelegate(ByVal p1 As String)
@@ -760,11 +845,16 @@ Partial Public Class Plugin
     Public Delegate Function Pending_GetFileUrlDelegate() As String
     Public Delegate Function Pending_GetFilePropertyDelegate(ByVal field As FilePropertyType) As String
     Public Delegate Function Pending_GetFileTagDelegate(ByVal field As MetaDataType) As String
+    Public Delegate Function Podcasts_QuerySubscriptionsDelegate(query As String, ByRef ids() As String) As Boolean
+    Public Delegate Function Podcasts_GetSubscriptionDelegate(id As String, ByRef subscription() As String) As Boolean
+    Public Delegate Function Podcasts_GetSubscriptionArtworkDelegate(id As String, index As Integer, ByRef imageData() As Byte) As Boolean
+    Public Delegate Function Podcasts_GetSubscriptionEpisodesDelegate(id As String, ByRef urls() As String) As Boolean
+    Public Delegate Function Podcasts_GetSubscriptionEpisodeDelegate(id As String, index As Integer, ByRef episode() As String) As Boolean
     Public Delegate Function Sync_FileStartDelegate(filename As String) As String
     Public Delegate Sub Sync_FileEndDelegate(filename As String, success As Boolean, errorMessage As String)
 
-    <System.Security.SuppressUnmanagedCodeSecurity()> _
-    <DllImport("kernel32.dll")> _
+    <System.Security.SuppressUnmanagedCodeSecurity()>
+    <DllImport("kernel32.dll")>
     Private Shared Sub CopyMemory(ByRef mbApiInterface As MusicBeeApiInterface, src As IntPtr, length As Integer)
     End Sub
 End Class

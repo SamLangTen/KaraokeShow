@@ -1,7 +1,7 @@
 ﻿''' <summary>
 ''' A manager of scrapers
 ''' </summary>
-Public Class ScraperManager
+Friend Class ScraperManager
 
     ''' <summary>
     ''' Contains all available scrapers creating by scraper types that loading from plugin manager.
@@ -16,6 +16,16 @@ Public Class ScraperManager
         PluginManager.GetAllAvailableScrapers().ForEach(Sub(t)
                                                             availableScraperInstance.Add(PluginManager.CreateInstance(t))
                                                         End Sub)
+    End Sub
+
+    ''' <summary>
+    ''' Unload all scrapers and clear scraper list
+    ''' </summary>
+    Public Shared Sub UnloadScrapers()
+        ScraperManager.availableScraperInstance.ForEach(Sub(s)
+                                                            CType(s, IKSPlugin).OnUnloaded()
+                                                        End Sub)
+        ScraperManager.availableScraperInstance.Clear()
     End Sub
 
     ''' <summary>
@@ -60,4 +70,12 @@ Public Class ScraperManager
         Return Scraper.DownloadLyrics(DownloadInfo)
     End Function
 
+    ''' <summary>
+    ''' Get scraper instance from ScraperManager internal list
+    ''' </summary>
+    ''' <param name="ScraperName"></param>
+    ''' <returns></returns>
+    Public Shared Function GetScraper(ScraperName As String) As IScraper
+        Return ScraperManager.availableScraperInstance.FirstOrDefault(Function(s) s.GetType().Name = ScraperName)
+    End Function
 End Class

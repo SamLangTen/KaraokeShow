@@ -135,4 +135,8 @@ Public Class DesktopLyricsSetting
             PictureBox6.BackColor = color.Color
         End If
     End Sub
+
+    Private Sub DesktopLyricsSetting_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        InternationalizationManager.ApplyResourceToWinForm(Me)
+    End Sub
 End Class

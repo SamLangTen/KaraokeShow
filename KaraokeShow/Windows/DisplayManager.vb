@@ -1,7 +1,7 @@
 ﻿''' <summary>
 ''' The manager of all display,used to load display from PluginManager and be as a hub to resend message coming from Karaokeshow to all display
 ''' </summary>
-Public Class DisplayManager
+Friend Class DisplayManager
     ''' <summary>
     ''' Contains all displays loading from PluginManager
     ''' </summary>
@@ -25,6 +25,7 @@ Public Class DisplayManager
         Me.SendLyricsSentenceChanged(0)
         Me.SendLyricsWordProgressChanged(0)
     End Sub
+
     ''' <summary>
     ''' Notify all display that a new lyric file is coming
     ''' </summary>
@@ -34,6 +35,7 @@ Public Class DisplayManager
             item.OnLyricsFileChanged(LyricsText)
         Next
     End Sub
+
     ''' <summary>
     ''' Notify all displays that sentence has changed
     ''' </summary>
@@ -44,6 +46,7 @@ Public Class DisplayManager
             item.OnLyricsSentenceChanged(SentenceIndex)
         Next
     End Sub
+
     ''' <summary>
     ''' Notify all displays that word percentage has changed
     ''' </summary>
@@ -62,6 +65,17 @@ Public Class DisplayManager
                                                             Me.DisplayList.Add(PluginManager.CreateInstance(t))
                                                         End Sub)
     End Sub
+
+    ''' <summary>
+    ''' Unload all displays 
+    ''' </summary>
+    Public Sub UnloadDisplayPlugin()
+        Me.DisplayList.ForEach(Sub(d)
+                                   CType(d, IKSPlugin).OnUnloaded()
+                               End Sub)
+        Me.DisplayList.Clear()
+    End Sub
+
     ''' <summary>
     ''' Get name of all displays
     ''' </summary>

@@ -1,5 +1,5 @@
 ﻿Imports System.IO
-Public Class PluginManager
+Friend Class PluginManager
 
 #Region "Private Members"
 

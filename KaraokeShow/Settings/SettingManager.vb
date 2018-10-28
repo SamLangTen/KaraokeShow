@@ -4,7 +4,7 @@ Imports System.Xml.Serialization
 ''' <summary>
 ''' A setting manager in charge of setting writing and reading
 ''' </summary>
-Public Class SettingManager
+Friend Class SettingManager
 
 #Region "Private Members"
 
@@ -77,7 +77,7 @@ Public Class SettingManager
     ''' </summary>
     ''' <param name="Key">setting key</param>
     Public Shared Function InternalGetValue(Key As String) As String
-        If settingObject Is Nothing OrElse settingObject.InternalSettings Is Nothing Then Return ""
+        If settingObject Is Nothing OrElse settingObject.InternalSettings Is Nothing Then Return Nothing
         Dim settingItem = (From s In settingObject.InternalSettings Where s.Key = Key).FirstOrDefault()
         If settingItem IsNot Nothing Then
             Return If(settingItem.Value, "")

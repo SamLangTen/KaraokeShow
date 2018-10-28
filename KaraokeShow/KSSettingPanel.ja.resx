@@ -117,33 +117,50 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Label1.Text" xml:space="preserve">
-    <value>刷新率(&amp;S)</value>
-  </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="Label1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>131, 12</value>
+  </data>
+  <data name="Label1.Text" xml:space="preserve">
+    <value>リフレッシュレート(&amp;S)</value>
+  </data>
+  <data name="TextBox1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>162, -2</value>
+  </data>
   <data name="Label2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>95, 12</value>
+    <value>155, 12</value>
   </data>
   <data name="Label2.Text" xml:space="preserve">
-    <value>歌词搜索超时(&amp;L)</value>
+    <value>歌詞検索のタイムアウト(&amp;L)</value>
+  </data>
+  <data name="TextBox2.Location" type="System.Drawing.Point, System.Drawing">
+    <value>162, 23</value>
+  </data>
+  <data name="Label3.Size" type="System.Drawing.Size, System.Drawing">
+    <value>83, 12</value>
   </data>
   <data name="Label3.Text" xml:space="preserve">
-    <value>插件(&amp;P)</value>
+    <value>プラグイン(&amp;P)</value>
+  </data>
+  <data name="ComboBox1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>162, 49</value>
+  </data>
+  <data name="Button1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>331, 45</value>
   </data>
   <data name="Button1.Text" xml:space="preserve">
-    <value>设置(&amp;E)</value>
+    <value>設定(&amp;E)</value>
   </data>
   <data name="CheckBox1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>348, 16</value>
+    <value>408, 16</value>
   </data>
   <data name="CheckBox1.Text" xml:space="preserve">
-    <value>将KaraokeShow内置歌词刮削器导入MusicBee的歌词查询器(&amp;C)
-</value>
+    <value>KaraokeShow内蔵する歌詞の削器をMusicBeeの歌詞検索器に導入する(&amp;I)</value>
   </data>
   <data name="CheckBox2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>276, 16</value>
+    <value>252, 16</value>
   </data>
   <data name="CheckBox2.Text" xml:space="preserve">
-    <value>使用KaraokeShow内置歌词搜索程序加载歌词(&amp;U)</value>
+    <value>KaraokeShow内蔵する歌詞の削器を使う(&amp;U)</value>
   </data>
 </root>

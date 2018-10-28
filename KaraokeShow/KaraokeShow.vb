@@ -3,7 +3,7 @@ Imports System.Threading.Tasks
 ''' <summary>
 ''' Represent main interaction class of KaraokeShow
 ''' </summary>
-Public Class KaraokeShow
+Friend Class KaraokeShow
 
 #Region "Private Members"
 
@@ -17,6 +17,11 @@ Public Class KaraokeShow
         Get
             Return Integer.Parse(If(SettingManager.InternalGetValue("lyrics_loading_timeout"), "10000"))
 
+        End Get
+    End Property
+    Private ReadOnly Property set_InternalLyricsScraper As Boolean
+        Get
+            Return Boolean.Parse(If(SettingManager.InternalGetValue("use_internal_lyrics_scraper"), "False"))
         End Get
     End Property
 
@@ -47,7 +52,7 @@ Public Class KaraokeShow
                 previousLyricIndex = nowLyricIndex
             End If
             'To refresh word displaing progress
-            If (previousLyricIndex < 0) OrElse (previousLyricIndex > (lrcCtrl.LRC.TimeLines.Count - 1）) Then Continue While
+            If (previousLyricIndex < 0) OrElse lrcCtrl Is Nothing OrElse (previousLyricIndex > (lrcCtrl.LRC.TimeLines.Count - 1）) Then Continue While
             Dim wordPercentage = lrcCtrl.GetWordPercentage(previousLyricIndex, Me.GetNowPosition().Invoke())
             If Not previousPercentage = wordPercentage Then displayManager.SendLyricsWordProgressChanged(wordPercentage)
             previousPercentage = wordPercentage
@@ -58,20 +63,33 @@ Public Class KaraokeShow
     ''' A background method for lyrics loading
     ''' </summary>
     Private Sub BackgroundLyricLoading()
-        'TODO:User can change the order.
-        Dim lrcf As LRCFile
-        If (Me.GetLrycisFromMusicbee().Invoke <> "") Then
-            lrcf = New LRCFile(Me.GetLrycisFromMusicbee().Invoke())
+        If set_InternalLyricsScraper Then
+            'TODO:User can change the order.
+            Dim lrcf As LRCFile
+            If (Me.GetLrycisFromMusicbee.Invoke <> "") Then
+                lrcf = New LRCFile(Me.GetLrycisFromMusicbee.Invoke())
+            Else
+                lrcf = LyricsManager.SearchFromContainingFolder(Me.filename, Me.trackTitle, Me.artist)
+            End If
+            If lrcf Is Nothing Then lrcf = LyricsManager.SearchFromScraper(Me.trackTitle, Me.artist)
+            If lrcf IsNot Nothing Then
+                RaiseEvent LyricsDownloadFinished(Me, New LyricsFetchFinishedEventArgs() With {.Lyrics = lrcf})
+            Else
+                'If no lyrics can be found,KaraokeShow will be reset
+                Me.ResetPlayback()
+            End If
         Else
-            lrcf = LyricsManager.SearchFromContainingFolder(Me.filename, Me.trackTitle, Me.artist)
+            'Load MusicBee Lyrics until timeout
+            While True
+                If Me.GetLrycisFromMusicbee.Invoke() <> "" Then
+                    Dim lrcf As LRCFile
+                    lrcf = New LRCFile(Me.GetLrycisFromMusicbee.Invoke())
+                    RaiseEvent LyricsDownloadFinished(Me, New LyricsFetchFinishedEventArgs() With {.Lyrics = lrcf})
+                    Exit While
+                End If
+            End While
         End If
-        If lrcf Is Nothing Then lrcf = LyricsManager.SearchFromScraper(Me.trackTitle, Me.artist)
-        If lrcf IsNot Nothing Then
-            RaiseEvent LyricsDownloadFinished(Me, New LyricsFetchFinishedEventArgs() With {.Lyrics = lrcf})
-        Else
-            'If no lyrics can be found,KaraokeShow will be reset
-            Me.ResetPlayback()
-        End If
+
     End Sub
 
     ''' <summary>
@@ -137,6 +155,9 @@ Public Class KaraokeShow
                                        Dim threadKidLoad As New Task(AddressOf BackgroundLyricLoading, cts)
                                        threadKidLoad.Start()
                                        Thread.Sleep(set_LyricsLoadTimeout) 'Set timeout
+                                       If Not threadKidLoad.IsCompleted = True Then
+                                           Me.ResetPlayback()
+                                       End If
                                        cts.Cancel()
                                    End Sub)
         threadLoad.Start()
