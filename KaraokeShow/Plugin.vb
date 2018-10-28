@@ -93,6 +93,7 @@ Public Class Plugin
 
     ' uninstall this plugin - clean up any persisted files
     Public Sub Uninstall()
+        SettingManager.Uninstall()
     End Sub
 
     ' receive event notifications from MusicBee

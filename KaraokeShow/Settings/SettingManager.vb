@@ -110,4 +110,13 @@ Friend Class SettingManager
             settingObject = xms.Deserialize(sr)
         End If
     End Sub
+
+    ''' <summary>
+    ''' To delete setting file on disk
+    ''' </summary>
+    Public Shared Sub Uninstall()
+        If File.Exists(SettingStoragePath + "\KaraokeShowSettings.xml") Then
+            File.Delete(SettingStoragePath + "\KaraokeShowSettings.xml")
+        End If
+    End Sub
 End Class

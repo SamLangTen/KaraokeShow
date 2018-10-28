@@ -192,9 +192,6 @@
   <data name="Label5.Size" type="System.Drawing.Size, System.Drawing">
     <value>15, 17</value>
   </data>
-  <data name="Label5.Text" xml:space="preserve">
-    <value>2</value>
-  </data>
   <data name="&gt;&gt;Button7.Type" xml:space="preserve">
     <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
@@ -750,10 +747,10 @@
   <data name="OK_Button.Text" xml:space="preserve">
     <value>OK</value>
   </data>
-  <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+  <data name="$this.Localizable" type="System.Boolean, mscorlib">
     <value>True</value>
-  </metadata>
-  <metadata name="$this.Language" type="System.Globalization.CultureInfo, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+  </data>
+  <data name="$this.Language" type="System.Globalization.CultureInfo, mscorlib">
     <value>zh-Hans</value>
-  </metadata>
+  </data>
 </root>
