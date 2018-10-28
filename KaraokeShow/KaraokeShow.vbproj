@@ -76,6 +76,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EventArgs\LyricsFetchFinishedEventArgs.vb" />
+    <Compile Include="Internalization\EmbedResourceManager.vb" />
     <Compile Include="Internalization\InternationalizationManager.vb" />
     <Compile Include="KaraokeShow.vb" />
     <Compile Include="LyricsDisplay\LRCFile.vb" />

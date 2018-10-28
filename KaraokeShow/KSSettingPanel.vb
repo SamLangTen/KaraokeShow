@@ -50,7 +50,7 @@ Public Class KSSettingPanel
     End Sub
 
     Private Sub ApplyResource()
-        Dim res = New System.ComponentModel.ComponentResourceManager(Me.GetType())
+        Dim res = New EmbedResourceManager(Me.GetType())
         For Each item As Control In Me.Controls
             res.ApplyResources(item, item.Name)
         Next
