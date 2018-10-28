@@ -83,7 +83,7 @@ Friend Class LRCFile
             Next
         Next
         'Adjust timeline order
-        Me.TimeLines = From i In Me.TimeLines Order By i.StartPoint
+        Me.TimeLines = (From i In Me.TimeLines Order By i.StartPoint Select i).ToList()
     End Sub
 End Class
 ''' <summary>
