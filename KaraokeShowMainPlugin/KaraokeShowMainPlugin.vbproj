@@ -41,13 +41,13 @@
     <OptionStrict>Off</OptionStrict>
   </PropertyGroup>
   <PropertyGroup>
-    <OptionInfer>On</OptionInfer>
+    <OptionInfer>Off</OptionInfer>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DebugToKS|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
-    <OutputPath>C:\Program Files %28x86%29\MusicBee\Plugins\KaraokeShowPlugins\</OutputPath>
+    <OutputPath>$(AppData)\MusicBee\Plugins\KaraokeShowPlugins\</OutputPath>
     <DocumentationFile>KaraokeShowMainPlugin.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
     <DebugType>full</DebugType>
@@ -141,7 +141,7 @@
     <Folder Include="Scrapers\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\KaraokeShow\KaraokeShow.vbproj">
+    <ProjectReference Include="$(SolutionDir)\KaraokeShow\KaraokeShow.vbproj">
       <Project>{a413c497-6606-47e0-8a5e-028ba7b0432d}</Project>
       <Name>KaraokeShow</Name>
       <Private>False</Private>

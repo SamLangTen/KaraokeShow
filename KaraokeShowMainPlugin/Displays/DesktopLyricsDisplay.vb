@@ -350,7 +350,7 @@ Public Class DesktopLyricsDisplay
         If LyricsText IsNot Nothing Then
             Me.lyrics = New List(Of LyricsDLDItem)
             Dim isUpper As Boolean = True
-            For i = 0 To LyricsText.Count - 1
+            For i As Integer = 0 To LyricsText.Count - 1
                 If LyricsText(i) IsNot Nothing AndAlso LyricsText(i).Trim() <> "" Then
                     Me.lyrics.Add(New LyricsDLDItem() With {.IsUpper = isUpper, .OriginalIndex = i, .Text = LyricsText(i)})
                     isUpper = Not isUpper
