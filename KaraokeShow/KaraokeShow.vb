@@ -136,6 +136,10 @@ Friend Class KaraokeShow
     ''' </summary>
     Public Sub ResetPlayback()
         Me.canBackgroundMethodRunning = False
+        'refresh all display as default text
+        displayManager.SendLyricsFileChanged({"MusicBee"}.ToList())
+        displayManager.SendLyricsSentenceChanged(0)
+        displayManager.SendLyricsWordProgressChanged(0)
         displayManager.ResetAllLyricTicking()
         Me.lrcCtrl = Nothing
     End Sub

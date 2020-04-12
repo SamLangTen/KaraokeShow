@@ -15,6 +15,13 @@ Friend Class DisplayManager
     ''' </summary>
     Private NowLyric As String = ""
 
+    Private DisplayVisibilityMap As Dictionary(Of String, Boolean)
+
+    Private Function GetDisplayTypeIdentification(displayType As Type) As String
+        Return $"{displayType.Assembly.FullName.Split(",")(0)}/{displayType.FullName}"
+    End Function
+
+
     ''' <summary>
     ''' Reset all display state
     ''' </summary>
@@ -60,9 +67,22 @@ Friend Class DisplayManager
     ''' Load all displays from PluginManager
     ''' </summary>
     Public Sub LoadDisplayPlugin()
+        'Load Visibility setting
+        Dim text As String = SettingManager.InternalGetValue("DisplayVisibilities")
+        If text = "" Then
+            DisplayVisibilityMap = New Dictionary(Of String, Boolean)
+        Else
+            DisplayVisibilityMap = text.Split("|").ToDictionary(Of String, Boolean)(Function(x) x.Split("=")(0), Function(x) Boolean.Parse(x.Split("=")(1)))
+        End If
         Me.DisplayList.Clear()
         PluginManager.GetAllAvailableDisplays().ForEach(Sub(t)
-                                                            Me.DisplayList.Add(PluginManager.CreateInstance(t))
+                                                            Dim display = DirectCast(PluginManager.CreateInstance(t), IDisplay)
+                                                            Me.DisplayList.Add(display)
+                                                            If DisplayVisibilityMap.ContainsKey(GetDisplayTypeIdentification(display.GetType())) Then
+                                                                Dim isVisible = DisplayVisibilityMap.Item(GetDisplayTypeIdentification(display.GetType()))
+                                                                If isVisible = True Then display.ShowDisplay() Else display.CloseDisplay()
+                                                            End If
+
                                                         End Sub)
     End Sub
 
@@ -74,6 +94,9 @@ Friend Class DisplayManager
                                    CType(d, IKSPlugin).OnUnloaded()
                                End Sub)
         Me.DisplayList.Clear()
+        'Save visibility setting
+        Dim visibilityText As String = String.Join("|", (From i In Me.DisplayVisibilityMap Select $"{i.Key}={i.Value.ToString()}").ToList())
+        SettingManager.InternalSetValue("DisplayVisibilities", visibilityText)
     End Sub
 
     ''' <summary>
@@ -94,6 +117,7 @@ Friend Class DisplayManager
         Dim display = (From i In Me.DisplayList Where i.GetType().FullName = DisplayName).FirstOrDefault()
         If display IsNot Nothing Then
             If IsVisible = True Then display.ShowDisplay() Else display.CloseDisplay()
+            DisplayVisibilityMap.Item(GetDisplayTypeIdentification(display.GetType())) = IsVisible
         End If
     End Sub
 
