@@ -17,7 +17,7 @@ namespace MusicBeePlugin.Config
             set
             {
                 button1.Tag = value;
-                textBox1.Text = $"{value.Name} {value.Size.ToString()}";
+                textBox1.Text = $"{value.Name}, {value.Size.ToString()}pt";
             }
         }
         public Color OutlineBackColor { get => button5.BackColor; set => button5.BackColor = value; }
@@ -28,6 +28,7 @@ namespace MusicBeePlugin.Config
         public Color ForeColor1 { get => button3.BackColor; set => button3.BackColor = value; }
         public Color ForeColor2 { get => button4.BackColor; set => button4.BackColor = value; }
         public int Line { get => (int)numericUpDown1.Value; set => numericUpDown1.Value = value; }
+        public bool EnabledSliding { get => checkBox1.Checked; set => checkBox1.Checked = value; }
 
         public ConfigWindow()
         {

@@ -54,6 +54,7 @@ namespace MusicBeePlugin
             config.ForeColor1 = Configuration.ForeColor1;
             config.ForeColor2 = Configuration.ForeColor2;
             config.OutlineForeColor = Configuration.OutlineForeColor;
+            config.EnabledSliding = Configuration.EnabledSliding;
             if (config.ShowDialog() == DialogResult.Cancel)
             {
                 config.TextFont = Configuration.TextFont;
@@ -65,6 +66,7 @@ namespace MusicBeePlugin
                 config.ForeColor1 = Configuration.ForeColor1;
                 config.ForeColor2 = Configuration.ForeColor2;
                 config.OutlineForeColor = Configuration.OutlineForeColor;
+                config.EnabledSliding = Configuration.EnabledSliding;
             }
             return true;
         }
@@ -85,6 +87,7 @@ namespace MusicBeePlugin
                 Configuration.ForeColor1 = config.ForeColor1;
                 Configuration.ForeColor2 = config.ForeColor2;
                 Configuration.OutlineForeColor = config.OutlineForeColor;
+                Configuration.EnabledSliding = config.EnabledSliding;
             }
             Configuration.SaveConfig(dataPath);
         }
