@@ -67,6 +67,7 @@
     <Compile Include="Sync\SynchronousHelper.cs" />
     <Compile Include="Window\DestopLyrics.cs" />
     <Compile Include="Window\Helper\GaussianBlur.cs" />
+    <Compile Include="Window\Helper\LayeredWindowWin32.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Config\ConfigWindow.resx">
