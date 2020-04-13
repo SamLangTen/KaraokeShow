@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.IO;
+using MusicBeePlugin.Config;
 
 namespace MusicBeePlugin
 {
@@ -12,6 +13,7 @@ namespace MusicBeePlugin
     {
         private MusicBeeApiInterface mbApiInterface;
         private PluginInfo about = new PluginInfo();
+        private ConfigWindow config;
         public PluginInfo Initialise(IntPtr apiInterfacePtr)
         {
             mbApiInterface = new MusicBeeApiInterface();
@@ -40,16 +42,51 @@ namespace MusicBeePlugin
             // keep in mind the panel width is scaled according to the font the user has selected
             // if about.ConfigurationPanelHeight is set to 0, you can display your own popup window
 
-            if (panelHandle == IntPtr.Zero) return false;
-
-            return false;
+            //if (panelHandle == IntPtr.Zero) return true;
+            config = new ConfigWindow();
+            config.Font = mbApiInterface.Setting_GetDefaultFont();
+            config.TextFont = Configuration.TextFont;
+            config.Line = Configuration.Line;
+            config.BlurRadial = Configuration.BlurRadial;
+            config.BackColor1 = Configuration.BackColor1;
+            config.BackColor2 = Configuration.BackColor2;
+            config.OutlineBackColor = Configuration.OutlineBackColor;
+            config.ForeColor1 = Configuration.ForeColor1;
+            config.ForeColor2 = Configuration.ForeColor2;
+            config.OutlineForeColor = Configuration.OutlineForeColor;
+            if (config.ShowDialog() == DialogResult.Cancel)
+            {
+                config.TextFont = Configuration.TextFont;
+                config.Line = Configuration.Line;
+                config.BlurRadial = Configuration.BlurRadial;
+                config.BackColor1 = Configuration.BackColor1;
+                config.BackColor2 = Configuration.BackColor2;
+                config.OutlineBackColor = Configuration.OutlineBackColor;
+                config.ForeColor1 = Configuration.ForeColor1;
+                config.ForeColor2 = Configuration.ForeColor2;
+                config.OutlineForeColor = Configuration.OutlineForeColor;
+            }
+            return true;
         }
 
         // called by MusicBee when the user clicks Apply or Save in the MusicBee Preferences screen.
         // its up to you to figure out whether anything has changed and needs updating
         public void SaveSettings()
         {
-
+            string dataPath = Path.Combine(mbApiInterface.Setting_GetPersistentStoragePath(), "KaraokeShow2.xml");
+            if (config != null)
+            {
+                Configuration.TextFont = config.TextFont;
+                Configuration.Line = config.Line;
+                Configuration.BlurRadial = config.BlurRadial;
+                Configuration.BackColor1 = config.BackColor1;
+                Configuration.BackColor2 = config.BackColor2;
+                Configuration.OutlineBackColor = config.OutlineBackColor;
+                Configuration.ForeColor1 = config.ForeColor1;
+                Configuration.ForeColor2 = config.ForeColor2;
+                Configuration.OutlineForeColor = config.OutlineForeColor;
+            }
+            Configuration.SaveConfig(dataPath);
         }
 
         // MusicBee is closing the plugin (plugin is being disabled by user or MusicBee is shutting down)
@@ -60,7 +97,9 @@ namespace MusicBeePlugin
         // uninstall this plugin - clean up any persisted files
         public void Uninstall()
         {
-
+            string dataPath = Path.Combine(mbApiInterface.Setting_GetPersistentStoragePath(), "KaraokeShow2.xml");
+            if (File.Exists(dataPath))
+                File.Delete(dataPath);
         }
 
         // receive event notifications from MusicBee
@@ -71,6 +110,12 @@ namespace MusicBeePlugin
             switch (type)
             {
                 case NotificationType.PluginStartup:
+                    string dataPath = Path.Combine(mbApiInterface.Setting_GetPersistentStoragePath(), "KaraokeShow2.xml");
+                    Configuration.LoadConfig(dataPath);
+                    break;
+                case NotificationType.NowPlayingLyricsReady:
+                    break;
+                case NotificationType.TrackChanged:
                     break;
                 default:
                     break;

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MusicBeePlugin.Sync;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,6 +23,7 @@ namespace MusicBeePlugin.Parser
         public LRCFile(string lrcText, bool ignoreOffset = true)
         {
             Parse(lrcText, ignoreOffset);
+            Lyrics.Sort((a, b) => a.Time.CompareTo(b.Time));
         }
 
         private void Parse(string lrcText, bool ignoreOffset = true)
@@ -73,6 +75,31 @@ namespace MusicBeePlugin.Parser
             }
         }
 
+        public List<SynchronousLyricItem> ToSynchronousLyrics(int musicLengthMillisecond)
+        {
+            return Lyrics.Select(l =>
+            {
+                var sli = new SynchronousLyricItem()
+                {
+                    StartTime = l.Time,
+                    Content = l.Lyric
+                };
+                if (Lyrics.LastOrDefault() == l)
+                {
+                    var beginDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0);
+                    beginDateTime = beginDateTime.AddMilliseconds(musicLengthMillisecond);
+                    if (beginDateTime > l.Time)
+                        sli.EndTime = beginDateTime;
+                    else
+                        sli.EndTime = sli.StartTime + new TimeSpan(0, 0, 10);
+                }
+                else
+                {
+                    sli.EndTime = Lyrics.Find(n => n.Time > l.Time).Time;
+                }
+                return sli;
+            }).Where(l => l.Content != "").ToList();
+        }
     }
 
     public class LRCItem
