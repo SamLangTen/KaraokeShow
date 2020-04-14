@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -25,22 +26,48 @@ namespace MusicBeePlugin.Window.Helper
         private Dictionary<int, Bitmap> LineBitmapCache { get; set; } = new Dictionary<int, Bitmap>();
         private Font LastFont { get; set; }
 
-        public Bitmap GetUpdatedLyricsImage(string text, int line, double percentage)
+
+        public Bitmap GetUpdatedStaticLyricsImage(string text, int line)
         {
-            //Check whether font has changed
-            if (LastFont != Configuration.TextFont)
-            {
-                ForeBitmapCache.Clear();
-                ForeBlurBitmapCache.Clear();
-                BackBitmapCache.Clear();
-                BackBlurBitmapCache.Clear();
-                LineBitmapCache.Clear();
-                LastFont = Configuration.TextFont;
-            }
-            //Paint
             try
             {
-                var updatingBitmap = DrawLyric(text, line, percentage);
+                //Draw This Line
+                var fz = GetCorrectFontSize(text, TextFont);
+                var updatingBitmap = new Bitmap((int)fz.Width, LineHeight * Line);
+                var g = Graphics.FromImage(updatingBitmap);
+                DrawDynamicLyricBeforeRoll(g, text, line, 0);
+                g.Dispose();
+                LineBitmapCache[line] = updatingBitmap;
+
+                //Check max width
+                var maxWidth = 0;
+                for (int i = 1; i <= Line; i++)
+                {
+                    if (!LineBitmapCache.ContainsKey(i)) continue;
+                    if (LineBitmapCache[i].Width > maxWidth) maxWidth = LineBitmapCache[i].Width;
+                }
+                //Paint
+                var bmp = new Bitmap(maxWidth, LineHeight * Line);
+                var graphics = Graphics.FromImage(bmp);
+                for (int i = 1; i <= Line; i++)
+                {
+                    if (!LineBitmapCache.ContainsKey(i)) continue;
+                    graphics.DrawImage(LineBitmapCache[i], new Point(0, 0));
+                }
+                graphics.Dispose();
+                return bmp;
+            }
+            catch (Exception)
+            {
+            }
+            return null;
+        }
+
+        public Bitmap GetUpdatedDynamicLyricsImage(string text, int line, double percentage)
+        {
+            try
+            {
+                var updatingBitmap = DrawDynamicLyric(text, line, percentage);
                 LineBitmapCache[line] = updatingBitmap;
 
                 var bmp = new Bitmap(WindowWidth, LineHeight * Line);
@@ -72,7 +99,7 @@ namespace MusicBeePlugin.Window.Helper
             return fontSize;
         }
 
-        private Bitmap DrawLyric(string text, int line, double percentage)
+        private Bitmap DrawDynamicLyric(string text, int line, double percentage)
         {
             //Clear
             var rtnBmp = new Bitmap(WindowWidth, LineHeight * Line);
@@ -81,11 +108,11 @@ namespace MusicBeePlugin.Window.Helper
             var beforeRollPercentage = WindowWidth / 2 / textSize.Width;
             var afterRollPercentage = 1 - beforeRollPercentage;
             if (percentage < beforeRollPercentage)
-                DrawLyricBeforeRoll(graphics, text, line, percentage);
+                DrawDynamicLyricBeforeRoll(graphics, text, line, percentage);
             else if (beforeRollPercentage <= percentage && percentage <= afterRollPercentage)
-                DrawLyricWhileRoll(graphics, text, line, percentage);
+                DrawDynamicLyricWhileRoll(graphics, text, line, percentage);
             else if (afterRollPercentage < percentage)
-                DrawLyricAfterRoll(graphics, text, line, percentage);
+                DrawDynamicLyricAfterRoll(graphics, text, line, percentage);
             graphics.Dispose();
             return rtnBmp;
         }
@@ -189,23 +216,20 @@ namespace MusicBeePlugin.Window.Helper
             return bmp;
         }
 
-        private void DrawLyricBeforeRoll(Graphics graphics, string text, int line, double percentage)
+        private void DrawDynamicLyricBeforeRoll(Graphics graphics, string text, int line, double percentage)
         {
             var textSize = GetCorrectFontSize(text, TextFont);
             var y = textSize.Height * (line - 1);
 
-            //Draw background blur
+            //Draw background
             var blurBmp = DrawBlurBackground(text, textSize.ToSize());
             graphics.DrawImage(blurBmp, new Point(0, (int)y));
-
-            //Draw background
             var backBmp = DrawBackground(text, textSize.ToSize());
             graphics.DrawImage(backBmp, new Point(0, (int)y));
 
             //Draw foreground
-            if (percentage > 0)
+            if (percentage != 0)
             {
-                //Graphics.DrawString(text, Font, Brush2, new RectangleF(new PointF(0, y), new SizeF((float)(textSize.Width * percentage), textSize.Height)));
                 var fBlurBmp = DrawBlurForeground(text, textSize.ToSize(), percentage);
                 var bmp = DrawForeground(text, textSize.ToSize(), percentage);
                 graphics.DrawImage(fBlurBmp, new Point(0, (int)y));
@@ -214,8 +238,9 @@ namespace MusicBeePlugin.Window.Helper
                 fBlurBmp.Dispose();
             }
 
+
         }
-        private void DrawLyricWhileRoll(Graphics graphics, string text, int line, double percentage)
+        private void DrawDynamicLyricWhileRoll(Graphics graphics, string text, int line, double percentage)
         {
             var textSize = GetCorrectFontSize(text, TextFont);
             var y = textSize.Height * (line - 1);
@@ -226,10 +251,8 @@ namespace MusicBeePlugin.Window.Helper
             graphics.DrawImage(blurBmp, new Point((int)x, (int)y));
             var backBmp = DrawBackground(text, textSize.ToSize());
             graphics.DrawImage(backBmp, new Point((int)x, (int)y));
-            //Graphics.DrawString(text, Font, Brush1, new PointF(x, y));
 
             //Draw foreground
-            //Graphics.DrawString(text, Font, Brush2, new RectangleF(new PointF(x, y), new SizeF((float)(textSize.Width * percentage), textSize.Height)));
             var bmp = DrawForeground(text, textSize.ToSize(), percentage);
             var fBlurBmp = DrawBlurForeground(text, textSize.ToSize(), percentage);
             graphics.DrawImage(fBlurBmp, new Point((int)x, (int)y));
@@ -237,7 +260,7 @@ namespace MusicBeePlugin.Window.Helper
             bmp.Dispose();
             fBlurBmp.Dispose();
         }
-        private void DrawLyricAfterRoll(Graphics graphics, string text, int line, double percentage)
+        private void DrawDynamicLyricAfterRoll(Graphics graphics, string text, int line, double percentage)
         {
             var textSize = GetCorrectFontSize(text, TextFont);
             var y = textSize.Height * (line - 1);
@@ -249,11 +272,8 @@ namespace MusicBeePlugin.Window.Helper
             graphics.DrawImage(blurBmp, new Point((int)x, (int)y));
             var backBmp = DrawBackground(text, textSize.ToSize());
             graphics.DrawImage(backBmp, new Point((int)x, (int)y));
-            //Graphics.DrawString(text, Font, Brush1, new PointF(x, y));
-
 
             //Draw foreground
-            //Graphics.DrawString(text, Font, Brush2, new RectangleF(new PointF(x, y), new SizeF((float)(textSize.Width * percentage), textSize.Height)));
             var bmp = DrawForeground(text, textSize.ToSize(), percentage);
             var fBlurBmp = DrawBlurForeground(text, textSize.ToSize(), percentage);
             graphics.DrawImage(fBlurBmp, new Point((int)x, (int)y));
