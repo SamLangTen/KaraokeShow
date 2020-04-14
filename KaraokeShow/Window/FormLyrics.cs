@@ -166,6 +166,8 @@ namespace MusicBeePlugin.Window
                 {
                     //Moving
                     Location = new Point(Location.X - mouseX + e.X, Location.Y - mouseY + e.Y);
+                    Configuration.X = Location.X;
+                    Configuration.Y = Location.Y;   
                 }
 
             }
