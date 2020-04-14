@@ -125,31 +125,34 @@ namespace MusicBeePlugin
                     Configuration.LoadConfig(dataPath);
                     break;
                 case NotificationType.NowPlayingLyricsReady:
-
+                    ResetAndCreateNewPlayback();
                     break;
                 case NotificationType.TrackChanged:
-                    //Close old
-                    timer?.Stop();
-                    destopLyrics?.CloseWindow();
-
-
-                    //Create new
-                    var lyricsText = mbApiInterface.NowPlaying_GetLyrics();
-                    if (lyricsText == null) return;
-                    var lrc = new LRCFile(lyricsText, true);
-                    destopLyrics = new DestopLyrics(lrc.ToSynchronousLyrics(mbApiInterface.NowPlaying_GetDuration()), (Form)Control.FromHandle(mbApiInterface.MB_GetWindowHandle()));
-                    timer = new System.Timers.Timer()
-                    {
-                        Interval = 50,
-                        Enabled = true
-                    };
-                    timer.Elapsed += new System.Timers.ElapsedEventHandler(timer_tick);
-                    timer.Start();
-                    destopLyrics.ShowWindow();
+                    ResetAndCreateNewPlayback();
                     break;
                 default:
                     break;
             }
+        }
+
+        private void ResetAndCreateNewPlayback()
+        {
+            //Close old
+            timer?.Stop();
+            destopLyrics?.CloseWindow();
+            //Create new
+            var lyricsText = mbApiInterface.NowPlaying_GetLyrics();
+            if (lyricsText == null) return;
+            var lrc = new LRCFile(lyricsText, true);
+            destopLyrics = new DestopLyrics(lrc.ToSynchronousLyrics(mbApiInterface.NowPlaying_GetDuration()), (Form)Control.FromHandle(mbApiInterface.MB_GetWindowHandle()));
+            timer = new System.Timers.Timer()
+            {
+                Interval = 50,
+                Enabled = true
+            };
+            timer.Elapsed += new System.Timers.ElapsedEventHandler(timer_tick);
+            timer.Start();
+            destopLyrics.ShowWindow();
         }
 
         private void timer_tick(object sender, EventArgs e)
