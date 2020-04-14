@@ -125,7 +125,9 @@ namespace MusicBeePlugin
 
                     break;
                 case NotificationType.TrackChanged:
-                    var lrc = new LRCFile(mbApiInterface.NowPlaying_GetLyrics(), true);
+                    var lyricsText = mbApiInterface.NowPlaying_GetLyrics();
+                    if (lyricsText == null) return;
+                    var lrc = new LRCFile(lyricsText, true);
                     destopLyrics = new DestopLyrics(lrc.ToSynchronousLyrics(mbApiInterface.NowPlaying_GetDuration()), (Form)Control.FromHandle(mbApiInterface.MB_GetWindowHandle()));
                     timer = new System.Timers.Timer()
                     {

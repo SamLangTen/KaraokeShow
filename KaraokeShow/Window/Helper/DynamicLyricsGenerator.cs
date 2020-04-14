@@ -52,8 +52,6 @@ namespace MusicBeePlugin.Window.Helper
             }
             catch (Exception)
             {
-
-                throw;
             }
 
             return null;

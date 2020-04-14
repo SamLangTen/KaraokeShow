@@ -35,8 +35,8 @@ namespace MusicBeePlugin.Window
         {
             SyncHelper = new SynchronousHelper(lyrics);
             LyricsGen = new DynamicLyricsGenerator(Configuration.TextFont, Configuration.Width, Configuration.Line);
-            LyricsGen.Brush1 = new LinearGradientBrush(new Point(0, 0), new Point(0, Configuration.TextFont.Height * Configuration.Line), Configuration.BackColor1, Configuration.BackColor2);
-            LyricsGen.Brush2 = new LinearGradientBrush(new Point(0, 0), new Point(0, Configuration.TextFont.Height * Configuration.Line), Configuration.ForeColor2, Configuration.ForeColor2);
+            LyricsGen.Brush1 = new LinearGradientBrush(new Point(0, 0), new Point(0, 100), Configuration.BackColor1, Configuration.BackColor2);
+            LyricsGen.Brush2 = new LinearGradientBrush(new Point(0, 0), new Point(0, 100), Configuration.ForeColor2, Configuration.ForeColor2);
             LyricsGen.OutlineBrush1 = new SolidBrush(Configuration.OutlineBackColor);
             LyricsGen.OutlineBrush2 = new SolidBrush(Configuration.OutlineForeColor);
             this.MusicBeeForm = MusicBeeForm;
@@ -107,12 +107,13 @@ namespace MusicBeePlugin.Window
             {
                 if (bmp != null)
                 {
-                    FormLyrics.BackgroundImage = bmp;
-                    FormLyrics.Size = bmp.Size;
+                    //FormLyrics.Size = bmp.Size;
+                    FormLyrics.UpdateLayeredWindow(bmp);
+
                 }
-            
+
             }));
-           
+
         }
 
     }
