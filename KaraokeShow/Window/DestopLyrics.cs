@@ -80,7 +80,6 @@ namespace MusicBeePlugin.Window
 
         public void UpdateStatic(int milliseconds)
         {
-            //Debug.WriteLine($"lastIndex {LastIndex}");
             if (LastIndex == -1)
             {
                 for (int i = 1; i <= Configuration.Line && i <= SyncHelper.SynchronousLyrics.Count; i++)
@@ -90,7 +89,6 @@ namespace MusicBeePlugin.Window
                         LineInfo[i] = SyncHelper.SynchronousLyrics[i - 1];
                         var updatedBmp = LyricsGen.GetUpdatedStaticLyricsImage(LineInfo[i].Content, i);
                         RefreshWindow(updatedBmp);
-                        Debug.WriteLine($"Updated Line {i}: {LineInfo[i].Content}");
                     }
                 }
             }
@@ -110,7 +108,6 @@ namespace MusicBeePlugin.Window
                             LineInfo[i + 1] = SyncHelper.SynchronousLyrics[updatingIndex];
                             var updatedBmp = LyricsGen.GetUpdatedStaticLyricsImage(LineInfo[i + 1].Content, i + 1);
                             RefreshWindow(updatedBmp);
-                            Debug.WriteLine($"Updated Line {i + 1}: {LineInfo[i + 1].Content}");
                         }
                     }
                 }
@@ -120,13 +117,11 @@ namespace MusicBeePlugin.Window
             double percentage = SyncHelper.GetPercentage(milliseconds);
             var bmp = LyricsGen.GetUpdatedStaticLyricsImage(LineInfo[thisLine].Content, thisLine);
             RefreshWindow(bmp);
-            //Debug.WriteLine($"Updated Percentage {thisLine}: {LineInfo[thisLine].Content}, {percentage}");
             LastIndex = newIndex;
         }
 
         public void UpdateDynamic(int milliseconds)
         {
-            //Debug.WriteLine($"lastIndex {LastIndex}");
             if (LastIndex == -1)
             {
                 for (int i = 1; i <= Configuration.Line && i <= SyncHelper.SynchronousLyrics.Count; i++)
@@ -136,7 +131,6 @@ namespace MusicBeePlugin.Window
                         LineInfo[i] = SyncHelper.SynchronousLyrics[i - 1];
                         var updatedBmp = LyricsGen.GetUpdatedDynamicLyricsImage(LineInfo[i].Content, i, 0);
                         RefreshWindow(updatedBmp);
-                        Debug.WriteLine($"Updated Line {i}: {LineInfo[i].Content}");
                     }
                 }
             }
@@ -156,7 +150,6 @@ namespace MusicBeePlugin.Window
                             LineInfo[i + 1] = SyncHelper.SynchronousLyrics[updatingIndex];
                             var updatedBmp = LyricsGen.GetUpdatedDynamicLyricsImage(LineInfo[i + 1].Content, i + 1, 0);
                             RefreshWindow(updatedBmp);
-                            Debug.WriteLine($"Updated Line {i + 1}: {LineInfo[i + 1].Content}");
                         }
                     }
                 }
@@ -167,7 +160,6 @@ namespace MusicBeePlugin.Window
             double percentage = SyncHelper.GetPercentage(milliseconds);
             var bmp = LyricsGen.GetUpdatedDynamicLyricsImage(LineInfo[thisLine].Content, thisLine, percentage);
             RefreshWindow(bmp);
-            //Debug.WriteLine($"Updated Percentage {thisLine}: {LineInfo[thisLine].Content}, {percentage}");
             LastIndex = newIndex;
         }
 
