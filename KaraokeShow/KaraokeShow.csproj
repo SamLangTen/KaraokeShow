@@ -66,7 +66,13 @@
     <Compile Include="Sync\SynchronousLyricItem.cs" />
     <Compile Include="Sync\SynchronousHelper.cs" />
     <Compile Include="Window\DestopLyrics.cs" />
-    <Compile Include="Window\DynamicLyricsPainter.cs" />
+    <Compile Include="Window\FormLyrics.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Window\FormLyrics.Designer.cs">
+      <DependentUpon>FormLyrics.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Window\Helper\DynamicLyricsGenerator.cs" />
     <Compile Include="Window\Helper\GaussianBlur.cs" />
     <Compile Include="Window\Helper\LayeredWindowWin32.cs" />
   </ItemGroup>
@@ -76,6 +82,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Config\ConfigWindow.zh-Hans.resx">
       <DependentUpon>ConfigWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Window\FormLyrics.resx">
+      <DependentUpon>FormLyrics.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

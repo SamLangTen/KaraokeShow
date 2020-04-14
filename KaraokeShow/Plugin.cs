@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.IO;
 using MusicBeePlugin.Config;
+using MusicBeePlugin.Window;
+using MusicBeePlugin.Parser;
 
 namespace MusicBeePlugin
 {
@@ -14,6 +16,9 @@ namespace MusicBeePlugin
         private MusicBeeApiInterface mbApiInterface;
         private PluginInfo about = new PluginInfo();
         private ConfigWindow config;
+        private DestopLyrics destopLyrics;
+        private System.Timers.Timer timer;
+
         public PluginInfo Initialise(IntPtr apiInterfacePtr)
         {
             mbApiInterface = new MusicBeeApiInterface();
@@ -117,12 +122,28 @@ namespace MusicBeePlugin
                     Configuration.LoadConfig(dataPath);
                     break;
                 case NotificationType.NowPlayingLyricsReady:
+
                     break;
                 case NotificationType.TrackChanged:
+                    var lrc = new LRCFile(mbApiInterface.NowPlaying_GetLyrics(), true);
+                    destopLyrics = new DestopLyrics(lrc.ToSynchronousLyrics(mbApiInterface.NowPlaying_GetDuration()), (Form)Control.FromHandle(mbApiInterface.MB_GetWindowHandle()));
+                    timer = new System.Timers.Timer()
+                    {
+                        Interval = 50,
+                        Enabled = true
+                    };
+                    timer.Elapsed += new System.Timers.ElapsedEventHandler(timer_tick);
+                    timer.Start();
+                    destopLyrics.ShowWindow();
                     break;
                 default:
                     break;
             }
+        }
+
+        private void timer_tick(object sender, EventArgs e)
+        {
+            destopLyrics?.Update(mbApiInterface.Player_GetPosition());
         }
 
         // return an array of lyric or artwork provider names this plugin supports
