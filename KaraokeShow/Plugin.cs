@@ -80,7 +80,7 @@ namespace MusicBeePlugin
         // its up to you to figure out whether anything has changed and needs updating
         public void SaveSettings()
         {
-            string dataPath = Path.Combine(mbApiInterface.Setting_GetPersistentStoragePath(), "KaraokeShowSettings.xml");
+            string dataPath = Path.Combine(mbApiInterface.Setting_GetPersistentStoragePath(), "KaraokeShow1.xml");
             if (config != null)
             {
                 Configuration.TextFont = config.TextFont;
@@ -100,7 +100,7 @@ namespace MusicBeePlugin
         // MusicBee is closing the plugin (plugin is being disabled by user or MusicBee is shutting down)
         public void Close(PluginCloseReason reason)
         {
-            string dataPath = Path.Combine(mbApiInterface.Setting_GetPersistentStoragePath(), "KaraokeShowSettings.xml");
+            string dataPath = Path.Combine(mbApiInterface.Setting_GetPersistentStoragePath(), "KaraokeShow1.xml");
             Configuration.SaveConfig(dataPath);
 
             //Close old
@@ -110,7 +110,7 @@ namespace MusicBeePlugin
         // uninstall this plugin - clean up any persisted files
         public void Uninstall()
         {
-            string dataPath = Path.Combine(mbApiInterface.Setting_GetPersistentStoragePath(), "KaraokeShowSettings.xml");
+            string dataPath = Path.Combine(mbApiInterface.Setting_GetPersistentStoragePath(), "KaraokeShow1.xml");
             if (File.Exists(dataPath))
                 File.Delete(dataPath);
         }
@@ -123,7 +123,7 @@ namespace MusicBeePlugin
             switch (type)
             {
                 case NotificationType.PluginStartup:
-                    string dataPath = Path.Combine(mbApiInterface.Setting_GetPersistentStoragePath(), "KaraokeShowSettings.xml");
+                    string dataPath = Path.Combine(mbApiInterface.Setting_GetPersistentStoragePath(), "KaraokeShow1.xml");
                     Configuration.LoadConfig(dataPath);
                     mbApiInterface.MB_AddMenuItem("mnuView/Karaoke Show", "", new EventHandler((s, e) =>
                     {
