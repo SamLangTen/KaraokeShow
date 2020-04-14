@@ -178,7 +178,7 @@ namespace MusicBeePlugin.Window.Helper
             g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
             g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
             g.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
-            g.DrawString(text, TextFont, OutlineBrush1, new PointF(0, 0));
+            g.DrawString(text, TextFont, OutlineBrush1, new PointF(0,0));
             g.Dispose();
             var blur = new GaussianBlur(bmp);
             BackBlurBitmapCache[text] = blur.Process(Configuration.BlurRadial);

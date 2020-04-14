@@ -36,7 +36,7 @@ namespace MusicBeePlugin.Window
             SyncHelper = new SynchronousHelper(lyrics);
             LyricsGen = new DynamicLyricsGenerator();
             LyricsGen.Brush1 = new LinearGradientBrush(new Point(0, 0), new Point(0, 100), Configuration.BackColor1, Configuration.BackColor2);
-            LyricsGen.Brush2 = new LinearGradientBrush(new Point(0, 0), new Point(0, 100), Configuration.ForeColor2, Configuration.ForeColor2);
+            LyricsGen.Brush2 = new LinearGradientBrush(new Point(0, 0), new Point(0, 100), Configuration.ForeColor1, Configuration.ForeColor2);
             LyricsGen.OutlineBrush1 = new SolidBrush(Configuration.OutlineBackColor);
             LyricsGen.OutlineBrush2 = new SolidBrush(Configuration.OutlineForeColor);
             this.MusicBeeForm = MusicBeeForm;
