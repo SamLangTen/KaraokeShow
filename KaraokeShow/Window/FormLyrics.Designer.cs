@@ -41,6 +41,11 @@
             this.Text = "FormLyrics";
             this.TopMost = true;
             this.Load += new System.EventHandler(this.FormLyrics_Load);
+            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.FormLyrics_MouseDown);
+            this.MouseLeave += new System.EventHandler(this.FormLyrics_MouseLeave);
+            this.MouseHover += new System.EventHandler(this.FormLyrics_MouseHover);
+            this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.FormLyrics_MouseMove);
+            this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.FormLyrics_MouseUp);
             this.ResumeLayout(false);
 
         }

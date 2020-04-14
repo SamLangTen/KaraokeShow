@@ -8,10 +8,10 @@ namespace MusicBeePlugin.Window.Helper
 {
     public class DynamicLyricsGenerator
     {
-        private Font TextFont { get; set; }
-        private int WindowWidth { get; set; }
-        private int LineHeight { get; set; }
-        private int Line { get; set; }
+        private Font TextFont { get => Configuration.TextFont; }
+        private int WindowWidth { get => Configuration.Width; }
+        private int LineHeight { get => (int)GetCorrectFontSize("Test", TextFont).Height; }
+        private int Line { get => Configuration.Line; }
 
         public Brush Brush1 { get; set; }
         public Brush Brush2 { get; set; }
@@ -24,13 +24,6 @@ namespace MusicBeePlugin.Window.Helper
         private static Dictionary<string, Bitmap> BackBlurBitmapCache { get; set; } = new Dictionary<string, Bitmap>();
         private static Dictionary<int, Bitmap> LineBitmapCache { get; set; } = new Dictionary<int, Bitmap>();
 
-        public DynamicLyricsGenerator(Font font, int windowWidth, int line)
-        {
-            TextFont = font;
-            WindowWidth = windowWidth;
-            Line = line;
-            LineHeight = (int)GetCorrectFontSize("Test", font).Height;
-        }
 
         public Bitmap GetUpdatedLyricsImage(string text, int line, double percentage)
         {

@@ -34,7 +34,7 @@ namespace MusicBeePlugin.Window
         public DestopLyrics(List<SynchronousLyricItem> lyrics, Form MusicBeeForm)
         {
             SyncHelper = new SynchronousHelper(lyrics);
-            LyricsGen = new DynamicLyricsGenerator(Configuration.TextFont, Configuration.Width, Configuration.Line);
+            LyricsGen = new DynamicLyricsGenerator();
             LyricsGen.Brush1 = new LinearGradientBrush(new Point(0, 0), new Point(0, 100), Configuration.BackColor1, Configuration.BackColor2);
             LyricsGen.Brush2 = new LinearGradientBrush(new Point(0, 0), new Point(0, 100), Configuration.ForeColor2, Configuration.ForeColor2);
             LyricsGen.OutlineBrush1 = new SolidBrush(Configuration.OutlineBackColor);
@@ -47,6 +47,7 @@ namespace MusicBeePlugin.Window
             MusicBeeForm.Invoke(new Action(() =>
             {
                 FormLyrics.Show();
+                FormLyrics.Location = new Point(Configuration.X, Configuration.Y);
             }));
         }
 
@@ -65,6 +66,8 @@ namespace MusicBeePlugin.Window
                 FormLyrics.Close();
             }));
         }
+
+        public Point WindowLocation { get => FormLyrics.Location; }
 
         public void Update(int milliseconds)
         {

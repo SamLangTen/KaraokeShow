@@ -100,6 +100,15 @@ namespace MusicBeePlugin
         // MusicBee is closing the plugin (plugin is being disabled by user or MusicBee is shutting down)
         public void Close(PluginCloseReason reason)
         {
+            string dataPath = Path.Combine(mbApiInterface.Setting_GetPersistentStoragePath(), "KaraokeShow2.xml");
+            if (destopLyrics != null)
+            {
+                var loc = destopLyrics.WindowLocation;
+                Configuration.X = loc.X;
+                Configuration.Y = loc.Y;
+            }
+            Configuration.SaveConfig(dataPath);
+
             //Close old
             timer?.Stop();
             destopLyrics?.CloseWindow();
