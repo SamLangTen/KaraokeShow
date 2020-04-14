@@ -18,16 +18,26 @@ namespace MusicBeePlugin.Window.Helper
         public Brush OutlineBrush1 { get; set; }
         public Brush OutlineBrush2 { get; set; }
 
-        private static Dictionary<string, Bitmap> ForeBitmapCache { get; set; } = new Dictionary<string, Bitmap>();
-        private static Dictionary<string, Bitmap> ForeBlurBitmapCache { get; set; } = new Dictionary<string, Bitmap>();
-        private static Dictionary<string, Bitmap> BackBitmapCache { get; set; } = new Dictionary<string, Bitmap>();
-        private static Dictionary<string, Bitmap> BackBlurBitmapCache { get; set; } = new Dictionary<string, Bitmap>();
-        private static Dictionary<int, Bitmap> LineBitmapCache { get; set; } = new Dictionary<int, Bitmap>();
-
+        private Dictionary<string, Bitmap> ForeBitmapCache { get; set; } = new Dictionary<string, Bitmap>();
+        private Dictionary<string, Bitmap> ForeBlurBitmapCache { get; set; } = new Dictionary<string, Bitmap>();
+        private Dictionary<string, Bitmap> BackBitmapCache { get; set; } = new Dictionary<string, Bitmap>();
+        private Dictionary<string, Bitmap> BackBlurBitmapCache { get; set; } = new Dictionary<string, Bitmap>();
+        private Dictionary<int, Bitmap> LineBitmapCache { get; set; } = new Dictionary<int, Bitmap>();
+        private Font LastFont { get; set; }
 
         public Bitmap GetUpdatedLyricsImage(string text, int line, double percentage)
         {
-
+            //Check whether font has changed
+            if (LastFont != Configuration.TextFont)
+            {
+                ForeBitmapCache.Clear();
+                ForeBlurBitmapCache.Clear();
+                BackBitmapCache.Clear();
+                BackBlurBitmapCache.Clear();
+                LineBitmapCache.Clear();
+                LastFont = Configuration.TextFont;
+            }
+            //Paint
             try
             {
                 var updatingBitmap = DrawLyric(text, line, percentage);
