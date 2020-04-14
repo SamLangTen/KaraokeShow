@@ -73,10 +73,13 @@ namespace MusicBeePlugin.Window
             {
                 for (int i = 1; i <= Configuration.Line && i <= SyncHelper.SynchronousLyrics.Count; i++)
                 {
-                    LineInfo[i] = SyncHelper.SynchronousLyrics[i - 1];
-                    var updatedBmp = LyricsGen.GetUpdatedLyricsImage(LineInfo[i].Content, i, 0);
-                    RefreshWindow(updatedBmp);
-                    Debug.WriteLine($"Updated Line {i}: {LineInfo[i].Content}");
+                    if (!LineInfo.ContainsKey(i) || LineInfo[i] != SyncHelper.SynchronousLyrics[i - 1])
+                    {
+                        LineInfo[i] = SyncHelper.SynchronousLyrics[i - 1];
+                        var updatedBmp = LyricsGen.GetUpdatedLyricsImage(LineInfo[i].Content, i, 0);
+                        RefreshWindow(updatedBmp);
+                        Debug.WriteLine($"Updated Line {i}: {LineInfo[i].Content}");
+                    }
                 }
             }
 

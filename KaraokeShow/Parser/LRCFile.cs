@@ -28,7 +28,7 @@ namespace MusicBeePlugin.Parser
 
         private void Parse(string lrcText, bool ignoreOffset = true)
         {
-            var timestampRegex = new Regex("^\\[\\d\\d:\\d\\d(\\.\\d\\d)?\\]");
+            var timestampRegex = new Regex("^\\[\\d\\d:\\d\\d(\\.\\d\\d(\\d)?)?\\]");
             Func<string, DateTime> timestampToDateTime = t =>
              {
                  var numRegex = new Regex("\\d\\d");

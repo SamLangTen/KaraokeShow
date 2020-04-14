@@ -100,6 +100,9 @@ namespace MusicBeePlugin
         // MusicBee is closing the plugin (plugin is being disabled by user or MusicBee is shutting down)
         public void Close(PluginCloseReason reason)
         {
+            //Close old
+            timer?.Stop();
+            destopLyrics?.CloseWindow();
         }
 
         // uninstall this plugin - clean up any persisted files
