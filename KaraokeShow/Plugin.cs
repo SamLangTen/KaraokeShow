@@ -81,6 +81,7 @@ namespace MusicBeePlugin
         public void SaveSettings()
         {
             string dataPath = Path.Combine(mbApiInterface.Setting_GetPersistentStoragePath(), "KaraokeShow1.xml");
+            ResetPlayback();
             if (config != null)
             {
                 Configuration.TextFont = config.TextFont;
@@ -94,6 +95,7 @@ namespace MusicBeePlugin
                 Configuration.OutlineForeColor = config.OutlineForeColor;
                 Configuration.EnabledSliding = config.EnabledSliding;
             }
+            ResetAndCreateNewPlayback();
             Configuration.SaveConfig(dataPath);
         }
 
@@ -138,6 +140,9 @@ namespace MusicBeePlugin
                             ResetPlayback();
                         }
                     }));
+                    break;
+                case NotificationType.ShutdownStarted:
+                    ResetPlayback();
                     break;
                 case NotificationType.NowPlayingLyricsReady:
                     if (Configuration.Enabled)
