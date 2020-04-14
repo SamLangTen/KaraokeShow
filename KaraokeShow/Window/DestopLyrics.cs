@@ -60,7 +60,7 @@ namespace MusicBeePlugin.Window
 
         public void Update(int milliseconds)
         {
-            //Debug.WriteLine($"lastIndex {lastIndex}");
+            //Debug.WriteLine($"lastIndex {LastIndex}");
             if (LastIndex == -1)
             {
                 for (int i = 1; i <= Configuration.Line && i <= SyncHelper.SynchronousLyrics.Count; i++)
@@ -74,20 +74,21 @@ namespace MusicBeePlugin.Window
 
             var newIndex = SyncHelper.GetLyricIndex(milliseconds);
             if (newIndex == -1) return;
-            if (newIndex > LastIndex && LastIndex != -1)
+            if (newIndex != LastIndex && LastIndex != -1)
             {
-                //Should update last outdated lyrics line
-                int outdatedLine = (LastIndex % Configuration.Line) + 1;
-                int outdatedIndex = SyncHelper.SynchronousLyrics.IndexOf(LineInfo[outdatedLine]);
-                if (outdatedIndex < newIndex)
+                for (int i = 0; i < Configuration.Line; i++)
                 {
-                    //Set outdated line to next new line
-                    if (newIndex + (Configuration.Line - 1) < SyncHelper.SynchronousLyrics.Count)
+                    int updatingIndex = newIndex + i - (newIndex % Configuration.Line);
+                    if (updatingIndex < newIndex) updatingIndex += Configuration.Line;
+                    if (updatingIndex < SyncHelper.SynchronousLyrics.Count)
                     {
-                        LineInfo[outdatedLine] = SyncHelper.SynchronousLyrics[newIndex + (Configuration.Line - 1)];
-                        var updatedBmp = LyricsGen.GetUpdatedLyricsImage(LineInfo[outdatedLine].Content, outdatedLine, 0);
-                        RefreshWindow(updatedBmp);
-                        Debug.WriteLine($"Updated Line {outdatedLine}: {LineInfo[outdatedLine].Content}");
+                        if (LineInfo[i + 1] != SyncHelper.SynchronousLyrics[updatingIndex])
+                        {
+                            LineInfo[i + 1] = SyncHelper.SynchronousLyrics[updatingIndex];
+                            var updatedBmp = LyricsGen.GetUpdatedLyricsImage(LineInfo[i + 1].Content, i + 1, 0);
+                            RefreshWindow(updatedBmp);
+                            Debug.WriteLine($"Updated Line {i + 1}: {LineInfo[i + 1].Content}");
+                        }
                     }
                 }
             }
@@ -97,7 +98,7 @@ namespace MusicBeePlugin.Window
             double percentage = SyncHelper.GetPercentage(milliseconds);
             var bmp = LyricsGen.GetUpdatedLyricsImage(LineInfo[thisLine].Content, thisLine, percentage);
             RefreshWindow(bmp);
-            //Debug.WriteLine($"Updated Percentage {thisLine}: {lineInfo[thisLine].Content}, {percentage}");
+            //Debug.WriteLine($"Updated Percentage {thisLine}: {LineInfo[thisLine].Content}, {percentage}");
             LastIndex = newIndex;
         }
 

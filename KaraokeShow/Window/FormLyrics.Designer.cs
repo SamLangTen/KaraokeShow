@@ -39,6 +39,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "FormLyrics";
             this.Text = "FormLyrics";
+            this.TopMost = true;
             this.Load += new System.EventHandler(this.FormLyrics_Load);
             this.ResumeLayout(false);
 
