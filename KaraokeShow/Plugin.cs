@@ -125,6 +125,12 @@ namespace MusicBeePlugin
 
                     break;
                 case NotificationType.TrackChanged:
+                    //Close old
+                    timer?.Stop();
+                    destopLyrics?.CloseWindow();
+
+
+                    //Create new
                     var lyricsText = mbApiInterface.NowPlaying_GetLyrics();
                     if (lyricsText == null) return;
                     var lrc = new LRCFile(lyricsText, true);

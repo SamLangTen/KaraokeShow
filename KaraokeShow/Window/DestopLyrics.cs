@@ -58,6 +58,14 @@ namespace MusicBeePlugin.Window
             }));
         }
 
+        public void CloseWindow()
+        {
+            MusicBeeForm.Invoke(new Action(() =>
+            {
+                FormLyrics.Close();
+            }));
+        }
+
         public void Update(int milliseconds)
         {
             //Debug.WriteLine($"lastIndex {LastIndex}");
