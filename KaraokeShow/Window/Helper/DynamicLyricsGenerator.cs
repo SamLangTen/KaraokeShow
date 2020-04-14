@@ -181,7 +181,7 @@ namespace MusicBeePlugin.Window.Helper
             g.DrawString(text, TextFont, OutlineBrush1, new PointF(0, 0));
             g.Dispose();
             var blur = new GaussianBlur(bmp);
-            BackBlurBitmapCache[text] = blur.Process(3);
+            BackBlurBitmapCache[text] = blur.Process(Configuration.BlurRadial);
             return BackBlurBitmapCache[text];
         }
 
@@ -199,7 +199,7 @@ namespace MusicBeePlugin.Window.Helper
                 fg.DrawString(text, TextFont, OutlineBrush2, new PointF(0, 0));
                 fg.Dispose();
                 var blur = new GaussianBlur(fullBmp);
-                ForeBlurBitmapCache[text] = blur.Process(3);
+                ForeBlurBitmapCache[text] = blur.Process(Configuration.BlurRadial);
                 fullBmp = ForeBlurBitmapCache[text];
             }
             else

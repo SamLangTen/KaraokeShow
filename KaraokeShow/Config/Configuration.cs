@@ -28,6 +28,7 @@ namespace MusicBeePlugin
             public int Y { get; set; }
             public int Width { get; set; }
             public bool EnabledSliding { get; set; }
+            public bool Enabled { get; set; }
         }
 
         public static Font TextFont { get; set; }
@@ -43,6 +44,7 @@ namespace MusicBeePlugin
         public static int Y { get; set; }
         public static int Width { get; set; }
         public static bool EnabledSliding { get; set; }
+        public static bool Enabled { get; set; }
 
         public static void SaveConfig(string path)
         {
@@ -62,7 +64,8 @@ namespace MusicBeePlugin
                 X = X,
                 Y = Y,
                 Width = Width,
-                EnabledSliding = EnabledSliding
+                EnabledSliding = EnabledSliding,
+                Enabled = Enabled
             };
 
             var xms = new XmlSerializer(typeof(SerializedConfig));
@@ -88,6 +91,7 @@ namespace MusicBeePlugin
                 Y = 100;
                 Width = 300;
                 EnabledSliding = true;
+                Enabled = false;
             }
             else
             {
@@ -109,6 +113,7 @@ namespace MusicBeePlugin
                 Y = config.Y;
                 Width = config.Width;
                 EnabledSliding = config.EnabledSliding;
+                Enabled = config.Enabled;
             }
         }
     }

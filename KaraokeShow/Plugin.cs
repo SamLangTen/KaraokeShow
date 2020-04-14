@@ -104,8 +104,7 @@ namespace MusicBeePlugin
             Configuration.SaveConfig(dataPath);
 
             //Close old
-            timer?.Stop();
-            destopLyrics?.CloseWindow();
+            ResetPlayback();
         }
 
         // uninstall this plugin - clean up any persisted files
@@ -126,23 +125,43 @@ namespace MusicBeePlugin
                 case NotificationType.PluginStartup:
                     string dataPath = Path.Combine(mbApiInterface.Setting_GetPersistentStoragePath(), "KaraokeShow2.xml");
                     Configuration.LoadConfig(dataPath);
+                    mbApiInterface.MB_AddMenuItem("mnuView/Karaoke Show2", "", new EventHandler((s, e) =>
+                    {
+
+                        Configuration.Enabled = !Configuration.Enabled;
+                        if (Configuration.Enabled)
+                        {
+                            ResetAndCreateNewPlayback();
+                        }
+                        else
+                        {
+                            ResetPlayback();
+                        }
+                    }));
                     break;
                 case NotificationType.NowPlayingLyricsReady:
-                    ResetAndCreateNewPlayback();
+                    if (Configuration.Enabled)
+                        ResetAndCreateNewPlayback();
                     break;
                 case NotificationType.TrackChanged:
-                    ResetAndCreateNewPlayback();
+                    if (Configuration.Enabled)
+                        ResetAndCreateNewPlayback();
                     break;
                 default:
                     break;
             }
         }
 
-        private void ResetAndCreateNewPlayback()
+        private void ResetPlayback()
         {
             //Close old
             timer?.Stop();
             destopLyrics?.CloseWindow();
+        }
+
+        private void ResetAndCreateNewPlayback()
+        {
+            ResetPlayback();
             //Create new
             var lyricsText = mbApiInterface.NowPlaying_GetLyrics();
             if (lyricsText == null) return;
