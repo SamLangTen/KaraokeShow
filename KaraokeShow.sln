@@ -1,67 +1,36 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "KaraokeShow", "KaraokeShow\KaraokeShow.vbproj", "{A413C497-6606-47E0-8A5E-028BA7B0432D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KaraokeShow", "KaraokeShow\KaraokeShow.csproj", "{210E3D67-1E2B-4FAB-98E2-F51577C0F2A0}"
 EndProject
-Project("{911E67C6-3D85-4FCE-B560-20A9C3E3FF48}") = "MusicBee", "K:\Program Files (x86)\MusicBee\MusicBee.exe", "{D0E53143-689E-4EB8-B9CB-2D7E8C6326C2}"
-	ProjectSection(DebuggerProjectSystem) = preProject
-		PortSupplier = 00000000-0000-0000-0000-000000000000
-		Executable = C:\Program Files (x86)\MusicBee\MusicBee.exe
-		RemoteMachine = SAMERSIONS-PC
-		StartingDirectory = C:\Program Files (x86)\MusicBee
-		Environment = 默认值
-		LaunchingEngine = 00000000-0000-0000-0000-000000000000
-		UseLegacyDebugEngines = No
-		LaunchSQLEngine = No
-		AttachLaunchAction = No
-	EndProjectSection
-EndProject
-Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "KaraokeShowMainPlugin", "KaraokeShowMainPlugin\KaraokeShowMainPlugin.vbproj", "{B26ABECE-E7DE-4693-AD37-02441DECF5DE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KaraokeShow.Test", "KaraokeShow.Test\KaraokeShow.Test.csproj", "{DA71F478-5DE6-4165-8E5F-AABF9023A482}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
-		Debug|x86 = Debug|x86
 		DebugToMB|Any CPU = DebugToMB|Any CPU
-		DebugToMB|x86 = DebugToMB|x86
 		Release|Any CPU = Release|Any CPU
-		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{A413C497-6606-47E0-8A5E-028BA7B0432D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A413C497-6606-47E0-8A5E-028BA7B0432D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A413C497-6606-47E0-8A5E-028BA7B0432D}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{A413C497-6606-47E0-8A5E-028BA7B0432D}.Debug|x86.Build.0 = Debug|Any CPU
-		{A413C497-6606-47E0-8A5E-028BA7B0432D}.DebugToMB|Any CPU.ActiveCfg = DebugToMB|Any CPU
-		{A413C497-6606-47E0-8A5E-028BA7B0432D}.DebugToMB|Any CPU.Build.0 = DebugToMB|Any CPU
-		{A413C497-6606-47E0-8A5E-028BA7B0432D}.DebugToMB|x86.ActiveCfg = DebugToMB|Any CPU
-		{A413C497-6606-47E0-8A5E-028BA7B0432D}.DebugToMB|x86.Build.0 = DebugToMB|Any CPU
-		{A413C497-6606-47E0-8A5E-028BA7B0432D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A413C497-6606-47E0-8A5E-028BA7B0432D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A413C497-6606-47E0-8A5E-028BA7B0432D}.Release|x86.ActiveCfg = Release|Any CPU
-		{A413C497-6606-47E0-8A5E-028BA7B0432D}.Release|x86.Build.0 = Release|Any CPU
-		{D0E53143-689E-4EB8-B9CB-2D7E8C6326C2}.Debug|Any CPU.ActiveCfg = Release|x86
-		{D0E53143-689E-4EB8-B9CB-2D7E8C6326C2}.Debug|x86.ActiveCfg = Release|x86
-		{D0E53143-689E-4EB8-B9CB-2D7E8C6326C2}.DebugToMB|Any CPU.ActiveCfg = Release|x86
-		{D0E53143-689E-4EB8-B9CB-2D7E8C6326C2}.DebugToMB|x86.ActiveCfg = Release|x86
-		{D0E53143-689E-4EB8-B9CB-2D7E8C6326C2}.Release|Any CPU.ActiveCfg = Release|x86
-		{D0E53143-689E-4EB8-B9CB-2D7E8C6326C2}.Release|x86.ActiveCfg = Release|x86
-		{B26ABECE-E7DE-4693-AD37-02441DECF5DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B26ABECE-E7DE-4693-AD37-02441DECF5DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B26ABECE-E7DE-4693-AD37-02441DECF5DE}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{B26ABECE-E7DE-4693-AD37-02441DECF5DE}.Debug|x86.Build.0 = Debug|Any CPU
-		{B26ABECE-E7DE-4693-AD37-02441DECF5DE}.DebugToMB|Any CPU.ActiveCfg = DebugToKS|Any CPU
-		{B26ABECE-E7DE-4693-AD37-02441DECF5DE}.DebugToMB|Any CPU.Build.0 = DebugToKS|Any CPU
-		{B26ABECE-E7DE-4693-AD37-02441DECF5DE}.DebugToMB|x86.ActiveCfg = Debug|Any CPU
-		{B26ABECE-E7DE-4693-AD37-02441DECF5DE}.DebugToMB|x86.Build.0 = Debug|Any CPU
-		{B26ABECE-E7DE-4693-AD37-02441DECF5DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B26ABECE-E7DE-4693-AD37-02441DECF5DE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B26ABECE-E7DE-4693-AD37-02441DECF5DE}.Release|x86.ActiveCfg = Release|Any CPU
-		{B26ABECE-E7DE-4693-AD37-02441DECF5DE}.Release|x86.Build.0 = Release|Any CPU
+		{210E3D67-1E2B-4FAB-98E2-F51577C0F2A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{210E3D67-1E2B-4FAB-98E2-F51577C0F2A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{210E3D67-1E2B-4FAB-98E2-F51577C0F2A0}.DebugToMB|Any CPU.ActiveCfg = DebugToMB|Any CPU
+		{210E3D67-1E2B-4FAB-98E2-F51577C0F2A0}.DebugToMB|Any CPU.Build.0 = DebugToMB|Any CPU
+		{210E3D67-1E2B-4FAB-98E2-F51577C0F2A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{210E3D67-1E2B-4FAB-98E2-F51577C0F2A0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA71F478-5DE6-4165-8E5F-AABF9023A482}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA71F478-5DE6-4165-8E5F-AABF9023A482}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA71F478-5DE6-4165-8E5F-AABF9023A482}.DebugToMB|Any CPU.ActiveCfg = DebugToMB|Any CPU
+		{DA71F478-5DE6-4165-8E5F-AABF9023A482}.DebugToMB|Any CPU.Build.0 = DebugToMB|Any CPU
+		{DA71F478-5DE6-4165-8E5F-AABF9023A482}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA71F478-5DE6-4165-8E5F-AABF9023A482}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C195306A-7EEF-45F1-9A7A-4BD36D2E7016}
 	EndGlobalSection
 EndGlobal
