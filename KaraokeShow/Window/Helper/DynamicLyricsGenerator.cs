@@ -182,7 +182,7 @@ namespace MusicBeePlugin.Window.Helper
             return fullBmp;
         }
 
-        private Bitmap DrawOutlineBackground(string text, Size fontSize)
+        private Bitmap DrawBlurBackground(string text, Size fontSize)
         {
             if (BackBlurBitmapCache.ContainsKey(text))
                 return BackBlurBitmapCache[text];
@@ -246,7 +246,7 @@ namespace MusicBeePlugin.Window.Helper
             var y = textSize.Height * (line - 1);
 
             //Draw background
-            var blurBmp = DrawOutlineBackground(text, textSize.ToSize());
+            var blurBmp = DrawBlurBackground(text, textSize.ToSize());
             graphics.DrawImage(blurBmp, new Point(0, (int)y));
             var backBmp = DrawBackground(text, textSize.ToSize());
             graphics.DrawImage(backBmp, new Point(0, (int)y));
@@ -271,7 +271,7 @@ namespace MusicBeePlugin.Window.Helper
             var x = (float)(WindowWidth / 2 - textSize.Width * percentage);
 
             //Draw background
-            var blurBmp = DrawOutlineBackground(text, textSize.ToSize());
+            var blurBmp = DrawBlurBackground(text, textSize.ToSize());
             graphics.DrawImage(blurBmp, new Point((int)x, (int)y));
             var backBmp = DrawBackground(text, textSize.ToSize());
             graphics.DrawImage(backBmp, new Point((int)x, (int)y));
@@ -292,7 +292,7 @@ namespace MusicBeePlugin.Window.Helper
             if (x > 0) x = 0;
 
             //Draw background
-            var blurBmp = DrawOutlineBackground(text, textSize.ToSize());
+            var blurBmp = DrawBlurBackground(text, textSize.ToSize());
             graphics.DrawImage(blurBmp, new Point((int)x, (int)y));
             var backBmp = DrawBackground(text, textSize.ToSize());
             graphics.DrawImage(backBmp, new Point((int)x, (int)y));
