@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 
@@ -13,11 +14,14 @@ namespace MusicBeePlugin.Window.Helper
         private int WindowWidth { get => Configuration.Width; }
         private int LineHeight { get => (int)GetCorrectFontSize("Test", TextFont).Height; }
         private int Line { get => Configuration.Line; }
-
+        private int OutLineWidth { get => Configuration.OutlineWidth; }
+        private int BlurRadial { get => Configuration.BlurRadial; }
         public Brush Brush1 { get; set; }
         public Brush Brush2 { get; set; }
         public Brush OutlineBrush1 { get; set; }
         public Brush OutlineBrush2 { get; set; }
+        public Pen OutlinePen1 { get; set; }
+        public Pen OutlinePen2 { get; set; }
 
         private Dictionary<string, Bitmap> ForeBitmapCache { get; set; } = new Dictionary<string, Bitmap>();
         private Dictionary<string, Bitmap> ForeBlurBitmapCache { get; set; } = new Dictionary<string, Bitmap>();
@@ -128,7 +132,12 @@ namespace MusicBeePlugin.Window.Helper
                 fg.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
                 fg.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
                 fg.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
-                fg.DrawString(text, TextFont, Brush2, new PointF(0, 0));
+
+                var path = new GraphicsPath();
+                path.AddString(text, TextFont.FontFamily, (int)TextFont.Style, fg.DpiY * TextFont.Size / 72, new Point(0, 0), new StringFormat());
+                fg.FillPath(Brush2, path);
+                fg.DrawPath(OutlinePen2, path);
+
                 fg.Dispose();
                 ForeBitmapCache[text] = fullBmp;
             }
@@ -157,7 +166,12 @@ namespace MusicBeePlugin.Window.Helper
                 fg.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
                 fg.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
                 fg.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
-                fg.DrawString(text, TextFont, Brush1, new PointF(0, 0));
+
+                var path = new GraphicsPath();
+                path.AddString(text, TextFont.FontFamily, (int)TextFont.Style, fg.DpiY * TextFont.Size / 72, new Point(0, 0), new StringFormat());
+                fg.FillPath(Brush1, path);
+                fg.DrawPath(OutlinePen1, path);
+
                 fg.Dispose();
                 BackBitmapCache[text] = fullBmp;
             }
@@ -178,10 +192,15 @@ namespace MusicBeePlugin.Window.Helper
             g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
             g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
             g.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
-            g.DrawString(text, TextFont, OutlineBrush1, new PointF(0,0));
+            g.DrawString(text, TextFont, OutlineBrush1, new PointF(0, 0));
             g.Dispose();
-            var blur = new GaussianBlur(bmp);
-            BackBlurBitmapCache[text] = blur.Process(Configuration.BlurRadial);
+
+            if (BlurRadial > 0)
+            {
+                var blur = new GaussianBlur(bmp);
+                bmp = blur.Process(BlurRadial);
+            }
+            BackBlurBitmapCache[text] = bmp;
             return BackBlurBitmapCache[text];
         }
 
@@ -198,8 +217,13 @@ namespace MusicBeePlugin.Window.Helper
                 fg.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
                 fg.DrawString(text, TextFont, OutlineBrush2, new PointF(0, 0));
                 fg.Dispose();
-                var blur = new GaussianBlur(fullBmp);
-                ForeBlurBitmapCache[text] = blur.Process(Configuration.BlurRadial);
+
+                if (BlurRadial > 0)
+                {
+                    var blur = new GaussianBlur(fullBmp);
+                    fullBmp = blur.Process(BlurRadial);
+                }
+                ForeBlurBitmapCache[text] = fullBmp;
                 fullBmp = ForeBlurBitmapCache[text];
             }
             else

@@ -152,7 +152,7 @@
     <value>300, 21</value>
   </data>
   <data name="checkBox1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>96, 15</value>
+    <value>96, 16</value>
   </data>
   <data name="checkBox1.Text" xml:space="preserve">
     <value>使用滚动模式</value>
@@ -179,7 +179,10 @@
     <value>背景色2</value>
   </data>
   <data name="label3.Text" xml:space="preserve">
-    <value>边框模糊</value>
+    <value>阴影模糊</value>
+  </data>
+  <data name="label10.Text" xml:space="preserve">
+    <value>边框大小</value>
   </data>
   <data name="button8.Text" xml:space="preserve">
     <value>取消</value>
