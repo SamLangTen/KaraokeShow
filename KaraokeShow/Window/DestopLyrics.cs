@@ -39,6 +39,8 @@ namespace MusicBeePlugin.Window
             LyricsGen.Brush2 = new LinearGradientBrush(new Point(0, 0), new Point(0, 100), Configuration.ForeColor1, Configuration.ForeColor2);
             LyricsGen.OutlineBrush1 = new SolidBrush(Configuration.OutlineBackColor);
             LyricsGen.OutlineBrush2 = new SolidBrush(Configuration.OutlineForeColor);
+            LyricsGen.OutlinePen1 = new Pen(LyricsGen.OutlineBrush1, Configuration.OutlineWidth);
+            LyricsGen.OutlinePen2 = new Pen(LyricsGen.OutlineBrush2, Configuration.OutlineWidth);
             this.MusicBeeForm = MusicBeeForm;
         }
 

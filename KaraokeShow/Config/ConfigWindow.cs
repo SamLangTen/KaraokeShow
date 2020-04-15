@@ -24,6 +24,7 @@ namespace MusicBeePlugin.Config
         public Color OutlineBackColor { get => button5.BackColor; set => button5.BackColor = value; }
         public Color OutlineForeColor { get => button2.BackColor; set => button2.BackColor = value; }
         public int BlurRadial { get => (int)numericUpDown2.Value; set => numericUpDown2.Value = value; }
+        public int OutlineWidth { get => (int)numericUpDown3.Value; set => numericUpDown3.Value = value; }
         public Color BackColor1 { get => button6.BackColor; set => button6.BackColor = value; }
         public Color BackColor2 { get => button7.BackColor; set => button7.BackColor = value; }
         public Color ForeColor1 { get => button3.BackColor; set => button3.BackColor = value; }

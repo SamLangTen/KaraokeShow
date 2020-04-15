@@ -19,6 +19,7 @@ namespace MusicBeePlugin
             public int OutlineBackColor { get; set; }
             public int OutlineForeColor { get; set; }
             public int BlurRadial { get; set; }
+            public int OutlineWidth { get; set; }
             public int BackColor1 { get; set; }
             public int BackColor2 { get; set; }
             public int ForeColor1 { get; set; }
@@ -35,6 +36,7 @@ namespace MusicBeePlugin
         public static Color OutlineBackColor { get; set; }
         public static Color OutlineForeColor { get; set; }
         public static int BlurRadial { get; set; }
+        public static int OutlineWidth { get; set; }
         public static Color BackColor1 { get; set; }
         public static Color BackColor2 { get; set; }
         public static Color ForeColor1 { get; set; }
@@ -60,6 +62,7 @@ namespace MusicBeePlugin
                 ForeColor1 = ForeColor1.ToArgb(),
                 ForeColor2 = ForeColor2.ToArgb(),
                 BlurRadial = BlurRadial,
+                OutlineWidth = OutlineWidth,
                 Line = Line,
                 X = X,
                 Y = Y,
@@ -86,6 +89,7 @@ namespace MusicBeePlugin
                 ForeColor1 = Color.Red;
                 ForeColor2 = Color.DarkRed;
                 BlurRadial = 3;
+                OutlineWidth = 3;
                 Line = 2;
                 X = 100;
                 Y = 100;
@@ -108,6 +112,7 @@ namespace MusicBeePlugin
                 ForeColor1 = Color.FromArgb(config.ForeColor1);
                 ForeColor2 = Color.FromArgb(config.ForeColor2);
                 BlurRadial = config.BlurRadial;
+                OutlineWidth = config.OutlineWidth;
                 Line = config.Line;
                 X = config.X;
                 Y = config.Y;
