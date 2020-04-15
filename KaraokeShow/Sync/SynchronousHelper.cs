@@ -20,11 +20,22 @@ namespace MusicBeePlugin.Sync
             var dt = new DateTime(1, 1, 1, 0, 0, 0, 0);
             dt = dt.AddMilliseconds(milliseconds);
             var lyrics = SynchronousLyrics.FirstOrDefault(l => l.StartTime <= dt && dt <= l.EndTime);
-            //If current position does not exists lyrics, select next one.
-            if (lyrics == null)
-                lyrics = SynchronousLyrics.FirstOrDefault(l => dt < l.StartTime);
             return SynchronousLyrics.IndexOf(lyrics);
         }
+
+        public int GetNearNextIndex(int milliseconds)
+        {
+            var index = GetLyricIndex(milliseconds);
+            if (index == -1)
+            {
+                var dt = new DateTime(1, 1, 1, 0, 0, 0, 0);
+                dt = dt.AddMilliseconds(milliseconds);
+                var lyrics = SynchronousLyrics.FirstOrDefault(l => dt < l.StartTime);
+                return SynchronousLyrics.IndexOf(lyrics);
+            }
+            return index;
+        }
+
         public double GetPercentage(int milliseconds)
         {
             var dt = new DateTime(1, 1, 1, 0, 0, 0, 0);

@@ -83,13 +83,18 @@ namespace MusicBeePlugin.Window
         public void UpdateStatic(int milliseconds)
         {
             var newIndex = SyncHelper.GetLyricIndex(milliseconds);
-            if (newIndex == -1) return;
-            if (newIndex != LastIndex)
+            int refreshingIndex;
+            if (newIndex == -1)
+                refreshingIndex = SyncHelper.GetNearNextIndex(milliseconds);
+            else
+                refreshingIndex = newIndex;
+
+            if (refreshingIndex != LastIndex)
             {
                 for (int i = 0; i < Configuration.Line; i++)
                 {
-                    int updatingIndex = newIndex + i - (newIndex % Configuration.Line);
-                    if (updatingIndex < newIndex) updatingIndex += Configuration.Line;
+                    int updatingIndex = refreshingIndex + i - (refreshingIndex % Configuration.Line);
+                    if (updatingIndex < refreshingIndex) updatingIndex += Configuration.Line;
                     if (updatingIndex < SyncHelper.SynchronousLyrics.Count)
                     {
                         if (!LineInfo.ContainsKey(i + 1) || LineInfo[i + 1] != SyncHelper.SynchronousLyrics[updatingIndex])
@@ -102,24 +107,32 @@ namespace MusicBeePlugin.Window
                 }
             }
 
-            //Draw this line percentage
-            int thisLine = (newIndex % Configuration.Line) + 1;
-            double percentage = SyncHelper.GetPercentage(milliseconds);
-            var bmp = LyricsGen.GetUpdatedStaticLyricsImage(LineInfo[thisLine].Content, thisLine, true);
-            RefreshWindow(bmp);
-            LastIndex = newIndex;
+            if (newIndex != -1)
+            {
+                //Draw this line percentage
+                int thisLine = (newIndex % Configuration.Line) + 1;
+                double percentage = SyncHelper.GetPercentage(milliseconds);
+                var bmp = LyricsGen.GetUpdatedStaticLyricsImage(LineInfo[thisLine].Content, thisLine, true);
+                RefreshWindow(bmp);
+                LastIndex = newIndex;
+            }
         }
 
         public void UpdateDynamic(int milliseconds)
         {
             var newIndex = SyncHelper.GetLyricIndex(milliseconds);
-            if (newIndex == -1) return;
-            if (newIndex != LastIndex)
+            int refreshingIndex;
+            if (newIndex == -1)
+                refreshingIndex = SyncHelper.GetNearNextIndex(milliseconds);
+            else
+                refreshingIndex = newIndex;
+
+            if (refreshingIndex != LastIndex)
             {
                 for (int i = 0; i < Configuration.Line; i++)
                 {
-                    int updatingIndex = newIndex + i - (newIndex % Configuration.Line);
-                    if (updatingIndex < newIndex) updatingIndex += Configuration.Line;
+                    int updatingIndex = refreshingIndex + i - (refreshingIndex % Configuration.Line);
+                    if (updatingIndex < refreshingIndex) updatingIndex += Configuration.Line;
                     if (updatingIndex < SyncHelper.SynchronousLyrics.Count)
                     {
                         if (!LineInfo.ContainsKey(i + 1) || LineInfo[i + 1] != SyncHelper.SynchronousLyrics[updatingIndex])
@@ -132,13 +145,16 @@ namespace MusicBeePlugin.Window
                 }
             }
 
+            if (newIndex != -1)
+            {
+                //Draw this line percentage
+                int thisLine = (newIndex % Configuration.Line) + 1;
+                double percentage = SyncHelper.GetPercentage(milliseconds);
+                var bmp = LyricsGen.GetUpdatedDynamicLyricsImage(LineInfo[thisLine].Content, thisLine, percentage);
+                RefreshWindow(bmp);
+                LastIndex = newIndex;
+            }
 
-            //Draw this line percentage
-            int thisLine = (newIndex % Configuration.Line) + 1;
-            double percentage = SyncHelper.GetPercentage(milliseconds);
-            var bmp = LyricsGen.GetUpdatedDynamicLyricsImage(LineInfo[thisLine].Content, thisLine, percentage);
-            RefreshWindow(bmp);
-            LastIndex = newIndex;
         }
 
         private void RefreshWindow(Bitmap bmp)
