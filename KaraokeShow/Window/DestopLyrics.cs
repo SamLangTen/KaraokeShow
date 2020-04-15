@@ -95,7 +95,7 @@ namespace MusicBeePlugin.Window
 
             var newIndex = SyncHelper.GetLyricIndex(milliseconds);
             if (newIndex == -1) return;
-            if (newIndex != LastIndex && LastIndex != -1)
+            if (newIndex != LastIndex)
             {
                 for (int i = 0; i < Configuration.Line; i++)
                 {
@@ -137,7 +137,7 @@ namespace MusicBeePlugin.Window
 
             var newIndex = SyncHelper.GetLyricIndex(milliseconds);
             if (newIndex == -1) return;
-            if (newIndex != LastIndex && LastIndex != -1)
+            if (newIndex != LastIndex)
             {
                 for (int i = 0; i < Configuration.Line; i++)
                 {
