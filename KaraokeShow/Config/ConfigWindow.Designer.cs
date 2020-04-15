@@ -261,6 +261,7 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "ConfigWindow";
+            this.Load += new System.EventHandler(this.ConfigWindow_Load);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();

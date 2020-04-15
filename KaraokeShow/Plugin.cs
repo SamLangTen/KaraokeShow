@@ -8,6 +8,7 @@ using System.IO;
 using MusicBeePlugin.Config;
 using MusicBeePlugin.Window;
 using MusicBeePlugin.Parser;
+using MusicBeePlugin.Internationalization;
 
 namespace MusicBeePlugin
 {
@@ -23,9 +24,14 @@ namespace MusicBeePlugin
         {
             mbApiInterface = new MusicBeeApiInterface();
             mbApiInterface.Initialise(apiInterfacePtr);
+
+            //Load Localization
+            InternationalizationManager.SetCurrentLanguage(mbApiInterface.MB_GetLocalisation("Main.field.173", "Language"));
+            InternationalizationManager.EnableLanguage();
+
             about.PluginInfoVersion = PluginInfoVersion;
             about.Name = "KaraokeShow";
-            about.Description = "A plugin to display synchronised lyrics on desktop";
+            about.Description = Properties.Resources.Plugin_PluginDescription;
             about.Author = "Samersions";
             about.TargetApplication = "";   //  the name of a Plugin Storage device or panel header for a dockable panel
             about.Type = PluginType.General;
@@ -81,6 +87,7 @@ namespace MusicBeePlugin
         public void SaveSettings()
         {
             string dataPath = Path.Combine(mbApiInterface.Setting_GetPersistentStoragePath(), "KaraokeShow1.xml");
+            ResetPlayback();
             if (config != null)
             {
                 Configuration.TextFont = config.TextFont;
@@ -94,6 +101,7 @@ namespace MusicBeePlugin
                 Configuration.OutlineForeColor = config.OutlineForeColor;
                 Configuration.EnabledSliding = config.EnabledSliding;
             }
+            ResetAndCreateNewPlayback();
             Configuration.SaveConfig(dataPath);
         }
 
@@ -138,6 +146,9 @@ namespace MusicBeePlugin
                             ResetPlayback();
                         }
                     }));
+                    break;
+                case NotificationType.ShutdownStarted:
+                    ResetPlayback();
                     break;
                 case NotificationType.NowPlayingLyricsReady:
                     if (Configuration.Enabled)
