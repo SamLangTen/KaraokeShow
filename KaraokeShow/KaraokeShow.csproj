@@ -79,7 +79,7 @@
     </Compile>
     <Compile Include="Window\Helper\DynamicLyricsGenerator.cs" />
     <Compile Include="Window\Helper\GaussianBlur.cs" />
-    <Compile Include="Window\Helper\LayeredWindowWin32.cs" />
+    <Compile Include="Window\Helper\NativeMethods.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Config\ConfigWindow.resx">
