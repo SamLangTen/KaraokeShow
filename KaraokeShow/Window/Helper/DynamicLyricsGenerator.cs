@@ -31,16 +31,13 @@ namespace MusicBeePlugin.Window.Helper
         private Font LastFont { get; set; }
 
 
-        public Bitmap GetUpdatedStaticLyricsImage(string text, int line)
+        public Bitmap GetUpdatedStaticLyricsImage(string text, int line, bool isSelected)
         {
             try
             {
                 //Draw This Line
-                var fz = GetCorrectFontSize(text, TextFont);
-                var updatingBitmap = new Bitmap((int)fz.Width, LineHeight * Line);
-                var g = Graphics.FromImage(updatingBitmap);
-                DrawDynamicLyricBeforeRoll(g, text, line, 0);
-                g.Dispose();
+                var fontSize = GetCorrectFontSize(text, TextFont);
+                var updatingBitmap = DrawStaticLyric(text, line, (int)fontSize.Width, isSelected ? 1 : 0);
                 LineBitmapCache[line] = updatingBitmap;
 
                 //Check max width
@@ -101,6 +98,17 @@ namespace MusicBeePlugin.Window.Helper
             //fontSize = new SizeF((float)(fontSize.Width / y), (float)(fontSize.Height / y));
             //preGraphics.Dispose();
             return fontSize;
+        }
+
+        private Bitmap DrawStaticLyric(string text, int line, int windowWidth, double percentage)
+        {
+            //Clear
+            var rtnBmp = new Bitmap(windowWidth, LineHeight * Line);
+            var graphics = Graphics.FromImage(rtnBmp);
+            var textSize = GetCorrectFontSize(text, TextFont);
+            DrawDynamicLyricBeforeRoll(graphics, text, line, percentage);
+            graphics.Dispose();
+            return rtnBmp;
         }
 
         private Bitmap DrawDynamicLyric(string text, int line, double percentage)
