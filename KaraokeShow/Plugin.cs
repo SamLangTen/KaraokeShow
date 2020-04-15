@@ -8,6 +8,7 @@ using System.IO;
 using MusicBeePlugin.Config;
 using MusicBeePlugin.Window;
 using MusicBeePlugin.Parser;
+using MusicBeePlugin.Internationalization;
 
 namespace MusicBeePlugin
 {
@@ -127,6 +128,7 @@ namespace MusicBeePlugin
                 case NotificationType.PluginStartup:
                     string dataPath = Path.Combine(mbApiInterface.Setting_GetPersistentStoragePath(), "KaraokeShow1.xml");
                     Configuration.LoadConfig(dataPath);
+                    InternationalizationManager.SetCurrentLanguage(mbApiInterface.MB_GetLocalisation("Main.field.173", "Language"));
                     mbApiInterface.MB_AddMenuItem("mnuView/Karaoke Show", "", new EventHandler((s, e) =>
                     {
 

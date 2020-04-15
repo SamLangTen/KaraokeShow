@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MusicBeePlugin.Internationalization;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -68,5 +69,10 @@ namespace MusicBeePlugin.Config
             }
         }
 
+        private void ConfigWindow_Load(object sender, EventArgs e)
+        {
+            InternationalizationManager.EnableLanguage();
+            InternationalizationManager.ApplyResourceToWinForm(this);
+        }
     }
 }

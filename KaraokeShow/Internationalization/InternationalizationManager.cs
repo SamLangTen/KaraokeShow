@@ -10,32 +10,38 @@ namespace MusicBeePlugin.Internationalization
 {
     class InternationalizationManager
     {
-        public static string GetCurrentMusicBeeLanguage(string mbMainField173Text)
+        public static string CultureText { get; set; } = "en";
+        public static void SetCurrentLanguage(string mbMainField173Text)
         {
             //Initialize langDict that convert MusicBee setting to .Net Culture Text
             var langDict = new Dictionary<string, string>();
             langDict["Language"] = "en";
             langDict["语言"] = "zh-Hans";
             var cultureText = langDict.ContainsKey(mbMainField173Text) ? langDict[mbMainField173Text] : "en";
-            return cultureText;
+            CultureText = cultureText;
         }
 
-        public static void EnableLanguage(string mbMainField173Text)
+        public static void EnableLanguage()
         {
-            var cultureText = GetCurrentMusicBeeLanguage(mbMainField173Text);
-            Thread.CurrentThread.CurrentUICulture = new CultureInfo(cultureText);
+            Thread.CurrentThread.CurrentUICulture = new CultureInfo(CultureText);
         }
 
-        public static void AppyResourceToWinForm(Control c)
+        public static void ApplyResourceToWinForm(Control c)
         {
             var res = new EmbedResourceManager(c.GetType());
+            ApplyResourceToControl(c, res);
+        }
+
+        private static void ApplyResourceToControl(Control c, EmbedResourceManager res)
+        {
             foreach (Control item in c.Controls)
             {
-                res.ApplyResources(item, item.Name);
+                ApplyResourceToControl(item, res);
             }
             c.ResumeLayout(false);
             c.PerformLayout();
             res.ApplyResources(c, c.Name);
         }
+
     }
 }
