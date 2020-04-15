@@ -24,9 +24,14 @@ namespace MusicBeePlugin
         {
             mbApiInterface = new MusicBeeApiInterface();
             mbApiInterface.Initialise(apiInterfacePtr);
+
+            //Load Localization
+            InternationalizationManager.SetCurrentLanguage(mbApiInterface.MB_GetLocalisation("Main.field.173", "Language"));
+            InternationalizationManager.EnableLanguage();
+
             about.PluginInfoVersion = PluginInfoVersion;
             about.Name = "KaraokeShow";
-            about.Description = "A plugin to display synchronised lyrics on desktop";
+            about.Description = Properties.Resources.Plugin_PluginDescription;
             about.Author = "Samersions";
             about.TargetApplication = "";   //  the name of a Plugin Storage device or panel header for a dockable panel
             about.Type = PluginType.General;
@@ -128,7 +133,6 @@ namespace MusicBeePlugin
                 case NotificationType.PluginStartup:
                     string dataPath = Path.Combine(mbApiInterface.Setting_GetPersistentStoragePath(), "KaraokeShow1.xml");
                     Configuration.LoadConfig(dataPath);
-                    InternationalizationManager.SetCurrentLanguage(mbApiInterface.MB_GetLocalisation("Main.field.173", "Language"));
                     mbApiInterface.MB_AddMenuItem("mnuView/Karaoke Show", "", new EventHandler((s, e) =>
                     {
 

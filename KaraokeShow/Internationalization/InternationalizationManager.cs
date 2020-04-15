@@ -38,9 +38,9 @@ namespace MusicBeePlugin.Internationalization
             {
                 ApplyResourceToControl(item, res);
             }
+            res.ApplyResources(c, c.Name);
             c.ResumeLayout(false);
             c.PerformLayout();
-            res.ApplyResources(c, c.Name);
         }
 
     }
