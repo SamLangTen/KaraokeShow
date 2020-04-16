@@ -5,11 +5,13 @@ using System.Text;
 using System.Threading;
 using System.Globalization;
 using System.Windows.Forms;
+using System.Resources;
 
 namespace MusicBeePlugin.Internationalization
 {
     class InternationalizationManager
     {
+        private static ResourceManager resMan = new EmbedResourceManager(typeof(Properties.Resources));
         public static string CultureText { get; set; } = "en";
         public static void SetCurrentLanguage(string mbMainField173Text)
         {
@@ -24,6 +26,11 @@ namespace MusicBeePlugin.Internationalization
         public static void EnableLanguage()
         {
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(CultureText);
+        }
+
+        public static string GetResourceString(string stringName)
+        {
+            return resMan.GetString(stringName, new CultureInfo(CultureText));
         }
 
         public static void ApplyResourceToWinForm(Control c)
