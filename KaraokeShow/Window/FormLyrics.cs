@@ -14,7 +14,7 @@ namespace MusicBeePlugin.Window
     public partial class FormLyrics : Form
     {
         private Dictionary<Size, Bitmap> BackgroundBitmapCache { get; set; } = new Dictionary<Size, Bitmap>();
-        private Bitmap lastSentBitmap { get; set; }
+        private Bitmap lastBitmapCache { get; set; } = null;
 
         public FormLyrics()
         {
@@ -26,7 +26,7 @@ namespace MusicBeePlugin.Window
         {
 
             Bitmap layerBmp;
-            if (!IsResizing)
+            if (bmp != null)
             {
                 Size = bmp.Size;
                 layerBmp = new Bitmap(bmp.Width, bmp.Height);
@@ -46,6 +46,12 @@ namespace MusicBeePlugin.Window
             if (bmp != null && !IsResizing)
             {
                 g.DrawImage(bmp, new Point(0, 0));
+                lastBitmapCache?.Dispose();
+                lastBitmapCache = (Bitmap)bmp.Clone();
+            }
+            else if (lastBitmapCache != null)
+            {
+                g.DrawImage(lastBitmapCache, new Point(0, 0));
             }
 
             g.Dispose();
@@ -78,7 +84,7 @@ namespace MusicBeePlugin.Window
             catch (Exception)
             {
 
-                throw;
+                
             }
             finally
             {
@@ -112,7 +118,15 @@ namespace MusicBeePlugin.Window
 
         private void FormLyrics_Load(object sender, EventArgs e)
         {
-            NativeMethods.SetWindowLong(Handle, NativeMethods.GWL_EXSTYLE, NativeMethods.GetWindowLong(Handle, NativeMethods.GWL_EXSTYLE) | NativeMethods.WS_EX_LAYERED);
+            NativeMethods.SetWindowLong(Handle, NativeMethods.GWL_EXSTYLE, NativeMethods.GetWindowLong(Handle, NativeMethods.GWL_EXSTYLE) | NativeMethods.WS_EX_LAYERED | NativeMethods.WS_EX_TOOLWINDOW);
+        }
+
+        public new void Dispose()
+        {
+            base.Dispose();
+            foreach (var bmp in BackgroundBitmapCache)
+                bmp.Value?.Dispose();
+            lastBitmapCache?.Dispose();
         }
 
         #region "For Move & Resize"
@@ -159,31 +173,34 @@ namespace MusicBeePlugin.Window
                 {
                     //Resize
                     Configuration.Width = e.X;
-                    UpdateLayeredWindow(null);
                     Width = e.X;
+                    UpdateLayeredWindow(null);
                 }
                 else if (IsMoving)
                 {
                     //Moving
                     Location = new Point(Location.X - mouseX + e.X, Location.Y - mouseY + e.Y);
                     Configuration.X = Location.X;
-                    Configuration.Y = Location.Y;   
+                    Configuration.Y = Location.Y;
                 }
 
             }
         }
 
-
-        #endregion
-
         private void FormLyrics_MouseHover(object sender, EventArgs e)
         {
             IsMouseIn = true;
+            UpdateLayeredWindow(null);
         }
 
         private void FormLyrics_MouseLeave(object sender, EventArgs e)
         {
             IsMouseIn = false;
+            UpdateLayeredWindow(null);
         }
+
+        #endregion
+
+
     }
 }
