@@ -189,7 +189,11 @@ namespace MusicBeePlugin.Window
         {
             IsDisposed = true;
             LyricsGen.Dispose();
-            FormLyrics.Dispose();
+            MusicBeeForm.Invoke(new Action(() =>
+            {
+                FormLyrics.Dispose();
+            }));
+
         }
     }
 }
