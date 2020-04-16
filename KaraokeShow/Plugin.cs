@@ -171,6 +171,7 @@ namespace MusicBeePlugin
             //Close old
             timer?.Stop();
             destopLyrics?.CloseWindow();
+            destopLyrics?.Dispose();
         }
 
         private void ResetAndCreateNewPlayback()
@@ -193,7 +194,8 @@ namespace MusicBeePlugin
 
         private void timer_tick(object sender, EventArgs e)
         {
-            destopLyrics?.Update(mbApiInterface.Player_GetPosition());
+            if (!destopLyrics.IsDisposed)
+                destopLyrics?.Update(mbApiInterface.Player_GetPosition());
         }
 
         // return an array of lyric or artwork provider names this plugin supports

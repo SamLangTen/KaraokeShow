@@ -8,7 +8,7 @@ using System.Text;
 
 namespace MusicBeePlugin.Window.Helper
 {
-    public class DynamicLyricsGenerator
+    public class DynamicLyricsGenerator : IDisposable
     {
         private Font TextFont { get => Configuration.TextFont; }
         private int WindowWidth { get => Configuration.Width; }
@@ -38,6 +38,7 @@ namespace MusicBeePlugin.Window.Helper
                 //Draw This Line
                 var fontSize = GetCorrectFontSize(text, TextFont);
                 var updatingBitmap = DrawStaticLyric(text, line, (int)fontSize.Width, isSelected ? 1 : 0);
+                if (LineBitmapCache.ContainsKey(line)) LineBitmapCache[line].Dispose();
                 LineBitmapCache[line] = updatingBitmap;
 
                 //Check max width
@@ -69,6 +70,7 @@ namespace MusicBeePlugin.Window.Helper
             try
             {
                 var updatingBitmap = DrawDynamicLyric(text, line, percentage);
+                if (LineBitmapCache.ContainsKey(line)) LineBitmapCache[line].Dispose();
                 LineBitmapCache[line] = updatingBitmap;
 
                 var bmp = new Bitmap(WindowWidth, LineHeight * Line);
@@ -314,6 +316,18 @@ namespace MusicBeePlugin.Window.Helper
             bmp.Dispose();
         }
 
-
+        public void Dispose()
+        {
+            foreach (var bmp in ForeBitmapCache)
+                bmp.Value?.Dispose();
+            foreach (var bmp in ForeBlurBitmapCache)
+                bmp.Value?.Dispose();
+            foreach (var bmp in BackBitmapCache)
+                bmp.Value?.Dispose();
+            foreach (var bmp in BackBlurBitmapCache)
+                bmp.Value?.Dispose();
+            foreach (var bmp in LineBitmapCache)
+                bmp.Value?.Dispose();
+        }
     }
 }

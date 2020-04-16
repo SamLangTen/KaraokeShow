@@ -12,7 +12,7 @@ using System.Windows.Forms;
 
 namespace MusicBeePlugin.Window
 {
-    public class DestopLyrics
+    public class DestopLyrics : IDisposable
     {
 
         private SynchronousHelper SyncHelper { get; set; }
@@ -109,6 +109,7 @@ namespace MusicBeePlugin.Window
                     if (updatingIndex == refreshingIndex) continue;
                     var updatedBmp = LyricsGen.GetUpdatedStaticLyricsImage(LineInfo[i + 1].Content, i + 1, false);
                     RefreshWindow(updatedBmp);
+                    updatedBmp?.Dispose();
 
                 }
             }
@@ -120,6 +121,7 @@ namespace MusicBeePlugin.Window
                 double percentage = SyncHelper.GetPercentage(milliseconds);
                 var bmp = LyricsGen.GetUpdatedStaticLyricsImage(LineInfo[thisLine].Content, thisLine, true);
                 RefreshWindow(bmp);
+                bmp?.Dispose();
                 LastIndex = newIndex;
             }
         }
@@ -146,6 +148,7 @@ namespace MusicBeePlugin.Window
                             LineInfo[i + 1] = SyncHelper.SynchronousLyrics[updatingIndex];
                             var updatedBmp = LyricsGen.GetUpdatedDynamicLyricsImage(LineInfo[i + 1].Content, i + 1, 0);
                             RefreshWindow(updatedBmp);
+                            updatedBmp?.Dispose();
                         }
                     }
                 }
@@ -158,6 +161,7 @@ namespace MusicBeePlugin.Window
                 double percentage = SyncHelper.GetPercentage(milliseconds);
                 var bmp = LyricsGen.GetUpdatedDynamicLyricsImage(LineInfo[thisLine].Content, thisLine, percentage);
                 RefreshWindow(bmp);
+                bmp?.Dispose();
                 LastIndex = newIndex;
             }
 
@@ -178,5 +182,14 @@ namespace MusicBeePlugin.Window
 
         }
 
+
+        public bool IsDisposed { get; private set; } = false;
+
+        public void Dispose()
+        {
+            IsDisposed = true;
+            LyricsGen.Dispose();
+            FormLyrics.Dispose();
+        }
     }
 }

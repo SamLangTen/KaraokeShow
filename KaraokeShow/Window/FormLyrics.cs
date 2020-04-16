@@ -84,7 +84,7 @@ namespace MusicBeePlugin.Window
             catch (Exception)
             {
 
-                throw;
+                
             }
             finally
             {
@@ -119,6 +119,14 @@ namespace MusicBeePlugin.Window
         private void FormLyrics_Load(object sender, EventArgs e)
         {
             NativeMethods.SetWindowLong(Handle, NativeMethods.GWL_EXSTYLE, NativeMethods.GetWindowLong(Handle, NativeMethods.GWL_EXSTYLE) | NativeMethods.WS_EX_LAYERED | NativeMethods.WS_EX_TOOLWINDOW);
+        }
+
+        public new void Dispose()
+        {
+            base.Dispose();
+            foreach (var bmp in BackgroundBitmapCache)
+                bmp.Value?.Dispose();
+            lastBitmapCache?.Dispose();
         }
 
         #region "For Move & Resize"
@@ -179,9 +187,6 @@ namespace MusicBeePlugin.Window
             }
         }
 
-
-        #endregion
-
         private void FormLyrics_MouseHover(object sender, EventArgs e)
         {
             IsMouseIn = true;
@@ -193,5 +198,9 @@ namespace MusicBeePlugin.Window
             IsMouseIn = false;
             UpdateLayeredWindow(null);
         }
+
+        #endregion
+
+
     }
 }
