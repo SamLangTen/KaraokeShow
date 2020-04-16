@@ -58,6 +58,7 @@ namespace MusicBeePlugin.Window.Helper
         public const byte AC_SRC_ALPHA = 0x1;
         public const Int32 GWL_EXSTYLE = -20;
         public const Int32 WS_EX_LAYERED = 0x80000;
+        public const Int32 WS_EX_TOOLWINDOW = 0x80;
 
         [DllImport("user32.dll", EntryPoint = "SetWindowLongA")]
         internal static extern Int32 SetWindowLong(IntPtr hWnd, Int32 nIndex, Int32 dwNewLong);

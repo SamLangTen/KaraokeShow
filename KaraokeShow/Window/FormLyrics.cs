@@ -118,7 +118,7 @@ namespace MusicBeePlugin.Window
 
         private void FormLyrics_Load(object sender, EventArgs e)
         {
-            NativeMethods.SetWindowLong(Handle, NativeMethods.GWL_EXSTYLE, NativeMethods.GetWindowLong(Handle, NativeMethods.GWL_EXSTYLE) | NativeMethods.WS_EX_LAYERED);
+            NativeMethods.SetWindowLong(Handle, NativeMethods.GWL_EXSTYLE, NativeMethods.GetWindowLong(Handle, NativeMethods.GWL_EXSTYLE) | NativeMethods.WS_EX_LAYERED | NativeMethods.WS_EX_TOOLWINDOW);
         }
 
         #region "For Move & Resize"
