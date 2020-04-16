@@ -9,6 +9,7 @@ using MusicBeePlugin.Config;
 using MusicBeePlugin.Window;
 using MusicBeePlugin.Parser;
 using MusicBeePlugin.Internationalization;
+using System.Resources;
 
 namespace MusicBeePlugin
 {
@@ -31,7 +32,7 @@ namespace MusicBeePlugin
 
             about.PluginInfoVersion = PluginInfoVersion;
             about.Name = "KaraokeShow";
-            about.Description = Properties.Resources.Plugin_PluginDescription;
+            about.Description = InternationalizationManager.GetResourceString("Plugin.PluginDescription");
             about.Author = "Samersions";
             about.TargetApplication = "";   //  the name of a Plugin Storage device or panel header for a dockable panel
             about.Type = PluginType.General;
