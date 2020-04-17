@@ -22,22 +22,28 @@ namespace MusicBeePlugin.Parser
 
         public LRCFile(string lrcText, bool ignoreOffset = true)
         {
-            Parse(lrcText, ignoreOffset);
-            Lyrics.Sort((a, b) => a.Time.CompareTo(b.Time));
+            try
+            {
+                Parse(lrcText, ignoreOffset);
+                Lyrics.Sort((a, b) => a.Time.CompareTo(b.Time));
+            }
+            catch (Exception)
+            {
+            }
         }
 
         private void Parse(string lrcText, bool ignoreOffset = true)
         {
-            var timestampRegex = new Regex("^\\[\\d\\d:\\d\\d(\\.\\d\\d(\\d)?)?\\]");
+            var timestampRegex = new Regex("^\\[\\d(\\d)?:\\d\\d(\\.\\d\\d(\\d)?)?\\]");
             Func<string, DateTime> timestampToDateTime = t =>
              {
-                 var numRegex = new Regex("\\d\\d");
-                 var nums = numRegex.Matches(t);
-                 var minute = int.Parse(nums[0].Value);
-                 var second = int.Parse(nums[1].Value);
+                 var split1 = t.Replace("[", "").Replace("]", "").Split(':');
+                 var minute = int.Parse(split1[0]);
+                 var split2 = split1[1].Split('.');
+                 var second = int.Parse(split2[0]);
                  var millsec = 0;
-                 if (nums.Count == 3)
-                     millsec = int.Parse(nums[2].Value) * 10;
+                 if (split2.Length == 2)
+                     millsec = int.Parse(split2[1]) * (int)Math.Pow(10, 3 - split2[1].Length);
                  var dt = new DateTime(1, 1, 1, 0, minute, second, millsec);
                  return dt;
              };
