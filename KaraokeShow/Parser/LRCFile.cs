@@ -104,7 +104,7 @@ namespace MusicBeePlugin.Parser
                     sli.EndTime = Lyrics.Find(n => n.Time > l.Time).Time;
                 }
                 return sli;
-            }).Where(l => l.Content != "").ToList();
+            }).Where(l => l.Content.Trim() != "").ToList();
         }
     }
 
